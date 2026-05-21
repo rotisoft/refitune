@@ -1,0 +1,755 @@
+/**
+ * WP Refiner - Admin styles.
+ *
+ * Csak a plugin admin oldalain töltődik be.
+ */
+
+/* Smooth scroll. */
+html {
+	scroll-behavior: smooth;
+}
+
+/* Színpaletta. */
+.wprefi-admin-wrap {
+	--wprefi-alap: #195030;
+	--wprefi-sotet: #123926;
+	--wprefi-vilagos: #206839;
+	--wprefi-elenk: #aff740;
+	--wprefi-nagyon-vilagos: #f0f3e8;
+	--wprefi-atlatszo: #194f2fb8;
+	--wprefi-success: #16a34a;
+	--wprefi-success-bg: #f0fdf4;
+	--wprefi-muted: #6b7280;
+	--wprefi-muted-bg: #f3f4f6;
+}
+
+/* Rejtett h2 cím a WordPress admin notice-ok horgánypontjaként. */
+.wprefi-admin-wrap .wprefi-hidden-title {
+	display: none;
+}
+
+/* Egységes fejléc. */
+.wprefi-admin-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin: 10px 0 20px;
+	padding: 12px 20px;
+	background: linear-gradient(135deg, var(--wprefi-sotet) 21%, var(--wprefi-vilagos) 100%);
+	color: #fff;
+	border-radius: 5px;
+}
+
+.wprefi-admin-header .wprefi-admin-title {
+	font-size: 23px;
+	font-weight: 400;
+	margin: 0;
+	padding: 0;
+	line-height: 1.3;
+	color: #fff;
+}
+
+/* Fejléc navigáció. */
+.wprefi-admin-nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+}
+
+.wprefi-admin-nav-link {
+	display: inline-block;
+	padding: 6px 14px;
+	text-decoration: none;
+	color: var(--wprefi-nagyon-vilagos);
+	border-radius: 4px;
+	font-size: 13px;
+	line-height: 1.5;
+	white-space: nowrap;
+	transition: background-color 0.15s, color 0.15s;
+}
+
+@media screen and (max-width: 782px) {
+
+	.wprefi-admin-header {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+}
+
+.wprefi-admin-nav-link:hover {
+	background-color: rgba(255, 255, 255, 0.15);
+	color: var(--wprefi-elenk);
+}
+
+.wprefi-admin-nav-link:focus {
+	color: var(--wprefi-nagyon-vilagos);
+}
+
+.wprefi-admin-nav-link.wprefi-admin-nav-active {
+	background-color: rgba(255, 255, 255, 0.2);
+	color: #fff;
+}
+
+.wprefi-admin-nav-link.wprefi-admin-nav-active:hover {
+	background-color: rgba(255, 255, 255, 0.25);
+	color: var(--wprefi-elenk);
+}
+
+/* Tartalom terület. */
+.wprefi-admin-content {
+	background: #fff;
+	border: 1px solid var(--wprefi-nagyon-vilagos);
+	padding: 20px;
+	border-radius: 5px;
+}
+
+/* Footer. */
+.wprefi-admin-footer {
+	margin-top: 15px;
+	padding: 10px 0;
+	font-size: 12px;
+	color: #50575e;
+}
+
+.wprefi-admin-footer a {
+	color: var(--wprefi-alap);
+	text-decoration: none;
+}
+
+.wprefi-admin-footer a:hover {
+	color: var(--wprefi-vilagos);
+}
+
+/* Gomb. */
+.wprefi-button {
+	display: inline-block;
+	padding: 8px 20px;
+	background-color: var(--wprefi-alap);
+	color: #fff;
+	border: none;
+	border-radius: 4px;
+	font-size: 13px;
+	line-height: 1.5;
+	cursor: pointer;
+	text-decoration: none;
+	transition: background-color 0.15s, color 0.15s;
+}
+
+.wprefi-button:hover {
+	background-color: var(--wprefi-vilagos);
+	color: var(--wprefi-nagyon-vilagos);
+}
+
+/* Dashboard: összefoglaló. */
+.wprefi-dashboard-summary {
+	font-size: 14px;
+	color: #50575e;
+}
+
+.wprefi-dashboard-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 20px;
+}
+
+/* Dashboard: funkció kártyák. */
+.wprefi-feature-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 12px;
+}
+
+.wprefi-feature-card {
+	border: 1px solid #e0e0e6;
+	border-radius: 5px;
+	padding: 14px 16px;
+	background: #fafafa;
+}
+
+.wprefi-feature-card.wprefi-feature-active {
+	border-left: 3px solid var(--wprefi-success);
+	background: var(--wprefi-success-bg);
+}
+
+.wprefi-feature-card.wprefi-feature-inactive {
+	border-left: 3px solid #d1d5db;
+}
+
+.wprefi-feature-card-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	margin-bottom: 6px;
+}
+
+.wprefi-feature-card-label {
+	font-weight: 600;
+	font-size: 13px;
+	color: #1d2327;
+}
+
+.wprefi-feature-card-desc {
+	margin: 0;
+	font-size: 12px;
+	color: #50575e;
+	line-height: 1.5;
+}
+
+/* Státusz badge. */
+.wprefi-badge {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 10px;
+	font-size: 11px;
+	font-weight: 600;
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+
+.wprefi-badge-active {
+	background-color: var(--wprefi-success-bg);
+	color: var(--wprefi-success);
+	border: 1px solid #bbf7d0;
+}
+
+.wprefi-badge-inactive {
+	background-color: var(--wprefi-muted-bg);
+	color: var(--wprefi-muted);
+	border: 1px solid #e5e7eb;
+}
+
+.wprefi-badge-warning {
+	background-color: #fcf0f1;
+	color: #d63638;
+	border: 1px solid #f5c2c7;
+}
+
+/* Settings: cleanup-head alcsoport. */
+.wprefi-feature-group {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.wprefi-feature-group-all {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	cursor: pointer;
+	font-size: 13px;
+}
+
+.wprefi-sub-options {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	margin-left: 22px;
+	padding: 8px 12px;
+	border-left: 3px solid var(--wprefi-nagyon-vilagos);
+}
+
+.wprefi-sub-option-label {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	cursor: pointer;
+	font-size: 13px;
+	color: #3c434a;
+}
+
+/* Settings: role_select lista. */
+.wprefi-role-enable-label {
+	display: flex;
+	align-items: flex-start;
+	gap: 6px;
+	cursor: pointer;
+	font-size: 13px;
+	margin-bottom: 10px;
+}
+
+.wprefi-role-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px 20px;
+	padding: 16px 20px;
+	background: #fafafa;
+	border: 1px solid #e0e0e6;
+	border-radius: 4px;
+}
+
+.wprefi-role-label {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	cursor: pointer;
+	font-size: 13px;
+	color: #3c434a;
+	white-space: nowrap;
+}
+
+.wprefi-role-label input[disabled] {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.wprefi-role-required {
+	font-size: 11px;
+	color: var(--wprefi-muted);
+}
+
+/* Settings: number_input. */
+.wprefi-number-input-row {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.wprefi-number-input-row input[type="number"] {
+	width: 80px;
+}
+
+.wprefi-number-input-row .description {
+	margin: 0;
+	color: var(--wprefi-muted);
+	font-size: 12px;
+}
+
+/* Settings: login_customizer. */
+.wprefi-login-customizer-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.wprefi-section-title {
+	margin: 16px 0 8px;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--wprefi-alap);
+	border-bottom: 2px solid var(--wprefi-nagyon-vilagos);
+	padding-bottom: 6px;
+}
+
+.wprefi-login-table th {
+	font-weight: 600;
+	padding: 12px 10px 12px 0;
+	vertical-align: top;
+}
+
+.wprefi-login-table td {
+	padding: 12px 10px;
+}
+
+/* Settings: role_redirects. */
+.wprefi-role-redirects-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.wprefi-role-redirects-wrapper .description {
+	margin: 0 0 8px;
+	color: var(--wprefi-muted);
+	font-size: 12px;
+}
+
+.wprefi-role-redirects-table {
+	width: 100%;
+	border-collapse: collapse;
+	background: #fafafa;
+	border: 1px solid #e0e0e6;
+	border-radius: 4px;
+}
+
+.wprefi-role-redirects-table thead {
+	background: linear-gradient(135deg, var(--wprefi-sotet) 21%, var(--wprefi-vilagos) 100%);
+	color: #fff;
+}
+
+.wprefi-role-redirects-table th {
+	padding: 12px 14px;
+	text-align: left;
+	font-weight: 600;
+	font-size: 13px;
+	color: #fff;
+}
+
+.wprefi-role-redirects-table tbody tr {
+	border-bottom: 1px solid #e0e0e6;
+}
+
+.wprefi-role-redirects-table tbody tr:last-child {
+	border-bottom: none;
+}
+
+.wprefi-role-redirects-table td {
+	padding: 12px 14px;
+	vertical-align: middle;
+}
+
+.wprefi-role-redirects-table td.wprefi-role-name {
+	width: 180px;
+	font-size: 13px;
+	color: #1d2327;
+}
+
+.wprefi-url-input-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 0;
+	background: #fff;
+	border: 1px solid #8c8f94;
+	border-radius: 4px;
+	max-width: 500px;
+}
+
+.wprefi-url-prefix {
+	padding: 6px;
+	background: #f0f0f1;
+	font-size: 12px;
+	color: #50575e;
+	white-space: nowrap;
+}
+
+.wprefi-url-relative-input {
+	flex: 1;
+	border: none !important;
+	padding: 6px 12px;
+	font-size: 13px;
+	box-shadow: none !important;
+	outline: none;
+	min-width: 120px;
+}
+
+.wprefi-url-relative-input:focus {
+	box-shadow: none !important;
+}
+
+.wprefi-url-input-wrapper:focus-within {
+	border-color: var(--wprefi-alap);
+	box-shadow: 0 0 0 1px var(--wprefi-alap);
+}
+
+/* Settings: email_smtp. */
+.wprefi-email-smtp-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.wprefi-email-mode-selector {}
+
+.wprefi-email-mode-selector label {
+	padding: 5px;
+	margin-bottom: 10px;
+	display: inline-block;
+}
+
+.wprefi-email-mode-selector label:hover {
+	cursor: pointer;
+}
+
+.wprefi-email-mode-selector input[type="radio"] {
+	margin-right: 6px;
+}
+
+.wprefi-email-smtp-config {
+	padding: 16px 20px;
+	background: #fafafa;
+	border: 1px solid #e0e0e6;
+	border-radius: 4px;
+}
+
+.wprefi-smtp-title {
+	margin: 0 0 8px;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--wprefi-alap);
+}
+
+.wprefi-smtp-fields {
+	margin-top: 12px;
+}
+
+.wprefi-smtp-fields th {
+	font-weight: 600;
+	padding: 12px 10px 12px 0;
+	vertical-align: middle;
+}
+
+.wprefi-smtp-fields td {
+	padding: 12px 10px;
+}
+
+/* Settings: email_controls. */
+.wprefi-email-options {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.wprefi-email-row {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.wprefi-email-label {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	cursor: pointer;
+	font-size: 13px;
+	color: #3c434a;
+}
+
+.wprefi-email-redirect {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.wprefi-email-redirect-label {
+	font-size: 12px;
+	color: var(--wprefi-muted);
+	white-space: nowrap;
+}
+
+.wprefi-email-redirect input[type="email"] {
+	max-width: 260px;
+}
+
+/* Help oldal. */
+.wprefi-help-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+
+.wprefi-help-item {
+	padding: 16px 0;
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.wprefi-help-item:last-child {
+	border-bottom: none;
+}
+
+.wprefi-help-item-title {
+	margin: 0 0 6px;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--wprefi-alap);
+}
+
+.wprefi-help-item-content {
+	margin: 0;
+	font-size: 13px;
+	color: #3c434a;
+	line-height: 1.6;
+}
+
+.wprefi-help-item-content ul {
+	margin: 10px 0;
+	padding-left: 20px;
+}
+
+.wprefi-help-item-content li {
+	margin: 6px 0;
+	line-height: 1.6;
+}
+
+/* Settings kategória navigáció. */
+.wprefi-settings-nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin: 0 0 20px 0;
+	padding: 0;
+	background: #fff;
+	border: none;
+}
+
+.wprefi-nav-button {
+	display: inline-block;
+	padding: 10px 18px;
+	background: linear-gradient(135deg, var(--wprefi-sotet) 21%, var(--wprefi-vilagos) 100%);
+	color: #fff;
+	text-decoration: none;
+	border-radius: 4px;
+	font-size: 13px;
+	font-weight: 500;
+	transition: opacity 0.2s, transform 0.1s;
+}
+
+.wprefi-nav-button:hover {
+	opacity: 0.9;
+	transform: translateY(-1px);
+	color: #fff;
+}
+
+.wprefi-nav-button:active {
+	transform: translateY(0);
+}
+
+/* Kategória címek. */
+.wprefi-category-title {
+	margin: 30px 0 10px;
+	padding: 10px 0;
+	font-size: 18px;
+	font-weight: 600;
+	color: var(--wprefi-alap);
+	border-bottom: 2px solid var(--wprefi-vilagos);
+}
+
+.wprefi-category-title:first-of-type {
+	margin-top: 0;
+}
+
+/* Kategória elválasztó. */
+.wprefi-category-separator {
+	margin: 30px 0;
+	border: none;
+	border-top: 1px solid #e0e0e6;
+}
+
+/* Login limit beállítások. */
+
+.wprefi-login-limit-table {
+	margin: 0;
+}
+
+.wprefi-login-limit-table tr:first-child th,
+.wprefi-login-limit-table tr:first-child td {
+	padding-top: 0;
+}
+
+.wprefi-login-limit-table tr:last-child th,
+.wprefi-login-limit-table tr:last-child td {
+	padding-bottom: 0;
+}
+
+.wprefi-login-limit-table input[type="number"] {
+	width: 80px;
+}
+
+.wprefi-login-limit-table textarea {
+	font-family: Consolas, Monaco, monospace;
+	font-size: 13px;
+}
+
+/* Info ikon a label mellett. */
+.wprefi-help-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 16px;
+	text-decoration: none;
+	color: var(--wprefi-vilagos);
+	line-height: 1;
+}
+
+.wprefi-help-icon:hover {
+	color: var(--wprefi-success);
+}
+
+.wprefi-help-icon .dashicons:before {
+	font-size: 16px;
+}
+
+/* ============================================================================
+   Collapsible sections (CSS-only)
+   ============================================================================ */
+
+/* Collapsible trigger (label with checkbox) */
+.wprefi-collapsible-trigger {
+	cursor: pointer;
+	font-size: 13px;
+}
+
+/* Collapsible content alapból rejtve */
+.wprefi-collapsible-content {
+	height: 0;
+	overflow: hidden;
+	opacity: 0;
+	transition: opacity 0.3s ease-out;
+}
+
+/* Közös styling a collapsible tartalmakhoz */
+.wprefi-collapsible-content > * {
+	padding: 16px 20px;
+	background: #fafafa;
+	border: 1px solid #e0e0e6;
+	border-radius: 4px;
+}
+
+/* Ha a trigger-ben lévő checkbox be van pipálva, mutasd a collapsible-content-et */
+.wprefi-collapsible-trigger:has(.wprefi-collapsible-checkbox:checked) ~ .wprefi-collapsible-content {
+	height: auto;
+	opacity: 1;
+	margin-top: 12px;
+}
+
+/* Smooth fade-in effect */
+.wprefi-collapsible-trigger:has(.wprefi-collapsible-checkbox:checked) ~ .wprefi-collapsible-content > * {
+	animation: wprefi-fade-in 0.3s ease-out;
+}
+
+@keyframes wprefi-fade-in {
+	from {
+		opacity: 0;
+		transform: translateY(-8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Danger label for critical settings */
+.danger-label {
+	color: #d63638;
+	font-weight: bold;
+}
+
+/* Maintenance Mode - Warning state (piros border ha aktív) */
+.wprefi-feature-card.wprefi-feature-warning {
+	border-left: 3px solid #d63638;
+	background: #fcf0f1;
+}
+
+/* Maintenance Mode textarea */
+.wprefi-maintenance-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.wprefi-maintenance-message {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.wprefi-maintenance-textarea {
+	resize: vertical;
+	min-height: 100px;
+	padding: 8px 12px;
+	border: 1px solid #8c8f94;
+	border-radius: 4px;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	font-size: 13px;
+	line-height: 1.6;
+}
+
+.wprefi-maintenance-textarea:focus {
+	border-color: #2271b1;
+	outline: 2px solid transparent;
+	box-shadow: 0 0 0 1px #2271b1;
+}

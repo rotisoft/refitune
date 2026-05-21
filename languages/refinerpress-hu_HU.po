@@ -1,0 +1,730 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: RefinerPress Toolkit 1.0.0\n"
+"Report-Msgid-Bugs-To: https://rotistudio.com\n"
+"POT-Creation-Date: 2026-03-17 22:00+0000\n"
+"PO-Revision-Date: 2026-05-21 19:54+0200\n"
+"Last-Translator: \n"
+"Language-Team: Hungarian\n"
+"Language: hu_HU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.9\n"
+
+# Main plugin description
+msgid "Take control of WordPress with smart performance tweaks, security enhancements, and usability improvements — all in one toolkit."
+msgstr "Vedd át az irányítást a WordPress felett okos teljesítményoptimalizálással, biztonsági fejlesztésekkel és használhatósági újításokkal — minden egy eszközkészletben."
+
+# Navigation
+msgid "Modules"
+msgstr "Modulok"
+
+msgid "Settings"
+msgstr "Beállítások"
+
+msgid "Help"
+msgstr "Súgó"
+
+msgid "RefinerPress Toolkit"
+msgstr "RefinerPress Toolkit"
+
+msgid "RefinerPress Toolkit — Settings"
+msgstr "RefinerPress Toolkit — Beállítások"
+
+msgid "RefinerPress Toolkit — Help"
+msgstr "RefinerPress Toolkit — Súgó"
+
+msgid "RPT Settings"
+msgstr "RPT Beállítások"
+
+msgid "RPT Help"
+msgstr "RPT Súgó"
+
+# Categories
+msgid "Performance"
+msgstr "Teljesítmény"
+
+msgid "Security"
+msgstr "Biztonság"
+
+msgid "Visual"
+msgstr "Vizuális"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Miscellaneous"
+msgstr "Egyéb"
+
+# Feature: Header Cleanup
+msgid "Header Cleanup"
+msgstr "Fejléc tisztítás"
+
+msgid "Removes unnecessary wp_head elements from the source."
+msgstr "Felesleges wp_head elemek eltávolítása a forrásból."
+
+msgid "Hide WordPress version (Remove Generator tag)"
+msgstr "WordPress verzió elrejtése (Generator tag kivétele)"
+
+msgid "Hide WooCommerce version (Remove Generator tag)"
+msgstr "WooCommerce verzió elrejtése (Generator tag kivétele)"
+
+msgid "Remove RSD (Really Simple Discovery) link"
+msgstr "RSD (Really Simple Discovery) link eltávolítása"
+
+msgid "Remove Windows Live Writer manifest link"
+msgstr "Windows Live Writer manifest link eltávolítása"
+
+msgid "Remove Shortlink"
+msgstr "Shortlink eltávolítása"
+
+msgid "Remove Previous and Next post rel links"
+msgstr "Előző és Következő bejegyzés rel link eltávolítása"
+
+# Feature: Feed Management
+msgid "Feed Management"
+msgstr "Gyári feed-ek kezelése"
+
+msgid "Removes default WordPress RSS/Atom feeds from HTML source."
+msgstr "WordPress gyári RSS/Atom feed-jeinek eltávolítása a HTML forrásból."
+
+msgid "Disable main posts feed (domain.com/feed/)"
+msgstr "Fő bejegyzések feed kikapcsolása (domain.hu/feed/)"
+
+msgid "Disable comment feeds"
+msgstr "Hozzászólás feed-ek kikapcsolása"
+
+msgid "Remove additional feeds (categories, authors, etc.)"
+msgstr "További feed-ek eltávolítása (kategóriák, szerzők, stb.)"
+
+# Feature: Disable Emoji
+msgid "Disable Emoji"
+msgstr "Emodzsi letiltás"
+
+msgid "Disables WordPress built-in emoji processing scripts and stylesheet, reducing page load times."
+msgstr "Letiltja a WordPress beépített emoji feldolgozó szkriptjeit és stíluslapját, csökkentve az oldalak betöltési idejét."
+
+# Feature: Disable jQuery Migrate
+msgid "Disable jQuery Migrate"
+msgstr "A jQuery Migrate letiltása"
+
+msgid "Removes the jquery-migrate script from frontend pages."
+msgstr "Eltávolítja a jquery-migrate szkriptet a frontend oldalakról."
+
+# Feature: Post Revisions
+msgid "Post Revisions Limit"
+msgstr "Post revíziók száma"
+
+msgid "How many post revisions WordPress should store per post (Recommended: 5-10)"
+msgstr "Hány revíziót tároljon a WordPress bejegyzésenként"
+
+# Feature: Auto-save Interval
+msgid "Auto-save Interval"
+msgstr "Automatikus mentés gyakorisága"
+
+msgid "Here you can specify how many seconds to save the post. Recommended: 120 or 300 (2 minutes or 5 minutes)"
+msgstr "Itt adhatod meg, hogy hány másodpercenként mentse a bejegyzést. Ajánlott: 120 vagy 300 (2 perc vagy 5 perc)"
+
+# Feature: Trash Auto-Delete
+msgid "Trash Auto-Delete"
+msgstr "Kuka automatikus ürítése"
+
+msgid "Number of days before items in trash are permanently deleted. Recommended: 7-30 days. Default: 30 days"
+msgstr "Hány nap után törlődjenek véglegesen a kukában lévő elemek. Ajánlott: 7-30 nap. Alapértelmezett: 30 nap"
+
+# Feature: Heartbeat API Control
+msgid "Heartbeat API Control"
+msgstr "Heartbeat API kontroll"
+
+msgid "Control WordPress Heartbeat API frequency or disable it in admin, frontend, and post editor contexts independently."
+msgstr "A WordPress Heartbeat API gyakoriságának beállítása vagy letiltása admin, frontend és szerkesztő kontextusokban egymástól függetlenül."
+
+# Settings page - Heartbeat Control
+msgid "Admin Heartbeat:"
+msgstr "Admin Heartbeat:"
+
+msgid "Frontend Heartbeat:"
+msgstr "Frontend Heartbeat:"
+
+msgid "Post Editor Heartbeat:"
+msgstr "Szerkesztő Heartbeat:"
+
+msgid "WordPress default"
+msgstr "WordPress alapértelmezett"
+
+msgid "15 seconds, dense"
+msgstr "15 másodperc, sűrű"
+
+msgid "30 seconds, frequent"
+msgstr "30 másodperc, gyakori"
+
+msgid "30 seconds, frequent - Recommended"
+msgstr "30 másodperc, gyakori - Ajánlott"
+
+msgid "60 seconds, medium"
+msgstr "60 másodperc, közepes"
+
+msgid "60 seconds, medium - Recommended"
+msgstr "60 másodperc, közepes - Ajánlott"
+
+msgid "120 seconds, rare"
+msgstr "120 másodperc, ritka"
+
+msgid "Disable"
+msgstr "Letiltás"
+
+msgid "Disable (Recommended, check other plugins)"
+msgstr "Letiltás (Ajánlott, ellenőrizd a többi bővítményt)"
+
+msgid "Disable (It's disable autosave and post locking)"
+msgstr "Letiltás (Kikapcsolja az autosave-t és a bejegyzés zárolást)"
+
+# Help page - Heartbeat Control
+msgid "The WordPress Heartbeat API is a built-in feature that uses AJAX to communicate between the browser and the server at regular intervals. It powers several real-time features like autosave, post locking (notifying when someone else is editing the same post), and admin notifications. However, frequent Heartbeat requests can increase server load and consume resources, especially on shared hosting or high-traffic sites. <br><br>This feature allows you to independently control the Heartbeat API in three different contexts:<br><br><strong>1. Admin Heartbeat</strong><br>Controls Heartbeat on the Dashboard and other admin pages (not the post editor). These pages typically don't require frequent updates.<br><strong>Recommended:</strong> 60 seconds, medium<br><br><strong>2. Frontend Heartbeat</strong><br>Controls Heartbeat on your public-facing website. The Heartbeat API is rarely needed on the frontend unless you have specific plugins that rely on it.<br><strong>Recommended:</strong> Disable (not needed on public pages)<br><br><strong>3. Post Editor Heartbeat</strong><br>Controls Heartbeat in the post/page editor (Gutenberg and Classic Editor). This is crucial for autosave and post locking features.<br><strong>Recommended:</strong> 30-60 seconds<br><strong>WARNING:</strong> Disabling the Heartbeat in the editor will also disable autosave and post locking!<br><br><strong>Available Options:</strong><ul><li><strong>WordPress default:</strong> No changes, uses the default interval (typically 15-60 seconds).</li><li><strong>15 seconds, dense:</strong> Very frequent updates, highest server load.</li><li><strong>30 seconds, frequent:</strong> Frequent updates, moderate server load.</li><li><strong>60 seconds, medium:</strong> Balanced updates, recommended for most sites.</li><li><strong>120 seconds, rare:</strong> Less frequent updates, lowest server load.</li><li><strong>Disable:</strong> Completely turns off the Heartbeat API in this context.</li></ul><strong>Example Configuration:</strong><ul><li><strong>Admin:</strong> 60 seconds, medium (reduces dashboard requests)</li><li><strong>Frontend:</strong> Disable (not needed on public pages)</li><li><strong>Post Editor:</strong> 30 seconds, frequent (keeps autosave functional)</li></ul><strong>Performance Impact:</strong> Reducing Heartbeat frequency or disabling it on the frontend can significantly reduce server CPU usage, memory consumption, and database queries. This is especially beneficial on shared hosting environments or sites with limited resources."
+msgstr "A WordPress Heartbeat API egy beépített funkció, amely AJAX-t használ a böngésző és a szerver közötti rendszeres kommunikációhoz. Számos valós idejű funkciót működtet, mint például az automatikus mentés, a bejegyzés zárolás (értesítés, ha valaki más is szerkeszti ugyanazt a bejegyzést), és az admin értesítések. A gyakori Heartbeat kérések azonban megnövelhetik a szerver terhelését és erőforrás-felhasználást, különösen megosztott tárhelyen vagy nagy forgalmú oldalakon. <br><br>Ez a funkció lehetővé teszi a Heartbeat API független vezérlését három különböző kontextusban:<br><br><strong>1. Admin Heartbeat</strong><br>A Heartbeat vezérlése a Dashboardon és más admin oldalakon (nem a bejegyzés szerkesztőben). Ezek az oldalak általában nem igényelnek gyakori frissítéseket.<br><strong>Ajánlott:</strong> 60 másodperc, közepes<br><br><strong>2. Frontend Heartbeat</strong><br>A Heartbeat vezérlése a publikus weboldalon. A Heartbeat API ritkán szükséges a frontenden, kivéve ha vannak specifikus bővítmények, amelyek ezt használják.<br><strong>Ajánlott:</strong> Letiltás (nem szükséges a publikus oldalakon)<br><br><strong>3. Szerkesztő Heartbeat</strong><br>A Heartbeat vezérlése a bejegyzés/oldal szerkesztőben (Gutenberg és klasszikus szerkesztő). Ez létfontosságú az automatikus mentés és bejegyzés zárolás funkciókhoz.<br><strong>Ajánlott:</strong> 30-60 másodperc<br><strong>FIGYELEM:</strong> A Heartbeat letiltása a szerkesztőben egyben letiltja az automatikus mentést és a bejegyzés zárolást is!<br><br><strong>Elérhető opciók:</strong><ul><li><strong>WordPress alapértelmezett:</strong> Nincs változtatás, az alapértelmezett intervallumot használja (általában 15-60 másodperc).</li><li><strong>15 másodperc, sűrű:</strong> Nagyon gyakori frissítések, legnagyobb szerver terhelés.</li><li><strong>30 másodperc, gyakori:</strong> Gyakori frissítések, közepes szerver terhelés.</li><li><strong>60 másodperc, közepes:</strong> Kiegyensúlyozott frissítések, a legtöbb oldalhoz ajánlott.</li><li><strong>120 másodperc, ritka:</strong> Kevésbé gyakori frissítések, legkisebb szerver terhelés.</li><li><strong>Letiltás:</strong> Teljesen kikapcsolja a Heartbeat API-t ebben a kontextusban.</li></ul><strong>Példa konfiguráció:</strong><ul><li><strong>Admin:</strong> 60 másodperc, közepes (csökkenti a dashboard kéréseket)</li><li><strong>Frontend:</strong> Letiltás (nem szükséges a publikus oldalakon)</li><li><strong>Szerkesztő:</strong> 30 másodperc, gyakori (megőrzi az automatikus mentést)</li></ul><strong>Teljesítmény hatás:</strong> A Heartbeat gyakoriságának csökkentése vagy frontenden történő letiltása jelentősen csökkentheti a szerver CPU használatot, memória felhasználást és adatbázis lekérdezéseket. Ez különösen hasznos megosztott tárhelyen vagy korlátozott erőforrásokkal rendelkező oldalakon."
+
+# Feature: Disable XML-RPC
+msgid "Disable XML-RPC"
+msgstr "XML-RPC letiltás"
+
+msgid "Completely disables the XML-RPC remote API interface (404 Not Found response)."
+msgstr "Teljesen letiltja az XML-RPC távoli API interfészt (404 Not Found válasz)."
+
+# Feature: Disable Trackback/Pingback
+msgid "Disable Trackback/Pingback"
+msgstr "Trackback/Pingback letiltás"
+
+msgid "Disables trackback and pingback mechanism (inter-post notifications): closes pings on all posts, removes pingback methods."
+msgstr "Letiltja a trackback és pingback mechanizmust (bejegyzések közötti értesítések): lezárja a pingeket minden bejegyzésnél, eltávolítja a pingback metódusokat."
+
+# Feature: Disable File Editor
+msgid "Disable File Editor"
+msgstr "Fájlszerkesztő letiltása"
+
+msgid "Disables the built-in plugin and theme editor in admin area (DISALLOW_FILE_EDIT)."
+msgstr "Letiltja a beépített plugin- és sablonszerkesztőt az admin felületen (DISALLOW_FILE_EDIT)."
+
+# Feature: Login Error Messages
+msgid "Login Error Messages"
+msgstr "Bejelentkezési hibaüzenetek"
+
+msgid "Generalizes login error messages so it doesn't reveal whether username or password was incorrect."
+msgstr "Általánosítja a bejelentkezési hibaüzenetet, hogy ne derüljön ki, a felhasználónév vagy a jelszó volt-e helytelen."
+
+msgid "Incorrect username or password."
+msgstr "Hibás felhasználónév vagy jelszó."
+
+# Feature: Restrict Admin Access
+msgid "Restrict Admin Access"
+msgstr "Admin felület hozzáférés korlátozása"
+
+msgid "Determines which user roles can access the wp-admin area."
+msgstr "Meghatározza, mely szerepkörök érhetik el a wp-admin felületet."
+
+# Feature: REST API Restrictions
+msgid "REST API Restrictions"
+msgstr "REST API korlátozások"
+
+msgid "Intelligent restriction of certain WordPress REST API endpoints."
+msgstr "WordPress REST API bizonyos endpointjainak intelligens korlátozása."
+
+msgid "Restrict Users endpoint (block external requests) - /wp-json/wp/v2/users"
+msgstr "Users endpoint korlátozása (külső kérések tiltása) - /wp-json/wp/v2/users"
+
+msgid "Restrict REST index (block external requests) - /wp-json/"
+msgstr "REST index korlátozása (külső kérések tiltása) - /wp-json/"
+
+msgid "Restrict Media endpoint (block external requests) - /wp-json/wp/v2/media"
+msgstr "Média endpoint korlátozása (külső kérések tiltása) - /wp-json/wp/v2/media"
+
+msgid "Restrict Comments endpoint (block external requests) - /wp-json/wp/v2/comments"
+msgstr "Kommentek endpoint korlátozása (külső kérések tiltása) - /wp-json/wp/v2/comments"
+
+msgid "Restrict Search endpoint (block external requests) - /wp-json/wp/v2/search"
+msgstr "Keresés endpoint korlátozása (külső kérések tiltása) - /wp-json/wp/v2/search"
+
+# Feature: Login Limit
+msgid "Login Limit"
+msgstr "Bejelentkezési limit"
+
+msgid "Limits failed login attempts based on IP address and username/email."
+msgstr "Korlátozza a sikertelen bejelentkezési kísérleteket IP cím és felhasználónév/email alapján."
+
+msgid "Block \"admin\" Username Instantly"
+msgstr "\"admin\" felhasználónév azonnali blokkolása"
+
+msgid "Immediately blocks the IP address for 1 hour on the first login attempt with username \"admin\". Recommended for extra security."
+msgstr "Azonnal blokkolja az IP címet 1 órára az első bejelentkezési kísérletnél \"admin\" felhasználónévvel. Ajánlott extra biztonság érdekében."
+
+msgid "Too many failed login attempts. Please try again later."
+msgstr "Túl sok sikertelen bejelentkezési kísérlet. Kérjük, próbáld később."
+
+msgid "Login Blocked"
+msgstr "Bejelentkezés letiltva"
+
+msgid "This user account is temporarily locked. Please try again later."
+msgstr "Ez a felhasználói fiók ideiglenesen zárolt. Kérjük, próbáld később."
+
+msgid "Global Rate Limiting (DDoS Protection)"
+msgstr "Globális limit (DDoS védelem)"
+
+msgid "Additional protection against distributed brute-force attacks from multiple IP addresses."
+msgstr "További védelem elosztott brute-force támadások ellen több IP címről."
+
+msgid "Global Attempts Limit"
+msgstr "Globális próbálkozási limit"
+
+msgid "Maximum total failed login attempts from all sources. Default: 50"
+msgstr "Maximális összes sikertelen bejelentkezési kísérlet minden forrásból. Alapértelmezett: 50"
+
+msgid "Global Time Window (minutes)"
+msgstr "Globális időablak (percek)"
+
+msgid "Time period (in minutes) to count total failed attempts. If exceeded, all login attempts will be blocked. Default: 5 minutes"
+msgstr "Időperiódus (percekben), amin belül számoljuk az összes sikertelen kísérletet. Ha túllépi, minden bejelentkezési kísérlet blokkolva lesz. Alapértelmezett: 5 perc"
+
+msgid "Too many failed login attempts from multiple sources. All logins are temporarily blocked. Please try again later."
+msgstr "Túl sok sikertelen bejelentkezési kísérlet több forrásból. Minden bejelentkezés ideiglenesen blokkolva. Kérjük, próbáld később."
+
+# Feature: Hide Admin Bar
+msgid "Hide Admin Bar"
+msgstr "Admin sáv elrejtése"
+
+msgid "Hides the admin bar for logged-in users with selected roles."
+msgstr "Elrejti az admin sávot a kiválasztott szerepkörű bejelentkezett felhasználók számára."
+
+# Feature: Block Visibility
+msgid "Block Visibility (Mobile)"
+msgstr "Blokk láthatóság (mobilos)"
+
+msgid "Adds a visibility option to every Gutenberg block to control whether it appears on mobile, desktop, or both."
+msgstr "Minden Gutenberg blokkhoz hozzáad egy láthatóság opciót, hogy adott blokk mobilon, asztali böngészőben vagy mindkettőben megjelenjen-e."
+
+# Feature: Login Page Customization
+msgid "Login Page Customization"
+msgstr "Login oldal testreszabása"
+
+msgid "Customize WordPress login page (wp-login.php) logo, background color and primary color."
+msgstr "WordPress bejelentkezési oldal (wp-login.php) logo, háttérszín és primary szín testreszabása."
+
+# Feature: Email Notifications
+msgid "Email Notifications"
+msgstr "Email értesítések"
+
+msgid "Disable WordPress system emails or redirect them to a custom address."
+msgstr "WordPress rendszer-emailek letiltása vagy egyedi címre irányítása."
+
+# Feature: Email SMTP
+msgid "Email SMTP / Complete Disable"
+msgstr "Email SMTP / Teljes letiltás"
+
+msgid "Configure SMTP server or completely disable all emails."
+msgstr "SMTP szerver beállítása vagy minden email teljes letiltása."
+
+# Feature: Disable Comments
+msgid "Disable Comments"
+msgstr "Hozzászólások letiltása"
+
+msgid "Completely disables comments and comment submission options."
+msgstr "Teljesen letiltja a hozzászólásokat és a hozzászólás beküldési lehetőségeket."
+
+# Feature: External Links
+msgid "External Links in New Window"
+msgstr "External linkek új ablakban"
+
+msgid "Automatically adds target=\"_blank\" and rel=\"noopener noreferrer\" to all external links."
+msgstr "Minden külső (external) link automatikusan target=\"_blank\" és rel=\"noopener noreferrer\" attribútumot kap."
+
+# Feature: Page Excerpt
+msgid "Enable Page Excerpt"
+msgstr "Oldal kivonat engedélyezése"
+
+msgid "Enables the excerpt field for pages in both Gutenberg and Classic editor."
+msgstr "Engedélyezi az excerpt (kivonat) mezőt az oldalakhoz (page) a Gutenberg és a klasszikus szerkesztőben egyaránt."
+
+# Feature: SVG Upload
+msgid "SVG Upload"
+msgstr "SVG feltöltés"
+
+msgid "Allows SVG file uploads with security filtering. Select which roles can upload SVG."
+msgstr "SVG fájlok feltöltésének engedélyezése, biztonsági szűréssel. Válaszd ki, mely szerepkörök tölthetnek fel SVG-t."
+
+# Feature: AVIF Upload
+msgid "AVIF Upload"
+msgstr "AVIF feltöltés"
+
+msgid "Allows AVIF image file uploads. Select which roles can upload AVIF."
+msgstr "AVIF képfájlok feltöltésének engedélyezése. Válaszd ki, mely szerepkörök tölthetnek fel AVIF-ot."
+
+# Feature: Role Redirects
+msgid "Role Redirects"
+msgstr "Szerepkör átirányítások"
+
+msgid "Set custom login and logout redirect URLs per user role."
+msgstr "Szerepkörönként egyedi login és logout átirányítási URL-ek megadása."
+
+# Dashboard status badges
+msgid "Inactive"
+msgstr "Inaktív"
+
+msgid "Active"
+msgstr "Aktív"
+
+msgid "Customized"
+msgstr "Testreszabott"
+
+msgid "%1$d login / %2$d logout"
+msgstr "%1$d login / %2$d logout"
+
+msgid "All emails disabled"
+msgstr "Minden email letiltva"
+
+msgid "Emails: DISABLED!"
+msgstr "Emailek: LETILTVA!"
+
+msgid "All email sending is disabled"
+msgstr "Minden email küldés le van tiltva"
+
+msgid "SMTP active"
+msgstr "SMTP aktív"
+
+msgid "Active (reviews preserved)"
+msgstr "Aktív (értékelések megmaradnak)"
+
+msgid "Disabled"
+msgstr "Letiltva"
+
+msgid "Max %d"
+msgstr "Max %d"
+
+msgid "%d disabled"
+msgstr "%d letiltva"
+
+msgid "%d roles"
+msgstr "%d szerepkör"
+
+msgid "Max %1$d / %2$d min"
+msgstr "Max %1$d / %2$d perc"
+
+msgid "%1$d / %2$d active"
+msgstr "%1$d / %2$d aktív"
+
+msgid "%1$d / %2$d features active"
+msgstr "%1$d / %2$d funkció aktív"
+
+# Dashboard button
+msgid "Edit Settings"
+msgstr "Beállítások módosítása"
+
+# Settings page - General
+msgid "Open Help"
+msgstr "Súgó megnyitása"
+
+# Settings page - Email SMTP
+msgid "WordPress default email sending (or other SMTP plugin)"
+msgstr "WordPress gyári email küldés (vagy más SMTP plugin)"
+
+msgid "Completely disable email sending"
+msgstr "Email küldés teljes tiltása"
+
+msgid "SMTP email sending"
+msgstr "SMTP levélküldés"
+
+msgid "SMTP Settings"
+msgstr "SMTP beállítások"
+
+msgid "The following settings apply when \"SMTP email sending\" option is selected."
+msgstr "Az alábbi beállítások akkor érvényesülnek, ha az \"SMTP levélküldés\" opció van kiválasztva."
+
+msgid "e.g. smtp.domain.com"
+msgstr "pl. smtp.domain.com"
+
+msgid "Usually 587 (TLS) or 465 (SSL)."
+msgstr "Általában 587 (TLS) vagy 465 (SSL)."
+
+msgid "Encryption"
+msgstr "Titkosítás"
+
+msgid "None"
+msgstr "Nincs"
+
+msgid "SMTP Username"
+msgstr "SMTP Felhasználónév"
+
+msgid "SMTP Password"
+msgstr "SMTP Jelszó"
+
+msgid "Password is stored encrypted with Sodium in the database."
+msgstr "A jelszó Sodium titkosítással kerül tárolásra az adatbázisban."
+
+msgid "From Email Address"
+msgstr "Feladó email címe"
+
+msgid "e.g. info@domain.com"
+msgstr "pl. info@domain.com"
+
+msgid "From Name"
+msgstr "Feladó neve"
+
+msgid "e.g. Website Name"
+msgstr "pl. Weboldal neve"
+
+msgid "SSL Certificate Verification"
+msgstr "SSL tanúsítvány ellenőrzés"
+
+msgid "Disable SSL certificate verification"
+msgstr "SSL tanúsítvány ellenőrzés letiltása"
+
+msgid "Enable this if you experience SSL certificate errors in local/development environments. NOT recommended for production sites."
+msgstr "Kapcsold be, ha SSL tanúsítvány hibákat tapasztalsz helyi/fejlesztői környezetben. NEM ajánlott éles környezetben."
+
+# Settings page - Login Customizer
+msgid "Logo Settings"
+msgstr "Logo beállítások"
+
+msgid "Logo Source"
+msgstr "Logo forrás"
+
+msgid "Use Site Icon (Settings → General → Site Icon)"
+msgstr "Site Icon használata (Beállítások → Általános → Webhely ikon)"
+
+msgid "Custom Image URL (relative)"
+msgstr "Egyedi kép URL (relatív)"
+
+msgid "Logo Size"
+msgstr "Logo méret"
+
+msgid "Width:"
+msgstr "Szélesség:"
+
+msgid "Height:"
+msgstr "Magasság:"
+
+msgid "Color Settings"
+msgstr "Színbeállítások"
+
+msgid "Background Color"
+msgstr "Háttérszín"
+
+msgid "Login page background color. Default: #f0f0f1"
+msgstr "A login oldal háttérszíne. Alapértelmezett: #f0f0f1"
+
+msgid "Primary Color"
+msgstr "Primary szín"
+
+msgid "Login button color. Default: #3858e9"
+msgstr "A \"Bejelentkezés\" gomb színe. Alapértelmezett: #3858e9"
+
+msgid "Language Switcher"
+msgstr "Nyelvválasztó"
+
+msgid "Hide language switcher on login page"
+msgstr "Nyelvválasztó elrejtése a bejelentkezési oldalon"
+
+msgid "Removes the language selector dropdown from the login screen."
+msgstr "Eltávolítja a nyelvválasztó legördülő menüt a bejelentkezési képernyőről."
+
+# Settings page - Role Redirects
+msgid "Role"
+msgstr "Szerepkör"
+
+msgid "Redirect After Login"
+msgstr "Átirányítás login után"
+
+msgid "Redirect After Logout"
+msgstr "Átirányítás logout után"
+
+msgid "Leave fields empty where no custom redirect is needed."
+msgstr "Hagyd üresen azokat a mezőket, ahol nincs szükség egyedi átirányításra."
+
+# Settings page - Comments
+msgid "Completely disable comments"
+msgstr "Hozzászólások teljes letiltása"
+
+msgid "Keep product reviews (WooCommerce)"
+msgstr "Termék értékelések (WooCommerce) megtartása"
+
+# Settings page - Email Controls
+msgid "Disable update notifications (core, plugin, theme)"
+msgstr "Frissítési értesítők letiltása (core, plugin, téma)"
+
+msgid "Custom address (if provided, redirects instead of disabling):"
+msgstr "Egyedi cím (ha megadva, letiltás helyett ide küldi):"
+
+msgid "Disable new user registration — admin notification"
+msgstr "Új felhasználó regisztráció — admin értesítő letiltása"
+
+msgid "Disable password reset — admin notification"
+msgstr "Jelszó visszaállítás — admin értesítő letiltása"
+
+msgid "Disable comment notifications"
+msgstr "Komment értesítők letiltása"
+
+msgid "Disable privacy (GDPR) notifications"
+msgstr "Adatvédelmi (GDPR) értesítők letiltása"
+
+msgid "Disable critical error email"
+msgstr "Kritikus hiba email letiltása"
+
+# Settings page - Role Select
+msgid "(required)"
+msgstr "(kötelező)"
+
+# Settings page - Login Limit
+msgid "Maximum Attempts"
+msgstr "Maximum kísérletek száma"
+
+msgid "How many failed login attempts allowed per IP address and username. Default: 5"
+msgstr "Hány sikertelen bejelentkezési kísérletet engedélyez IP címenként és felhasználónevenként. Alapértelmezett: 5"
+
+msgid "Lockout Duration (minutes)"
+msgstr "Kitiltás időtartama (perc)"
+
+msgid "How long the user should be locked out after reaching the limit (in minutes). Default: 15 minutes"
+msgstr "Mennyi ideig legyen kitiltva a felhasználó a limit elérése után (percben). Alapértelmezett: 15 perc"
+
+msgid "Whitelist IP Addresses"
+msgstr "Whitelist IP címek"
+
+msgid "IP addresses exempt from the limit (one IP per line). For example, if you have a static IP."
+msgstr "IP címek, amelyek mentesek a limit alól (soronként egy IP). Például ha fix IP címed van."
+
+# Settings page - Sub Options
+msgid "Disable All"
+msgstr "Összes kikapcsolása"
+
+# Settings page - Footer
+msgid "Plugin Settings"
+msgstr "Beállítások"
+
+msgid "Uninstall"
+msgstr "Eltávolítás"
+
+msgid "Delete plugin settings and data when uninstalling the plugin."
+msgstr "Plugin eltávolításakor törölje a plugin beállításait és adatait."
+
+msgid "Save Changes"
+msgstr "Változtatások mentése"
+
+# Help page - Performance category
+msgid "WordPress adds several links and meta tags to the <code>&lt;head&gt;</code> section by default, most of which are unnecessary for most websites. This feature removes: the generator tag showing WordPress version (also recommended for security reasons), the RSD (Really Simple Discovery) link, the Windows Live Writer manifest link, the shortlink, and the adjacent posts rel links."
+msgstr "A WordPress alapból több linket és meta tag-et ad a <code>&lt;head&gt;</code> szekcióhoz, amelyek a legtöbb webhelyen feleslegesek. Ez a funkció eltávolítja: a WordPress verzióját jelző generator tag-et (biztonsági okokból is ajánlott), az RSD (Really Simple Discovery) linket, a Windows Live Writer manifest linket, a shortlinket és a szomszédos bejegyzések rel linkjeit."
+
+msgid "WordPress adds three types of feed <code>&lt;link&gt;</code> elements to the <code>&lt;head&gt;</code>: the main posts feed (domain.com/feed/), the comments feed, and additional feeds (categories, authors, tags, etc.). These elements can be disabled individually. Important: this only removes the <code>&lt;head&gt;</code> reference – the feed URLs remain directly accessible via browser."
+msgstr "A WordPress három típusú feed <code>&lt;link&gt;</code> elemet ad a <code>&lt;head&gt;</code>-be: a fő bejegyzések feedjét (domain.hu/feed/), a hozzászólások feedjét és a további feedeket (kategóriák, szerzők, tagek stb.). Ezek az elemek egyenként kapcsolhatók ki. Fontos: ez csak a <code>&lt;head&gt;</code>-beli hivatkozást távolítja el – a feed URL-ek böngészőből közvetlenül továbbra is elérhetők maradnak."
+
+msgid "WordPress has had built-in emoji support since version 4.2, which loads an external JavaScript file and a CSS file. If your website doesn't use emojis in content, it's worth disabling these unnecessary resources for faster page loading. This feature also removes the emoji plugin from the editor (TinyMCE)."
+msgstr "A WordPress 4.2 óta beépített emoji-támogatással rendelkezik, ami egy külső JavaScript fájl és egy CSS fájl betöltésével jár. Ha a webhely nem használ emoji-t a tartalmakban, érdemes letiltani ezeket a felesleges erőforrásokat a gyorsabb oldalbetöltés érdekében. A funkció a szerkesztőből (TinyMCE) is eltávolítja az emoji plugint."
+
+msgid "jquery-migrate is a compatibility layer that makes older jQuery code run with newer jQuery versions. If all your website's themes and plugins are compatible with the current jQuery version, this package is unnecessary. Only enable this if you're sure none of your scripts require it."
+msgstr "A jquery-migrate egy kompatibilitási réteg, ami régebbi jQuery kódokat tesz futtathatóvá az újabb jQuery verziókkal. Ha a webhely összes témája és pluginja kompatibilis az aktuális jQuery verzióval, ez a csomag felesleges. Csak akkor kapcsold be, ha meggyőződtél róla, hogy egyik szkript sem igényli."
+
+msgid "WordPress stores an unlimited number of revisions for each post by default, which can unnecessarily increase database size. This setting overrides the maximum number of revisions using the <code>wp_revisions_to_keep</code> filter – without needing to modify <code>wp-config.php</code>. Setting <strong>0</strong> completely disables revisions; a positive integer keeps at most that many revisions per post (older ones are automatically deleted on save). An empty field leaves the WordPress default in effect."
+msgstr "A WordPress alapértelmezetten korlátlan számú revíziót tárol minden bejegyzéshez, ami az adatbázist feleslegesen nagy méretűre növelheti. Ez a beállítás a <code>wp_revisions_to_keep</code> filter segítségével felülírja a revíziók maximális számát – anélkül, hogy a <code>wp-config.php</code>-t kellene módosítani. <strong>0</strong> megadásával a revíziók teljesen letilthatók; pozitív egész szám esetén legfeljebb ennyi revízió marad meg bejegyzésenként (a régebbiek automatikusan törlődnek mentéskor). Az üres mező a WordPress alapértelmezettjét hagyja érvényben."
+
+msgid "WordPress automatically saves your post content while you're editing to prevent data loss. By default, this happens every 60 seconds. You can increase this interval to reduce server load and database writes. The value is specified in seconds. Recommended values: <strong>120</strong> (2 minutes) or <strong>300</strong> (5 minutes). Setting a higher value means less frequent auto-saves, which can improve performance on busy sites. Note: This does not affect the manual save when you click the Save or Publish button."
+msgstr "A WordPress automatikusan menti a bejegyzés tartalmát szerkesztés közben, hogy megelőzze az adatvesztést. Alapértelmezetten ez 60 másodpercenként történik. Ezt az intervallumot növelheted a szerver terhelésének és az adatbázis írásainak csökkentése érdekében. Az érték másodpercben van megadva. Ajánlott értékek: <strong>120</strong> (2 perc) vagy <strong>300</strong> (5 perc). A magasabb érték ritkább automatikus mentést jelent, ami javíthatja a teljesítményt forgalmas oldalakon. Megjegyzés: Ez nem befolyásolja a kézi mentést, amikor a Mentés vagy Közzététel gombra kattintasz."
+
+msgid "WordPress keeps deleted posts, pages, and media files in the trash for 30 days by default before permanently deleting them. You can change this period to automatically clean up your database more frequently or keep items longer for recovery purposes. The value is specified in days. Setting a lower value (e.g., 7 days) reduces database size but gives you less time to recover accidentally deleted items."
+msgstr "A WordPress alapértelmezetten 30 napig őrzi a törölt bejegyzéseket, oldalakat és média fájlokat a kukában, mielőtt véglegesen törölné őket. Ezt az időszakot módosíthatod, hogy automatikusan gyakrabban tisztítsd az adatbázist, vagy hosszabb ideig tarts meg elemeket helyreállítási célból. Az érték napokban van megadva. Alacsonyabb érték beállítása (pl. 7 nap) csökkenti az adatbázis méretét, de kevesebb időd van a véletlenül törölt elemek helyreállítására."
+
+# Help page - Security category
+msgid "XML-RPC is a remote API protocol that allows external applications (mobile apps, desktop clients) and plugins (e.g., Jetpack) to connect to WordPress. Since it can pose a security risk and be a target for brute-force attacks, it's worth disabling if you don't use it. When enabled: all XML-RPC requests receive a <strong>404 Not Found</strong> response (making it appear as if the xmlrpc.php file doesn't exist), and the RSD (Really Simple Discovery) <code>&lt;link&gt;</code> tag is automatically removed from the HTML header. This security-through-obscurity approach prevents attackers from knowing that XML-RPC is actively blocked. <strong>Don't enable XML-RPC disabling if you use Jetpack synchronization, WordPress mobile app, or other plugins that require XML-RPC!</strong>"
+msgstr "Az XML-RPC egy távoli API protokoll, ami lehetővé teszi külső alkalmazások (mobil appok, desktop kliensek) és pluginek (pl. Jetpack) számára a WordPresshez való csatlakozást. Mivel biztonsági kockázatot jelenthet és brute-force támadások célpontja lehet, érdemes letiltani, ha nem használod. A funkció aktiválásával: minden XML-RPC kérés <strong>404 Not Found</strong> választ kap (így úgy tűnik, mintha az xmlrpc.php fájl nem is létezne), és az RSD (Really Simple Discovery) <code>&lt;link&gt;</code> tag automatikusan eltávolításra kerül a HTML header-ből. Ez a security-through-obscurity megközelítés megakadályozza, hogy a támadók tudomást szerezzenek az aktív XML-RPC blokkolásról. <strong>Ne kapcsold be az XML-RPC letiltást, ha Jetpack szinkronizációt, WordPress mobil alkalmazást vagy más XML-RPC-t igénylő plugint használsz!</strong>"
+
+msgid "The trackback and pingback mechanism is an automatic notification system between WordPress blogs, activated when you link to another WordPress site in a post. Today it's primarily a source of spam and security risk. This feature: closes pings on all existing and new posts (at runtime, without database modification), removes pingback XML-RPC methods (so XML-RPC remains active but pingback features don't), removes the <code>X-Pingback</code> HTTP header and pingback URL (<code>&lt;link rel=\"pingback\"&gt;</code>) from the source, and rejects direct HTTP trackback requests with a 403."
+msgstr "A trackback és pingback mechanizmus WordPress-blogok közötti automatikus értesítési rendszer, amely akkor aktiválódik, amikor egy bejegyzésben linkelsz egy másik WordPress oldalra. Ma már elsősorban spam forrása és biztonsági kockázat. A funkció: lezárja a pingeket minden meglévő és új bejegyzésnél (futásidőben, adatbázis-módosítás nélkül), eltávolítja a pingback XML-RPC metódusokat (így XML-RPC aktív marad, de a pingback funkciói nem), az <code>X-Pingback</code> HTTP fejlécet és a pingback URL-t (<code>&lt;link rel=\"pingback\"&gt;</code>) a forrásból, valamint 403-al utasítja vissza a közvetlen HTTP trackback kéréseket."
+
+msgid "Disables WordPress's built-in plugin and theme editor functionality in the admin area. After activation, the <em>Plugins &gt; Editor</em> and <em>Appearance &gt; Theme Editor</em> menu items disappear from the admin menu and are not accessible via direct URL. This feature works by setting the <code>DISALLOW_FILE_EDIT</code> WordPress constant. This is a recommended security measure as it prevents direct browser-based editing of server files in case of compromised administrator accounts."
+msgstr "Letiltja a WordPress beépített plugin- és sablonszerkesztő funkcióját az admin felületen. Aktiválás után a <em>Bővítmények &gt; Szerkesztő</em> és a <em>Megjelenés &gt; Sablonszerkesztő</em> menüpontok eltűnnek az admin menüből, és közvetlen URL-en sem érhetők el. A funkció a <code>DISALLOW_FILE_EDIT</code> WordPress konstans beállításával működik. Ez egy ajánlott biztonsági intézkedés, mivel kizárja a szerveren lévő fájlok közvetlen böngésző alapú szerkeszthetőségét kompromittált adminisztrátori fiókok esetén."
+
+msgid "By default, WordPress provides separate error messages for when the username exists but the password is incorrect, and vice versa. This information can help with brute-force and username enumeration attacks. This feature displays a generic, neutral error message in both cases."
+msgstr "Alapértelmezetten a WordPress külön hibaüzenetet ad arra az esetre, ha a felhasználónév létezik, de a jelszó helytelen, és fordítva. Ez az információ brute-force és felhasználónév-feltérképező támadásokhoz segítséget nyújthat. Ez a funkció egy általános, semleges hibaüzenetet jelenít meg mindkét esetben."
+
+msgid "Determines which WordPress user roles can access the wp-admin area. Users without permission will be redirected to the website homepage when attempting to access admin. The <strong>administrator</strong> role always has access and cannot be removed from the list. AJAX requests are not affected by this restriction. Important: make sure the administrator role is checked before activating."
+msgstr "Meghatározza, mely WordPress szerepkörű bejelentkezett felhasználók érhetik el a wp-admin felületet. Az engedéllyel nem rendelkező felhasználók megkísérelt admin belépés esetén a webhely kezdőlapjára lesznek irányítva. Az <strong>administrator</strong> szerepkör mindig hozzáfér és nem távolítható el a listából. AJAX kérések nem érintik ezt a korlátozást. Fontos: aktiválás előtt győződj meg róla, hogy az administrator szerepkör be van jelölve."
+
+msgid "Intelligent restriction of certain WordPress REST API endpoints for security reasons. The REST API provides publicly accessible data by default (e.g., usernames, media files), which can pose a security risk in some cases.<br><br><strong>How it works:</strong><ul><li><strong>Logged-in users:</strong> always have access (any role)</li><li><strong>Non-logged-in users:</strong> only if the request comes from your own website (based on HTTP Referer or Origin header)</li><li><strong>WooCommerce guest customers:</strong> have access with an active session cookie (checkout, cart)</li><li><strong>External, non-logged-in requests:</strong> receive a 401 Unauthorized error</li></ul>This ensures that the website's internal functions (Gutenberg, AJAX, blocks, plugins) work smoothly while external attackers/scrapers cannot access sensitive data.<br><br><strong>Restrictable endpoints:</strong><ul><li><strong>Users endpoint:</strong> Restricts the <code>/wp-json/wp/v2/users</code> endpoint, which exposes user data (names, slugs, email addresses). This makes it harder for attackers collecting usernames for brute-force attacks.</li><li><strong>REST index:</strong> The <code>/wp-json/</code> root index becomes available only for internal requests. This endpoint lists all available REST API routes, which is valuable information for attackers.</li><li><strong>Media endpoint:</strong> Restricts the <code>/wp-json/wp/v2/media</code> endpoint, which allows listing and querying uploaded media files. External scrapers cannot download media library content this way.</li><li><strong>Comments endpoint:</strong> Restricts the <code>/wp-json/wp/v2/comments</code> endpoint. This is especially useful if you've also disabled comments or want to prevent external querying of comments.</li><li><strong>Search endpoint:</strong> Restricts the <code>/wp-json/wp/v2/search</code> endpoint, which allows searching within page content. External users cannot automatically index content this way.</li></ul><strong>Important:</strong> WooCommerce's own REST API endpoints (<code>/wp-json/wc/v3/</code>, <code>/wp-json/wc-store/v1/</code>) are NOT affected, so guest checkout and cart functions work smoothly."
+msgstr "A WordPress REST API bizonyos endpointjainak intelligens korlátozása biztonsági okokból. A REST API alapértelmezetten nyilvánosan elérhető adatokat szolgáltat ki (pl. felhasználónevek, média fájlok), ami bizonyos esetekben biztonsági kockázatot jelenthet.<br><br><strong>Működési logika:</strong><ul><li><strong>Bejelentkezett felhasználók:</strong> mindig hozzáférhetnek (bármilyen szerepkör)</li><li><strong>Nem bejelentkezett felhasználók:</strong> csak akkor, ha a kérés a saját webhelyről származik (HTTP Referer vagy Origin header alapján)</li><li><strong>WooCommerce vendég vásárlók:</strong> aktív session cookie esetén hozzáférhetnek (checkout, kosár)</li><li><strong>Külső, nem bejelentkezett kérések:</strong> 401 Unauthorized hibát kapnak</li></ul>Ez biztosítja, hogy a weboldal belső funkciói (Gutenberg, AJAX, blokkok, pluginek) zavartalanul működjenek, miközben a külső támadók/scraperek nem férhetnek hozzá érzékeny adatokhoz.<br><br><strong>Korlátozható endpointok:</strong><ul><li><strong>Users endpoint:</strong> Korlátozza a <code>/wp-json/wp/v2/users</code> endpointot, amely felhasználói adatokat (nevek, slug-ok, email címek) tesz elérhetővé. Ez megnehezíti a támadók dolgát, akik brute-force támadáshoz felhasználóneveket gyűjtenek.</li><li><strong>REST index:</strong> A <code>/wp-json/</code> gyökér index csak belső kérésekre lesz elérhető. Ez az endpoint listázza az összes elérhető REST API route-ot, ami értékes információ támadóknak.</li><li><strong>Média endpoint:</strong> Korlátozza a <code>/wp-json/wp/v2/media</code> endpointot, amely a feltöltött média fájlok listázását és lekérdezését teszi lehetővé. Külső scraperek így nem tudják letölteni a média könyvtár tartalmát.</li><li><strong>Kommentek endpoint:</strong> Korlátozza a <code>/wp-json/wp/v2/comments</code> endpointot. Ez különösen hasznos, ha a hozzászólásokat is letiltottad, vagy meg akarod akadályozni a hozzászólások külső lekérdezését.</li><li><strong>Keresés endpoint:</strong> Korlátozza a <code>/wp-json/wp/v2/search</code> endpointot, amely az oldal tartalmában való keresést teszi lehetővé. Külső felhasználók így nem tudják automatikusan indexelni a tartalmakat.</li></ul><strong>Fontos:</strong> A WooCommerce saját REST API endpointjai (<code>/wp-json/wc/v3/</code>, <code>/wp-json/wc-store/v1/</code>) NEM érintettek, így a vendég checkout és kosár funkciók zavartalanul működnek."
+
+msgid "Limits failed login attempts based on IP address and username, protecting the website against brute-force attacks.<br><br><strong>How it works:</strong><ul><li>Counts every failed login attempt both by <strong>IP address</strong> and by <strong>username</strong></li><li>If either reaches the limit, a timed lockout occurs</li><li>Successful login clears the counter</li></ul><strong>Settings:</strong><ul><li><strong>Block \"admin\" Username Instantly:</strong> When enabled, immediately blocks the IP address for 1 hour on the first login attempt with username \"admin\". This provides extra protection against the most common brute-force target. The lockout happens instantly, without counting attempts.</li><li><strong>Maximum attempts:</strong> How many failed attempts the system allows (default: 5). This is counted separately per IP address AND per username.</li><li><strong>Lockout duration:</strong> How long the user should be locked out after reaching the limit in minutes (default: 15 minutes). During lockout, login attempts receive an error message.</li><li><strong>Whitelist IP addresses:</strong> IP addresses exempt from the limit (one IP per line). Useful for office IP addresses, VPN endpoints, or developer machines. These IPs can make unlimited login attempts.</li></ul><strong>Global Rate Limiting (DDoS Protection):</strong><br>Additional protection against distributed brute-force attacks from multiple IP addresses:<ul><li><strong>Global Attempts Limit:</strong> Maximum total failed login attempts from ALL sources within the time window (default: 50)</li><li><strong>Global Time Window:</strong> Time period in minutes to count all failed attempts (default: 5 minutes)</li><li>When the global limit is exceeded, <strong>ALL login attempts are blocked</strong> for everyone until the time window expires, protecting the database from overload</li></ul><strong>Storage:</strong> Attempts and lockouts are stored in the WordPress Transients API (database), which expires automatically. No separate table management or cleanup is needed.<br><br><strong>Note:</strong> This feature only works on the <code>wp-login.php</code> page. It does not affect XML-RPC or REST API-based login attempts (those are handled by separate XML-RPC and REST API restrictions)."
+msgstr "Korlátozza a sikertelen bejelentkezési kísérleteket IP cím és felhasználónév alapján, védve a webhelyet brute-force támadások ellen.<br><br><strong>Működés:</strong><ul><li>Minden sikertelen bejelentkezési kísérletet számol <strong>IP cím szerint</strong> és <strong>felhasználónév szerint</strong> is</li><li>Ha bármelyik eléri a limitet, időzített kitiltás történik</li><li>Sikeres bejelentkezés törli a számlálót</li></ul><strong>Beállítások:</strong><ul><li><strong>\"admin\" felhasználónév azonnali blokkolása:</strong> Ha be van kapcsolva, azonnal blokkolja az IP címet 1 órára az első bejelentkezési kísérletnél \"admin\" felhasználónévvel. Ez extra védelmet nyújt a leggyakoribb brute-force támadási célpont ellen. A kitiltás azonnal megtörténik, kísérletek számlálása nélkül.</li><li><strong>Maximum kísérletek száma:</strong> Hány sikertelen kísérletet engedélyez a rendszer (alapértelmezett: 5). Ez IP címenként ÉS felhasználónevenként külön-külön számolódik.</li><li><strong>Kitiltás időtartama:</strong> Mennyi ideig legyen kitiltva a felhasználó a limit elérése után percben (alapértelmezett: 15 perc). A kitiltás ideje alatt a bejelentkezési kísérletek hibaüzenetet kapnak.</li><li><strong>Whitelist IP címek:</strong> IP címek, amelyek mentesek a limit alól (soronként egy IP cím). Hasznos irodai IP címekhez, VPN végpontokhoz vagy fejlesztői gépekhez. Ezek az IP-k korlátlan bejelentkezési kísérletet tehetnek.</li></ul><strong>Globális limit (DDoS védelem):</strong><br>További védelem elosztott brute-force támadások ellen több IP címről:<ul><li><strong>Globális próbálkozási limit:</strong> Maximális összes sikertelen bejelentkezési kísérlet MINDEN forrásból az időablakon belül (alapértelmezett: 50)</li><li><strong>Globális időablak:</strong> Időperiódus percekben, amin belül számoljuk az összes sikertelen kísérletet (alapértelmezett: 5 perc)</li><li>Ha a globális limit túl van lépve, <strong>MINDEN bejelentkezési kísérlet blokkolva van</strong> mindenkinek, amíg az időablak le nem jár, védve az adatbázist a túlterheléstől</li></ul><strong>Tárolás:</strong> A kísérletek és kitiltások a WordPress Transients API-ban (adatbázis) tárolódnak, amely automatikusan lejár. Nincs szükség külön tábla kezelésre vagy tisztításra.<br><br><strong>Megjegyzés:</strong> Ez a funkció csak a <code>wp-login.php</code> oldalon működik. Nem érint XML-RPC vagy REST API alapú bejelentkezési kísérleteket (azokat külön XML-RPC és REST API korlátozások kezelik)."
+
+# Help page - Visual category
+msgid "When logged in, WordPress displays an admin bar at the top of the page. This is useful for administrators, but can be distracting for users with other roles (editor, author, subscriber, etc.). The setting allows you to specify exactly which WordPress roles should have the admin bar hidden. The feature only disables the bar for selected role users; when the list is empty, the feature is not active."
+msgstr "Bejelentkezett állapotban a WordPress megjelenít egy admin sávot az oldal tetején. Ez hasznos az adminisztrátoroknak, de a többi szerepkörű felhasználónak (szerkesztő, szerző, előfizető stb.) zavaró lehet. A beállításban megadható, hogy pontosan mely WordPress szerepkörök számára legyen elrejtve az admin sáv. A funkció csak a kijelölt szerepkörű felhasználóknál kapcsolja ki a sávot; a lista üres állapotában a funkció nem aktív."
+
+msgid "Adds a \"Visibility\" panel to every Gutenberg block in the block editor (Inspector Controls). You can set whether the block is always visible, appears only on mobile, or only on desktop. The mobile/desktop decision happens server-side using WordPress core's <code>wp_is_mobile()</code> function, so the block's HTML code is completely omitted from the source on the wrong device – not just hidden with CSS. This ensures better performance and cleaner HTML output."
+msgstr "Minden Gutenberg blokkhoz hozzáad egy \"Láthatóság\" panelt a blokkszerkesztőben (Inspector Controls). Beállítható, hogy a blokk mindig látható legyen, csak mobilon jelenjen meg, vagy csak asztali gépen. A mobilos/asztali döntés a szerver oldalon történik a WordPress core <code>wp_is_mobile()</code> függvényének használatával, így a nem megfelelő eszközön a blokk HTML kódja teljesen ki is marad a forráskódból – nem csak CSS-sel van elrejtve. Ez jobb teljesítményt és tisztább HTML kimenetet biztosít."
+
+# Help page - Login Page Customization
+msgid "Customize the WordPress login page (wp-login.php) logo, background color, primary color, and language switcher visibility. <strong>Logo settings:</strong> Choose whether to display the WordPress Site Icon (Settings → General → Site Icon) on the login page, or a custom image URL (relative path, e.g., <code>/wp-content/uploads/logo.png</code>). Logo width and height can be specified in pixels (default: 84x84 px). <strong>Background color:</strong> The login page background color is customizable (default WordPress color: #f0f0f1). <strong>Primary color:</strong> The \"Log In\" button background and border color can be modified (default WordPress color: #3858e9). <strong>Language Switcher:</strong> Option to hide the language selector dropdown from the login screen entirely. Customizations are implemented with CSS injected in the <code>login_head</code> action, safely overriding WordPress default values."
+msgstr "A WordPress bejelentkezési oldal (wp-login.php) logo, háttérszín, primary szín és nyelvválasztó láthatóság testreszabása. <strong>Logo beállítások:</strong> Választható, hogy a WordPress Site Icon (Beállítások → Általános → Webhely ikon) jelenjen meg a login oldalon, vagy egy egyedi kép URL-je (relatív útvonal, pl. <code>/wp-content/uploads/logo.png</code>). A logo szélessége és magassága pixelben megadható (alapértelmezett: 84x84 px). <strong>Háttérszín:</strong> A login oldal háttérszíne testreszabható (alapértelmezett WordPress szín: #f0f0f1). <strong>Primary szín:</strong> A \"Bejelentkezés\" gomb háttér- és keretszíne módosítható (alapértelmezett WordPress szín: #3858e9). <strong>Nyelvválasztó:</strong> Lehetőség a nyelvválasztó legördülő menü teljes elrejtésére a bejelentkezési képernyőről. A testreszabások a <code>login_head</code> actionben injektált CSS-sel valósulnak meg, így biztonságosan felülírják a WordPress alapértelmezett értékeit."
+
+# Help page - Email Notifications
+msgid "Individual WordPress system emails can be disabled or redirected to a custom email address:<ul><li><strong>Update notifications</strong> – emails sent to admin about automatic core/plugin/theme updates; can be redirected to a custom email address instead of disabled.</li><li><strong>New user registration</strong> – only disables the admin notification (the newly registered user's welcome email remains).</li><li><strong>Password reset</strong> – the notification sent to admin can be disabled (not the password reset link email).</li><li><strong>Comment notifications</strong> – all comment moderation and author notifications.</li><li><strong>Privacy (GDPR) notifications</strong> – data export, data deletion, consent confirmation emails.</li><li><strong>Critical error email</strong> – error notification sent in WordPress recovery mode; can also be redirected to a custom email address.</li></ul>"
+msgstr "Egyenként letiltható vagy egyedi email-címre irányítható a WordPress alábbi rendszer-emailjei:<ul><li><strong>Frissítési értesítők</strong> – az automatikus core/plugin/téma frissítésekről küldött email az adminnak; letiltás helyett átirányítható egyedi email-címre.</li><li><strong>Új felhasználó regisztráció</strong> – csak az admin értesítőjét tiltja le (az újonnan regisztrált felhasználó üdvözlő emailje megmarad).</li><li><strong>Jelszó visszaállítás</strong> – az adminnak küldött értesítő tiltható le (nem a jelszó-visszaállítási linket küldő email).</li><li><strong>Komment értesítők</strong> – az összes komment-moderációs és szerzői értesítő.</li><li><strong>Adatvédelmi (GDPR) értesítők</strong> – adatexport, adattörlés, jogosultság-megerősítési emailek.</li><li><strong>Kritikus hiba email</strong> – WordPress helyreállítási módban küldött hibaértesítő; szintén átirányítható egyedi email-címre.</li></ul>"
+
+# Help page - Email SMTP
+msgid "<strong>Complete email sending disable:</strong> Uses the <code>pre_wp_mail</code> filter to block all <code>wp_mail()</code> calls – no emails are sent from the system. This is useful in development, test, or staging environments. <strong>SMTP settings:</strong> If complete disable is not enabled and SMTP host is specified, it configures the use of an external SMTP server instead of WordPress's native mail() function via the <code>phpmailer_init</code> action. Configurable options include: SMTP host, port, encryption (SSL/TLS/none), username and password (SMTP Auth), and sender email address and name (<code>setFrom()</code>). The password is stored encrypted with Sodium in the database, with the encryption key derived from a SHA-256 hash of the WordPress <code>AUTH_KEY</code>, <code>SECURE_AUTH_KEY</code>, and <code>NONCE_KEY</code> constants."
+msgstr "<strong>Teljes levélküldés letiltása:</strong> A <code>pre_wp_mail</code> filter segítségével minden <code>wp_mail()</code> hívást blokkolja – egyetlen email sem kerül kiküldésre a rendszerből. Ez hasznos fejlesztési, teszt vagy staging környezetben. <strong>SMTP beállítások:</strong> Ha a teljes letiltás nincs bekapcsolva és SMTP host meg van adva, a WordPress natív mail() függvény helyett külső SMTP szerver használatát konfigurálja a <code>phpmailer_init</code> action útján. Megadható: SMTP host, port, titkosítás (SSL/TLS/nincs), felhasználónév és jelszó (SMTP Auth), valamint a feladó email címe és neve (<code>setFrom()</code>). A jelszó Sodium titkosítással kerül tárolásra az adatbázisban, a titkosítási kulcs a WordPress <code>AUTH_KEY</code>, <code>SECURE_AUTH_KEY</code> és <code>NONCE_KEY</code> konstansok SHA-256 hash-éből származik."
+
+# Help page - Misc category - Disable Comments
+msgid "Completely disables the comment system: closes comments on all existing posts at runtime (without database modification), removes comment support from all post types, and blocks submission via both <strong>REST API</strong> and traditional <code>wp-comments-post.php</code> (403 response). In the admin area, it removes the Comments menu item, the comment icon from the admin bar, the dashboard widget, and the Discussion/Comments metaboxes from the post editor. If WooCommerce is active, checking the \"Keep product reviews\" option keeps comments (reviews) working on the <code>product</code> post type."
+msgstr "Teljesen letiltja a hozzászólás-rendszert: futásidőben lezárja az összes meglévő bejegyzésnél (adatbázis-módosítás nélkül), eltávolítja a comment support-ot minden post type-ból, valamint blokkolja a beküldést <strong>REST API-n</strong> és hagyományos <code>wp-comments-post.php</code> útján egyaránt (403-as válasz). Adminisztrátori felületen eltávolítja a Hozzászólások menüpontot, az admin sávból a hozzászólás ikont, a dashboard widgetet és a bejegyzésszerkesztő Discussion/Hozzászólások metabox-ait. Ha WooCommerce aktív, a „Termék értékelések megtartása\" opció bejelölésével a <code>product</code> post type-on a hozzászólások (értékelések) továbbra is működnek."
+
+# Help page - External Links
+msgid "Automatically adds <code>target=\"_blank\"</code> and <code>rel=\"noopener noreferrer\"</code> attributes to all links pointing outside your own domain. Internal links (same domain) in posts and widgets are not modified. The <code>rel=\"noopener noreferrer\"</code> is also important for security, preventing the opened page from accessing the original page."
+msgstr "Automatikusan hozzáadja a <code>target=\"_blank\"</code> és <code>rel=\"noopener noreferrer\"</code> attribútumokat minden olyan linkhez, amely a saját domain-en kívülre mutat. A bejegyzések és widgetek tartalmában lévő belső linkeket (azonos domain) nem módosítja. A <code>rel=\"noopener noreferrer\"</code> biztonsági szempontból is fontos, megakadályozza, hogy a megnyitott oldal visszaférjen az eredeti oldalra."
+
+# Help page - Page Excerpt
+msgid "By default, WordPress pages (page post type) don't have the excerpt field available in the editor. This feature enables the excerpt field for pages in both Gutenberg and the Classic editor. The excerpt can then be used in templates with the <code>get_the_excerpt()</code> function, as well as in SEO plugins."
+msgstr "Alapértelmezetten a WordPress oldalakhoz (page post típus) nem érhető el az excerpt (kivonat) mező a szerkesztőben. Ez a funkció engedélyezi a kivonat mezőt az oldalakhoz mind a Gutenberg, mind a klasszikus szerkesztőben. A kivonat ezután felhasználható sablonokban a <code>get_the_excerpt()</code> függvénnyel, illetve SEO pluginokban."
+
+# Help page - SVG Upload
+msgid "Allows SVG image files to be uploaded to the media library for selected WordPress roles. Performs security checks before upload: examines whether the SVG contains potentially dangerous code (script, iframe, JavaScript event handlers, etc.). Only users with designated roles can upload SVG; for all other users, SVG remains prohibited."
+msgstr "Engedélyezi az SVG képfájlok feltöltését a médiatárba a kiválasztott WordPress szerepkörök számára. Feltöltés előtt biztonsági ellenőrzést végez: megvizsgálja, hogy az SVG tartalmaz-e potenciálisan veszélyes kódot (script, iframe, JavaScript event handler stb.). Kizárólag a megjelölt szerepkörű felhasználók tölthetnek fel SVG-t; a többi felhasználó számára az SVG marad tiltott."
+
+# Help page - AVIF Upload
+msgid "Allows AVIF image files to be uploaded to the media library for selected WordPress roles. AVIF is a modern, highly efficient image format that is not supported by default in WordPress versions prior to WP 6.1. The plugin ensures proper MIME type handling on older WP versions as well."
+msgstr "Engedélyezi az AVIF képfájlok feltöltését a médiatárba a kiválasztott WordPress szerepkörök számára. Az AVIF egy modern, nagy hatékonyságú képformátum, amely WP 6.1 előtti WordPress verziókban nem támogatott alapból. A plugin biztosítja a megfelelő MIME típus kezelést régebbi WP verziókon is."
+
+# Help page - Role Redirects
+msgid "Set custom redirect URLs per role after login and logout. In the settings, two fields are available for each WordPress role (administrator, editor, author, contributor, subscriber, etc.): <strong>Redirect after login</strong> – using the <code>login_redirect</code> filter, the user with that role is redirected to the specified path after successful login. <strong>Redirect after logout</strong> – using the <code>logout_redirect</code> filter, the user with that role is redirected to the specified path after logout. If a user has multiple roles, the first matching role's redirect applies. The website URL is automatically pre-filled, you only need to enter the <strong>relative path</strong> (e.g., <code>/dashboard/</code>, <code>/my-account/</code>, <code>/</code>). This simplifies configuration and ensures only on-site redirects occur. In case of domain change or staging → production migration, redirects automatically adapt to the new domain.<br><br><strong>Tested and working reliably:</strong><ul><li>Standard WordPress login/logout (<code>wp-login.php</code>)</li><li>WooCommerce My Account page shortcode-based login/logout</li><li>Admin toolbar logout</li></ul>"
+msgstr "Szerepkörönként egyedi átirányítási URL-ek beállítása bejelentkezés és kijelentkezés után. A beállításokban minden WordPress szerepkör (administrator, editor, author, contributor, subscriber, stb.) számára két mező áll rendelkezésre: <strong>Átirányítás bejelentkezés után</strong> – a <code>login_redirect</code> filter használatával a sikeres bejelentkezés után az adott szerepkörű felhasználó az itt megadott útvonalra kerül. <strong>Átirányítás kijelentkezés után</strong> – a <code>logout_redirect</code> filter használatával a kijelentkezés után az adott szerepkörű felhasználó az itt megadott útvonalra kerül. Ha egy felhasználónak több szerepköre is van, az első illeszkedő szerepkör átirányítása érvényesül. A weboldal URL címe automatikusan előre van töltve, csak a <strong>relatív útvonalat</strong> kell megadni (pl. <code>/dashboard/</code>, <code>/my-account/</code>, <code>/</code>). Ez egyszerűsíti a konfigurációt és biztosítja, hogy csak a saját oldalon belüli átirányítások történjenek. Domain váltás vagy staging → production költöztetés esetén az átirányítások automatikusan alkalmazkodnak az új domain-hez.<br><br><strong>Tesztelve és megbízhatóan működik:</strong><ul><li>Normál WordPress bejelentkezés/kijelentkezés (<code>wp-login.php</code>)</li><li>WooCommerce Fiókom oldal shortcode-alapú bejelentkezés/kijelentkezés</li><li>Admin eszköztár kijelentkezés</li></ul>"
+
+# Maintenance Mode
+msgid "Maintenance Mode"
+msgstr "Karbantartási mód"
+
+msgid "Temporarily block visitors from accessing the site. Select which roles can still view the site."
+msgstr "Ideiglenesen blokkolja a látogatókat az oldal eléréséből. Válaszd ki, mely szerepkörök láthatják továbbra is az oldalt."
+
+msgid "Visitor Message:"
+msgstr "Látogatók üzenete:"
+
+msgid "This site is temporarily under maintenance. Please check back soon!"
+msgstr "Az oldal ideiglenesen karbantartás alatt áll. Kérjük, látogass vissza hamarosan!"
+
+msgid "This message will be displayed to visitors when maintenance mode is active. Leave empty for default message."
+msgstr "Ez az üzenet jelenik meg a látogatók számára, ha a karbantartási mód aktív. Hagyd üresen az alapértelmezett üzenethez."
+
+msgid "Maintenance Mode is currently active"
+msgstr "A karbantartási mód jelenleg aktív"
+
+# Help page - Maintenance Mode
+msgid "Temporarily blocks visitors from accessing the site while allowing authorized users to continue working. Uses the <code>init</code> hook (priority 1) to intercept all requests before any template, REST API, feed, or other WordPress functionality loads. <strong>Access Control:</strong> Select which WordPress roles can view the site during maintenance (Administrator is always allowed). Logged-in users with permitted roles can access the site normally, while all other visitors receive a <strong>503 Service Unavailable</strong> HTTP status with a custom message. <strong>Exclusions:</strong> The admin area (<code>is_admin()</code>), AJAX requests (<code>wp_doing_ajax()</code>), and cron jobs (<code>wp_doing_cron()</code>) continue to function normally. <strong>SEO-Friendly:</strong> Returns 503 HTTP status code (not 200) with a <code>Retry-After: 3600</code> header (1 hour), <code>noindex, nofollow</code> meta tags, ensuring search engines understand this is temporary. <strong>Visual Indicators:</strong> When active, a red warning notice appears in the admin area showing which roles have access, and the feature card on the dashboard displays with a red border instead of green to indicate a warning state. <strong>Custom Message:</strong> Optionally specify a custom message for visitors; if left empty, a default maintenance message is shown. The maintenance page displays the site title and message in a clean, centered layout."
+msgstr "Ideiglenesen blokkolja a látogatókat az oldal eléréséből, miközben a jogosult felhasználók tovább dolgozhatnak. Az <code>init</code> hook (priority 1) használatával elfogja az összes kérést, még mielőtt bármilyen sablon, REST API, feed vagy egyéb WordPress funkció betöltődne. <strong>Hozzáférés kontroll:</strong> Válaszd ki, mely WordPress szerepkörök láthatják az oldalt karbantartás alatt (Administrator mindig engedélyezett). A bejelentkezett, engedélyezett szerepkörű felhasználók normálisan elérhetik az oldalt, míg az összes többi látogató <strong>503 Service Unavailable</strong> HTTP státuszt kap egyedi üzenettel. <strong>Kizárások:</strong> Az admin terület (<code>is_admin()</code>), AJAX kérések (<code>wp_doing_ajax()</code>) és cron feladatok (<code>wp_doing_cron()</code>) továbbra is normálisan működnek. <strong>SEO-barát:</strong> 503 HTTP státuszkódot ad vissza (nem 200-at) <code>Retry-After: 3600</code> header-rel (1 óra), <code>noindex, nofollow</code> meta tag-ekkel, biztosítva hogy a keresőmotorok megértsék, ez ideiglenes. <strong>Vizuális jelzések:</strong> Aktív állapotban piros figyelmeztetés jelenik meg az admin területen, amely mutatja, mely szerepkörök férnek hozzá, és a dashboard-on a funkció kártya piros border-rel jelenik meg zöld helyett, jelezve a figyelmeztető állapotot. <strong>Egyedi üzenet:</strong> Opcionálisan megadhatsz egyedi üzenetet a látogatók számára; ha üresen hagyod, alapértelmezett karbantartási üzenet jelenik meg. A karbantartási oldal a site címét és az üzenetet tiszta, központosított elrendezésben jeleníti meg."
+
+# Dynamic Year Shortcodes
+msgid "Dynamic Year Shortcodes"
+msgstr "Dinamikus év shortcode-ok"
+
+msgid "Provides shortcodes to display current year or calculate duration. Use [refi-year] or [refi-year from=\"2006\"]"
+msgstr "Shortcode-okat biztosít az aktuális év megjelenítéséhez vagy időtartam számításához. Használd: [refi-year] vagy [refi-year from=\"2006\"]"
+
+# Help page - Dynamic Year Shortcodes
+msgid "Provides two shortcodes for displaying dynamic year information anywhere on your site: <br><br><strong>1. Current Year:</strong> <code>[refi-year]</code> displays the current year (e.g., 2026). Perfect for copyright notices that auto-update: <code>&copy; [refi-year] Company Name</code><br><br><strong>2. Duration Since:</strong> <code>[refi-year from=\"2006\"]</code> calculates and displays the years between the specified year and now (e.g., if current year is 2026, displays: 20). Ideal for \"Serving clients since 2006 (20 years)\" or similar messaging.<br><br><strong>Usage Examples:</strong><ul><li><code>&copy; 2006-[refi-year] Company Name</code> → \"© 2006-2026 Company Name\"</li><li><code>Proudly serving for [refi-year from=\"2006\"] years</code> → \"Proudly serving for 20 years\"</li><li><code>Established [refi-year from=\"2010\"]</code> → \"Established 16\"</li></ul><strong>Note:</strong> Shortcodes work in posts, pages, text widgets, and most theme areas that support shortcode processing."
+msgstr "Két shortcode-ot biztosít dinamikus év információk megjelenítéséhez bárhol az oldalon: <br><br><strong>1. Aktuális év:</strong> <code>[refi-year]</code> megjeleníti az aktuális évet (pl. 2026). Tökéletes automatikusan frissülő copyright szövegekhez: <code>&copy; [refi-year] Cégnév</code><br><br><strong>2. Időtartam óta:</strong> <code>[refi-year from=\"2006\"]</code> kiszámítja és megjeleníti a megadott év és a jelenlegi év közötti különbséget (pl. ha az aktuális év 2026, akkor: 20). Ideális \"Ügyfeleket szolgálunk 2006 óta (20 éve)\" vagy hasonló üzenetekhez.<br><br><strong>Használati példák:</strong><ul><li><code>&copy; 2006-[refi-year] Cégnév</code> → \"© 2006-2026 Cégnév\"</li><li><code>Büszkén szolgálunk [refi-year from=\"2006\"] éve</code> → \"Büszkén szolgálunk 20 éve\"</li><li><code>Alapítva [refi-year from=\"2010\"]</code> → \"Alapítva 16\"</li></ul><strong>Megjegyzés:</strong> A shortcode-ok működnek bejegyzésekben, oldalakon, szöveges widgetekben és a legtöbb olyan téma területen, amely támogatja a shortcode feldolgozást."
