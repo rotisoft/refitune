@@ -12,7 +12,7 @@
  * (pl. Jetpack) és alkalmazások használnak. Ha Jetpack szinkronizációt vagy
  * mobil alkalmazást használsz, ne aktiváld ezt a funkciót.
  *
- * @package RefinerPress
+ * @package RefiTune
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

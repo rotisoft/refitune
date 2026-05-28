@@ -2,7 +2,7 @@
 /**
  * Titkosítási segédfüggvények Sodium könyvtárral.
  *
- * @package RefinerPress_Toolkit
+ * @package RefiTune
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return string 32 byte-os bináris kulcs.
  */
-function wprefi_get_encryption_key(): string {
+function refitune_get_encryption_key(): string {
 	$key_material = AUTH_KEY . SECURE_AUTH_KEY . NONCE_KEY;
 	return hash( 'sha256', $key_material, true );
 }
@@ -30,7 +30,7 @@ function wprefi_get_encryption_key(): string {
  * @param string $plaintext A titkosítandó szöveg.
  * @return string Base64-kódolt titkosított szöveg (nonce + ciphertext).
  */
-function wprefi_encrypt( string $plaintext ): string {
+function refitune_encrypt( string $plaintext ): string {
 	if ( '' === $plaintext ) {
 		return '';
 	}
@@ -40,7 +40,7 @@ function wprefi_encrypt( string $plaintext ): string {
 		return $plaintext;
 	}
 
-	$key   = wprefi_get_encryption_key();
+	$key   = refitune_get_encryption_key();
 	$nonce = random_bytes( SODIUM_CRYPTO_SECRETBOX_NONCEBYTES );
 
 	$ciphertext = sodium_crypto_secretbox( $plaintext, $nonce, $key );
@@ -55,7 +55,7 @@ function wprefi_encrypt( string $plaintext ): string {
  * @param string $encrypted Base64-kódolt titkosított szöveg.
  * @return string Eredeti szöveg, vagy üres string hiba esetén.
  */
-function wprefi_decrypt( string $encrypted ): string {
+function refitune_decrypt( string $encrypted ): string {
 	if ( '' === $encrypted ) {
 		return '';
 	}
@@ -71,7 +71,7 @@ function wprefi_decrypt( string $encrypted ): string {
 		return '';
 	}
 
-	$key        = wprefi_get_encryption_key();
+	$key        = refitune_get_encryption_key();
 	$nonce_size = SODIUM_CRYPTO_SECRETBOX_NONCEBYTES;
 
 	if ( strlen( $decoded ) < $nonce_size ) {

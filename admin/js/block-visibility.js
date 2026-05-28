@@ -1,8 +1,8 @@
-﻿/**
- * WP Refiner – Block Visibility.
+/**
+ * RefiTune – Block Visibility.
  *
- * Minden Gutenberg blokkhoz hozzáad egy "Láthatóság" panelt
- * az Inspector Controls-ban (mobilon / asztali / mindig látható).
+ * Adds a "Visibility" panel to every Gutenberg block in the Inspector Controls
+ * (mobile / desktop / always visible).
  */
 
 ( function ( wp ) {
@@ -18,14 +18,14 @@
 	var __                         = wp.i18n.__;
 
 	/**
-	 * 1. wprefiVisibility attribútum hozzáadása minden blokkhoz.
+	 * 1. Add refituneVisibility attribute to every block.
 	 */
 	addFilter(
 		'blocks.registerBlockType',
-		'wprefi/block-visibility-attribute',
+		'refitune/block-visibility-attribute',
 		function ( settings ) {
 			settings.attributes = Object.assign( {}, settings.attributes, {
-				wprefiVisibility: {
+				refituneVisibility: {
 					type: 'string',
 					default: '',
 				},
@@ -35,7 +35,7 @@
 	);
 
 	/**
-	 * 2. InspectorControls panel hozzáadása minden blokk szerkesztőjéhez.
+	 * 2. Add InspectorControls panel to every block editor.
 	 */
 	var withVisibilityControl = createHigherOrderComponent( function ( BlockEdit ) {
 		return function ( props ) {
@@ -52,30 +52,33 @@
 					createElement(
 						PanelBody,
 						{
-							title: __( 'Láthatóság', 'refinerpress' ),
+							title: __( 'Visibility', 'refitune' ),
 							initialOpen: false,
 						},
 						createElement( SelectControl, {
-							label: __( 'Megjelenítés eszköz szerint', 'refinerpress' ),
-							value: attributes.wprefiVisibility || '',
+							label: __( 'Display by device', 'refitune' ),
+							value: attributes.refituneVisibility || '',
 							options: [
 								{
-									label: __( 'Mindig látható', 'refinerpress' ),
+									label: __( 'Always visible', 'refitune' ),
 									value: '',
 								},
 								{
-									label: __( 'Csak mobilon', 'refinerpress' ),
+									label: __( 'Mobile only', 'refitune' ),
 									value: 'mobile',
 								},
 								{
-									label: __( 'Csak asztali gépen', 'refinerpress' ),
+									label: __( 'Desktop only', 'refitune' ),
 									value: 'desktop',
 								},
 							],
 							onChange: function ( value ) {
-								setAttributes( { wprefiVisibility: value } );
+								setAttributes( { refituneVisibility: value } );
 							},
-							help: __( 'A blokk teljesen ki lesz zárva a forráskódból a nem megfelelő eszközön.', 'refinerpress' ),
+							help: __(
+								'The block HTML is omitted entirely on devices where it should not appear.',
+								'refitune'
+							),
 						} )
 					)
 				)
@@ -85,7 +88,7 @@
 
 	addFilter(
 		'editor.BlockEdit',
-		'wprefi/block-visibility-control',
+		'refitune/block-visibility-control',
 		withVisibilityControl
 	);
 } )( window.wp );

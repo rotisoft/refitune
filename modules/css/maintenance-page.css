@@ -1,0 +1,41 @@
+/**
+ * Maintenance mode public page styles.
+ *
+ * @package RefiTune
+ */
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	background: #ffffff;
+	color: #1d2327;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+	padding: 20px;
+	line-height: 1.6;
+}
+
+.maintenance-container {
+	text-align: center;
+}
+
+.maintenance-container h1 {
+	font-size: 1.5rem;
+	font-weight: 400;
+	margin-bottom: 20px;
+	color: #1d2327;
+}
+
+.maintenance-container p {
+	font-size: 3rem;
+	color: #50575e;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+}

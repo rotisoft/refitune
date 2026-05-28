@@ -6,7 +6,7 @@
  * irányítja, ha megpróbálják elérni a wp-admin felületet.
  * Az administrator szerepkör mindig hozzáfér.
  *
- * @package WP_Refiner
+ * @package RefiTune
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return void
  */
-function wprefi_restrict_admin_access(): void {
+function refitune_restrict_admin_access(): void {
 	if ( wp_doing_ajax() ) {
 		return;
 	}
@@ -27,7 +27,7 @@ function wprefi_restrict_admin_access(): void {
 		return;
 	}
 
-	$settings      = get_option( 'wprefi_settings', array() );
+	$settings      = get_option( 'refitune_settings', array() );
 	$allowed_roles = isset( $settings['admin_access_roles'] ) ? (array) $settings['admin_access_roles'] : array();
 
 	if ( empty( $allowed_roles ) ) {
@@ -46,4 +46,4 @@ function wprefi_restrict_admin_access(): void {
 	wp_safe_redirect( site_url() );
 	exit;
 }
-add_action( 'admin_init', 'wprefi_restrict_admin_access' );
+add_action( 'admin_init', 'refitune_restrict_admin_access' );

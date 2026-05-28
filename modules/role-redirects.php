@@ -2,14 +2,14 @@
 /**
  * Szerepkör-alapú átirányítások bejelentkezés és kijelentkezés után.
  *
- * @package RefinerPress
+ * @package RefiTune
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$wprefi_redirect_settings = get_option( 'wprefi_settings', array() );
+$refitune_redirect_settings = get_option( 'refitune_settings', array() );
 
 // ---------------------------------------------------------------------------
 // Helper függvények
@@ -22,7 +22,7 @@ $wprefi_redirect_settings = get_option( 'wprefi_settings', array() );
  * @param array   $login_redirects Login redirect beállítások.
  * @return string|null A redirect URL vagy null ha nincs beállítva.
  */
-function wprefi_get_login_redirect_url( $user, $login_redirects ) {
+function refitune_get_login_redirect_url( $user, $login_redirects ) {
 	if ( ! isset( $user->ID ) || ! $user instanceof WP_User ) {
 		return null;
 	}
@@ -43,7 +43,7 @@ function wprefi_get_login_redirect_url( $user, $login_redirects ) {
  * @param array   $logout_redirects Logout redirect beállítások.
  * @return string|null A redirect URL vagy null ha nincs beállítva.
  */
-function wprefi_get_logout_redirect_url( $user, $logout_redirects ) {
+function refitune_get_logout_redirect_url( $user, $logout_redirects ) {
 	if ( ! isset( $user->ID ) || ! $user instanceof WP_User ) {
 		return null;
 	}
@@ -64,12 +64,12 @@ function wprefi_get_logout_redirect_url( $user, $logout_redirects ) {
 // WordPress login redirect.
 add_filter(
 	'login_redirect',
-	static function ( string $redirect_to, string $requested_redirect_to, $user ) use ( $wprefi_redirect_settings ) {
-		$login_redirects = isset( $wprefi_redirect_settings['role_redirects_login'] ) && is_array( $wprefi_redirect_settings['role_redirects_login'] )
-			? $wprefi_redirect_settings['role_redirects_login']
+	static function ( string $redirect_to, string $requested_redirect_to, $user ) use ( $refitune_redirect_settings ) {
+		$login_redirects = isset( $refitune_redirect_settings['role_redirects_login'] ) && is_array( $refitune_redirect_settings['role_redirects_login'] )
+			? $refitune_redirect_settings['role_redirects_login']
 			: array();
 
-		$custom_redirect = wprefi_get_login_redirect_url( $user, $login_redirects );
+		$custom_redirect = refitune_get_login_redirect_url( $user, $login_redirects );
 		
 		return $custom_redirect ?? $redirect_to;
 	},
@@ -80,7 +80,7 @@ add_filter(
 // WooCommerce login/logout redirectek (csak ha WooCommerce aktív).
 add_action(
 	'plugins_loaded',
-	function () use ( $wprefi_redirect_settings ) {
+	function () use ( $refitune_redirect_settings ) {
 		if ( ! class_exists( 'WooCommerce' ) ) {
 			return;
 		}
@@ -88,12 +88,12 @@ add_action(
 		// WooCommerce login redirect.
 		add_filter(
 			'woocommerce_login_redirect',
-			static function ( string $redirect, $user ) use ( $wprefi_redirect_settings ) {
-				$login_redirects = isset( $wprefi_redirect_settings['role_redirects_login'] ) && is_array( $wprefi_redirect_settings['role_redirects_login'] )
-					? $wprefi_redirect_settings['role_redirects_login']
+			static function ( string $redirect, $user ) use ( $refitune_redirect_settings ) {
+				$login_redirects = isset( $refitune_redirect_settings['role_redirects_login'] ) && is_array( $refitune_redirect_settings['role_redirects_login'] )
+					? $refitune_redirect_settings['role_redirects_login']
 					: array();
 
-				$custom_redirect = wprefi_get_login_redirect_url( $user, $login_redirects );
+				$custom_redirect = refitune_get_login_redirect_url( $user, $login_redirects );
 				
 				return $custom_redirect ?? $redirect;
 			},
@@ -128,17 +128,17 @@ add_action(
  */
 add_filter(
 	'logout_redirect',
-	static function ( string $redirect_to, string $requested_redirect_to, $user ) use ( $wprefi_redirect_settings ) {
+	static function ( string $redirect_to, string $requested_redirect_to, $user ) use ( $refitune_redirect_settings ) {
 		// Ha van redirect_to paraméter a URL-ben, használjuk azt (prioritás!).
 		if ( ! empty( $_GET['redirect_to'] ) ) {
 			return esc_url_raw( wp_unslash( $_GET['redirect_to'] ) );
 		}
 		
-		$logout_redirects = isset( $wprefi_redirect_settings['role_redirects_logout'] ) && is_array( $wprefi_redirect_settings['role_redirects_logout'] )
-			? $wprefi_redirect_settings['role_redirects_logout']
+		$logout_redirects = isset( $refitune_redirect_settings['role_redirects_logout'] ) && is_array( $refitune_redirect_settings['role_redirects_logout'] )
+			? $refitune_redirect_settings['role_redirects_logout']
 			: array();
 
-		$custom_redirect = wprefi_get_logout_redirect_url( $user, $logout_redirects );
+		$custom_redirect = refitune_get_logout_redirect_url( $user, $logout_redirects );
 		
 		return $custom_redirect ?? $redirect_to;
 	},
@@ -155,7 +155,7 @@ add_filter(
  */
 add_action(
 	'template_redirect',
-	function () use ( $wprefi_redirect_settings ) {
+	function () use ( $refitune_redirect_settings ) {
 		// Csak ha WooCommerce aktív ÉS a user be van jelentkezve.
 		if ( ! class_exists( 'WooCommerce' ) || ! is_user_logged_in() ) {
 			return;
@@ -177,11 +177,11 @@ add_action(
 			return;
 		}
 
-		$logout_redirects = isset( $wprefi_redirect_settings['role_redirects_logout'] ) && is_array( $wprefi_redirect_settings['role_redirects_logout'] )
-			? $wprefi_redirect_settings['role_redirects_logout']
+		$logout_redirects = isset( $refitune_redirect_settings['role_redirects_logout'] ) && is_array( $refitune_redirect_settings['role_redirects_logout'] )
+			? $refitune_redirect_settings['role_redirects_logout']
 			: array();
 
-		$custom_redirect = wprefi_get_logout_redirect_url( $user, $logout_redirects );
+		$custom_redirect = refitune_get_logout_redirect_url( $user, $logout_redirects );
 		
 		// Ha van custom redirect, átirányítjuk a usert a logout URL-re, hozzáadva a redirect_to paramétert.
 		if ( $custom_redirect ) {

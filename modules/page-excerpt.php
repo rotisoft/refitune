@@ -2,7 +2,7 @@
 /**
  * Kivonat (excerpt) mező engedélyezése az oldalakhoz (page post type).
  *
- * @package WP_Refiner
+ * @package RefiTune
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

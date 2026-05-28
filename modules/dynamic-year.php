@@ -6,7 +6,7 @@
  * 1. [refi-year] - Displays the current year
  * 2. [refi-year from="2006"] - Displays the difference between current year and "from" year
  *
- * @package WP_Refiner
+ * @package RefiTune
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param array $atts Shortcode attributes.
  * @return string The year or duration.
  */
-function wprefi_year_shortcode( $atts ): string {
+function refitune_year_shortcode( $atts ): string {
 	$atts = shortcode_atts(
 		array(
 			'from' => '',
@@ -46,4 +46,4 @@ function wprefi_year_shortcode( $atts ): string {
 	// Otherwise, return the current year.
 	return (string) $current_year;
 }
-add_shortcode( 'refi-year', 'wprefi_year_shortcode' );
+add_shortcode( 'refi-year', 'refitune_year_shortcode' );

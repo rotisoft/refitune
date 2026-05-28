@@ -13,7 +13,7 @@
  * - Nem bejelentkezett felhasználók: csak belső (saját domainről induló) kérések
  * - WooCommerce aktív: vendég vásárlók session cookie-val hozzáférhetnek
  *
- * @package WP_Refiner
+ * @package RefiTune
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return bool True, ha belső kérés (biztonságos), false ha külső.
  */
-function wprefi_is_internal_request(): bool {
+function refitune_is_internal_request(): bool {
 	// 1. Bejelentkezve mindig engedélyezett.
 	if ( is_user_logged_in() ) {
 		return true;
@@ -65,21 +65,21 @@ function wprefi_is_internal_request(): bool {
 	return false; // Külső kérés.
 }
 
-$wprefi_settings = get_option( 'wprefi_settings', array() );
+$refitune_settings = get_option( 'refitune_settings', array() );
 
 // ---------------------------------------------------------------------------
 // 1. Users endpoint korlátozása
 // ---------------------------------------------------------------------------
-if ( ! empty( $wprefi_settings['rest_disable_users'] ) ) {
+if ( ! empty( $refitune_settings['rest_disable_users'] ) ) {
 	add_filter(
 		'rest_pre_dispatch',
 		static function ( $result, $server, $request ) {
 			$route = $request->get_route();
 			if ( strpos( $route, '/wp/v2/users' ) === 0 ) {
-				if ( ! wprefi_is_internal_request() ) {
+				if ( ! refitune_is_internal_request() ) {
 					return new WP_Error(
 						'rest_access_denied',
-						__( 'A users endpoint csak belső kérésekhez érhető el.', 'refinerpress' ),
+						__( 'A users endpoint csak belső kérésekhez érhető el.', 'refitune' ),
 						array( 'status' => 401 )
 					);
 				}
@@ -94,14 +94,14 @@ if ( ! empty( $wprefi_settings['rest_disable_users'] ) ) {
 // ---------------------------------------------------------------------------
 // 2. REST index korlátozása
 // ---------------------------------------------------------------------------
-if ( ! empty( $wprefi_settings['rest_restrict_index'] ) ) {
+if ( ! empty( $refitune_settings['rest_restrict_index'] ) ) {
 	add_filter(
 		'rest_index',
 		static function ( $response ) {
-			if ( ! wprefi_is_internal_request() ) {
+			if ( ! refitune_is_internal_request() ) {
 				return new WP_Error(
 					'rest_access_denied',
-					__( 'A REST API index csak belső kérésekhez érhető el.', 'refinerpress' ),
+					__( 'A REST API index csak belső kérésekhez érhető el.', 'refitune' ),
 					array( 'status' => 401 )
 				);
 			}
@@ -113,16 +113,16 @@ if ( ! empty( $wprefi_settings['rest_restrict_index'] ) ) {
 // ---------------------------------------------------------------------------
 // 3. Média endpoint korlátozása
 // ---------------------------------------------------------------------------
-if ( ! empty( $wprefi_settings['rest_disable_media'] ) ) {
+if ( ! empty( $refitune_settings['rest_disable_media'] ) ) {
 	add_filter(
 		'rest_pre_dispatch',
 		static function ( $result, $server, $request ) {
 			$route = $request->get_route();
 			if ( strpos( $route, '/wp/v2/media' ) === 0 ) {
-				if ( ! wprefi_is_internal_request() ) {
+				if ( ! refitune_is_internal_request() ) {
 					return new WP_Error(
 						'rest_access_denied',
-						__( 'A media endpoint csak belső kérésekhez érhető el.', 'refinerpress' ),
+						__( 'A media endpoint csak belső kérésekhez érhető el.', 'refitune' ),
 						array( 'status' => 401 )
 					);
 				}
@@ -137,16 +137,16 @@ if ( ! empty( $wprefi_settings['rest_disable_media'] ) ) {
 // ---------------------------------------------------------------------------
 // 4. Kommentek endpoint korlátozása
 // ---------------------------------------------------------------------------
-if ( ! empty( $wprefi_settings['rest_disable_comments'] ) ) {
+if ( ! empty( $refitune_settings['rest_disable_comments'] ) ) {
 	add_filter(
 		'rest_pre_dispatch',
 		static function ( $result, $server, $request ) {
 			$route = $request->get_route();
 			if ( strpos( $route, '/wp/v2/comments' ) === 0 ) {
-				if ( ! wprefi_is_internal_request() ) {
+				if ( ! refitune_is_internal_request() ) {
 					return new WP_Error(
 						'rest_access_denied',
-						__( 'A comments endpoint csak belső kérésekhez érhető el.', 'refinerpress' ),
+						__( 'A comments endpoint csak belső kérésekhez érhető el.', 'refitune' ),
 						array( 'status' => 401 )
 					);
 				}
@@ -161,16 +161,16 @@ if ( ! empty( $wprefi_settings['rest_disable_comments'] ) ) {
 // ---------------------------------------------------------------------------
 // 5. Keresés endpoint korlátozása
 // ---------------------------------------------------------------------------
-if ( ! empty( $wprefi_settings['rest_disable_search'] ) ) {
+if ( ! empty( $refitune_settings['rest_disable_search'] ) ) {
 	add_filter(
 		'rest_pre_dispatch',
 		static function ( $result, $server, $request ) {
 			$route = $request->get_route();
 			if ( strpos( $route, '/wp/v2/search' ) === 0 ) {
-				if ( ! wprefi_is_internal_request() ) {
+				if ( ! refitune_is_internal_request() ) {
 					return new WP_Error(
 						'rest_access_denied',
-						__( 'A search endpoint csak belső kérésekhez érhető el.', 'refinerpress' ),
+						__( 'A search endpoint csak belső kérésekhez érhető el.', 'refitune' ),
 						array( 'status' => 401 )
 					);
 				}

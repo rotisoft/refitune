@@ -6,7 +6,7 @@
  * beállítható, hogy a blokk csak mobilon, csak asztali gépen, vagy mindenhol
  * jelenjen meg. A kizárt blokk teljesen kimarad a frontend HTML-ből.
  *
- * @package WP_Refiner
+ * @package RefiTune
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -18,18 +18,24 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return void
  */
-function wprefi_block_visibility_editor_assets(): void {
-	$js_file = WPREFI_PATH . 'admin/js/block-visibility.js';
+function refitune_block_visibility_editor_assets(): void {
+	$js_file = REFITUNE_PATH . 'admin/js/block-visibility.js';
 
 	wp_enqueue_script(
-		'wprefi-block-visibility',
-		WPREFI_URL . 'admin/js/block-visibility.js',
+		'refitune-block-visibility',
+		REFITUNE_URL . 'admin/js/block-visibility.js',
 		array( 'wp-hooks', 'wp-compose', 'wp-block-editor', 'wp-components', 'wp-element', 'wp-i18n' ),
-		file_exists( $js_file ) ? filemtime( $js_file ) : WPREFI_VERSION,
+		file_exists( $js_file ) ? filemtime( $js_file ) : REFITUNE_VERSION,
 		true
 	);
+
+	wp_set_script_translations(
+		'refitune-block-visibility',
+		'refitune',
+		REFITUNE_PATH . 'languages'
+	);
 }
-add_action( 'enqueue_block_editor_assets', 'wprefi_block_visibility_editor_assets' );
+add_action( 'enqueue_block_editor_assets', 'refitune_block_visibility_editor_assets' );
 
 /**
  * Frontend renderelés szűrése: kizárja a blokkot, ha az aktuális eszköz
@@ -39,8 +45,8 @@ add_action( 'enqueue_block_editor_assets', 'wprefi_block_visibility_editor_asset
  * @param array  $block         A blokk adatai (név, attribútumok).
  * @return string Módosított (vagy üres) HTML kimenet.
  */
-function wprefi_filter_block_visibility( string $block_content, array $block ): string {
-	$visibility = $block['attrs']['wprefiVisibility'] ?? '';
+function refitune_filter_block_visibility( string $block_content, array $block ): string {
+	$visibility = $block['attrs']['refituneVisibility'] ?? $block['attrs']['wprefiVisibility'] ?? '';
 
 	if ( '' === $visibility ) {
 		return $block_content;
@@ -58,4 +64,4 @@ function wprefi_filter_block_visibility( string $block_content, array $block ): 
 
 	return $block_content;
 }
-add_filter( 'render_block', 'wprefi_filter_block_visibility', 10, 2 );
+add_filter( 'render_block', 'refitune_filter_block_visibility', 10, 2 );

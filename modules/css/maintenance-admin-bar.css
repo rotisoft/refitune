@@ -1,0 +1,14 @@
+/**
+ * Maintenance mode admin bar notice styles.
+ *
+ * @package RefiTune
+ */
+
+#wpadminbar #wp-admin-bar-refitune-maintenance-warning .ab-icon::before {
+	color: #dc3232 !important;
+}
+
+#wpadminbar #wp-admin-bar-refitune-maintenance-warning .refitune-maintenance-admin-bar-label {
+	color: #ffffff;
+	font-weight: bold;
+}

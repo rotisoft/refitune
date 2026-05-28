@@ -4,7 +4,7 @@
  *
  * SVG esetén biztonsági ellenőrzést is végez a feltöltés előtt.
  *
- * @package WP_Refiner
+ * @package RefiTune
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param array $roles Engedélyezett szerepkörök.
  * @return bool
  */
-function wprefi_user_has_upload_role( array $roles ): bool {
+function refitune_user_has_upload_role( array $roles ): bool {
 	if ( empty( $roles ) || ! is_user_logged_in() ) {
 		return false;
 	}
@@ -31,23 +31,23 @@ function wprefi_user_has_upload_role( array $roles ): bool {
  * @param array $mimes Engedélyezett MIME típusok.
  * @return array
  */
-function wprefi_svg_avif_enable_mimes( array $mimes ): array {
-	$settings   = get_option( 'wprefi_settings', array() );
+function refitune_svg_avif_enable_mimes( array $mimes ): array {
+	$settings   = get_option( 'refitune_settings', array() );
 	$svg_roles  = isset( $settings['svg_upload_roles'] )  ? (array) $settings['svg_upload_roles']  : array();
 	$avif_roles = isset( $settings['avif_upload_roles'] ) ? (array) $settings['avif_upload_roles'] : array();
 
-	if ( ! empty( $svg_roles ) && wprefi_user_has_upload_role( $svg_roles ) ) {
+	if ( ! empty( $svg_roles ) && refitune_user_has_upload_role( $svg_roles ) ) {
 		$mimes['svg']  = 'image/svg+xml';
 		$mimes['svgz'] = 'image/svg+xml';
 	}
 
-	if ( ! empty( $avif_roles ) && wprefi_user_has_upload_role( $avif_roles ) ) {
+	if ( ! empty( $avif_roles ) && refitune_user_has_upload_role( $avif_roles ) ) {
 		$mimes['avif'] = 'image/avif';
 	}
 
 	return $mimes;
 }
-add_filter( 'upload_mimes', 'wprefi_svg_avif_enable_mimes' );
+add_filter( 'upload_mimes', 'refitune_svg_avif_enable_mimes' );
 
 /**
  * MIME type ellenőrzés javítása SVG és AVIF fájlokhoz.
@@ -58,7 +58,7 @@ add_filter( 'upload_mimes', 'wprefi_svg_avif_enable_mimes' );
  * @param array|null  $mimes    Engedélyezett MIME típusok (lehet null).
  * @return array
  */
-function wprefi_svg_avif_fix_mime_type( array $data, string $file, string $filename, ?array $mimes ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Required by filter signature.
+function refitune_svg_avif_fix_mime_type( array $data, string $file, string $filename, ?array $mimes ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Required by filter signature.
 	$ext = isset( $data['ext'] ) ? $data['ext'] : '';
 
 	if ( strlen( $ext ) < 1 ) {
@@ -80,7 +80,7 @@ function wprefi_svg_avif_fix_mime_type( array $data, string $file, string $filen
 
 	return $data;
 }
-add_filter( 'wp_check_filetype_and_ext', 'wprefi_svg_avif_fix_mime_type', 10, 4 );
+add_filter( 'wp_check_filetype_and_ext', 'refitune_svg_avif_fix_mime_type', 10, 4 );
 
 /**
  * WordPress beépített real MIME ellenőrzés kikapcsolása SVG és AVIF fájloknál.
@@ -92,16 +92,16 @@ add_filter( 'wp_check_filetype_and_ext', 'wprefi_svg_avif_fix_mime_type', 10, 4 
  * @param string|null  $real_mime Valódi MIME típus (lehet null).
  * @return array
  */
-function wprefi_svg_avif_disable_real_mime_check( array $data, string $file, string $filename, ?array $mimes, ?string $real_mime ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Required by filter signature.
+function refitune_svg_avif_disable_real_mime_check( array $data, string $file, string $filename, ?array $mimes, ?string $real_mime ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Required by filter signature.
 	if ( empty( $data['ext'] ) ) {
 		return $data;
 	}
 
-	$settings = get_option( 'wprefi_settings', array() );
+	$settings = get_option( 'refitune_settings', array() );
 
 	if ( 'svg' === $data['ext'] || 'svgz' === $data['ext'] ) {
 		$svg_roles = isset( $settings['svg_upload_roles'] ) ? (array) $settings['svg_upload_roles'] : array();
-		if ( ! empty( $svg_roles ) && wprefi_user_has_upload_role( $svg_roles ) ) {
+		if ( ! empty( $svg_roles ) && refitune_user_has_upload_role( $svg_roles ) ) {
 			$data['type']            = 'image/svg+xml';
 			$data['proper_filename'] = $filename;
 		}
@@ -109,7 +109,7 @@ function wprefi_svg_avif_disable_real_mime_check( array $data, string $file, str
 
 	if ( 'avif' === $data['ext'] ) {
 		$avif_roles = isset( $settings['avif_upload_roles'] ) ? (array) $settings['avif_upload_roles'] : array();
-		if ( ! empty( $avif_roles ) && wprefi_user_has_upload_role( $avif_roles ) ) {
+		if ( ! empty( $avif_roles ) && refitune_user_has_upload_role( $avif_roles ) ) {
 			$data['type']            = 'image/avif';
 			$data['proper_filename'] = $filename;
 		}
@@ -117,7 +117,7 @@ function wprefi_svg_avif_disable_real_mime_check( array $data, string $file, str
 
 	return $data;
 }
-add_filter( 'wp_check_filetype_and_ext', 'wprefi_svg_avif_disable_real_mime_check', 99, 5 );
+add_filter( 'wp_check_filetype_and_ext', 'refitune_svg_avif_disable_real_mime_check', 99, 5 );
 
 /**
  * SVG biztonsági ellenőrzés feltöltés előtt.
@@ -125,11 +125,11 @@ add_filter( 'wp_check_filetype_and_ext', 'wprefi_svg_avif_disable_real_mime_chec
  * @param array $file Feltöltött fájl adatai.
  * @return array Fájl adatok, esetleg hibaüzenettel.
  */
-function wprefi_svg_security_check( array $file ): array {
-	$settings  = get_option( 'wprefi_settings', array() );
+function refitune_svg_security_check( array $file ): array {
+	$settings  = get_option( 'refitune_settings', array() );
 	$svg_roles = isset( $settings['svg_upload_roles'] ) ? (array) $settings['svg_upload_roles'] : array();
 
-	if ( empty( $svg_roles ) || ! wprefi_user_has_upload_role( $svg_roles ) ) {
+	if ( empty( $svg_roles ) || ! refitune_user_has_upload_role( $svg_roles ) ) {
 		return $file;
 	}
 
@@ -156,14 +156,14 @@ function wprefi_svg_security_check( array $file ): array {
 
 	foreach ( $dangerous_patterns as $pattern ) {
 		if ( preg_match( $pattern, $file_content ) ) {
-			$file['error'] = __( 'Biztonsági okokból ez az SVG fájl nem tölthető fel. Potenciálisan veszélyes kódot tartalmaz.', 'refinerpress' );
+			$file['error'] = __( 'Biztonsági okokból ez az SVG fájl nem tölthető fel. Potenciálisan veszélyes kódot tartalmaz.', 'refitune' );
 			return $file;
 		}
 	}
 
 	return $file;
 }
-add_filter( 'wp_handle_upload_prefilter', 'wprefi_svg_security_check' );
+add_filter( 'wp_handle_upload_prefilter', 'refitune_svg_security_check' );
 
 /**
  * SVG előnézet javítása a médiatárban (JS válasz).
@@ -171,7 +171,7 @@ add_filter( 'wp_handle_upload_prefilter', 'wprefi_svg_security_check' );
  * @param array $response Attachment válasz adatok.
  * @return array
  */
-function wprefi_svg_fix_display( array $response ): array {
+function refitune_svg_fix_display( array $response ): array {
 	if ( isset( $response['mime'] ) && 'image/svg+xml' === $response['mime'] && empty( $response['sizes'] ) ) {
 		$response['sizes'] = array(
 			'full' => array(
@@ -181,7 +181,7 @@ function wprefi_svg_fix_display( array $response ): array {
 	}
 	return $response;
 }
-add_filter( 'wp_prepare_attachment_for_js', 'wprefi_svg_fix_display' );
+add_filter( 'wp_prepare_attachment_for_js', 'refitune_svg_fix_display' );
 
 /**
  * SVG thumbnail megjelenítés javítása a médiatárban.
@@ -191,7 +191,7 @@ add_filter( 'wp_prepare_attachment_for_js', 'wprefi_svg_fix_display' );
  * @param array   $meta       Attachment meta adatok.
  * @return array
  */
-function wprefi_svg_media_thumbnails( array $response, WP_Post $attachment, array $meta ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Required by filter signature.
+function refitune_svg_media_thumbnails( array $response, WP_Post $attachment, array $meta ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Required by filter signature.
 	if ( 'image/svg+xml' === $response['mime'] && empty( $response['sizes'] ) ) {
 		$svg_path = get_attached_file( $attachment->ID );
 		if ( file_exists( $svg_path ) ) {
@@ -207,4 +207,4 @@ function wprefi_svg_media_thumbnails( array $response, WP_Post $attachment, arra
 	}
 	return $response;
 }
-add_filter( 'wp_prepare_attachment_for_js', 'wprefi_svg_media_thumbnails', 10, 3 );
+add_filter( 'wp_prepare_attachment_for_js', 'refitune_svg_media_thumbnails', 10, 3 );

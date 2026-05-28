@@ -6,18 +6,18 @@
  * így wp-config.php módosítása nélkül állítható a revíziók száma.
  * 0 = revíziók letiltása, pozitív egész = maximum ennyi revízió marad meg.
  *
- * @package WP_Refiner
+ * @package RefiTune
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$wprefi_revisions_limit = (int) get_option( 'wprefi_settings', array() )['post_revisions_limit'];
+$refitune_revisions_limit = (int) get_option( 'refitune_settings', array() )['post_revisions_limit'];
 
 add_filter(
 	'wp_revisions_to_keep',
-	static function () use ( $wprefi_revisions_limit ): int {
-		return $wprefi_revisions_limit;
+	static function () use ( $refitune_revisions_limit ): int {
+		return $refitune_revisions_limit;
 	}
 );

@@ -5,7 +5,7 @@
  * A kiválasztott szerepkörű bejelentkezett felhasználók számára
  * elrejti a WordPress admin sávot.
  *
- * @package WP_Refiner
+ * @package RefiTune
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,12 +17,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return void
  */
-function wprefi_hide_admin_bar_for_roles(): void {
+function refitune_hide_admin_bar_for_roles(): void {
 	if ( ! is_user_logged_in() ) {
 		return;
 	}
 
-	$settings   = get_option( 'wprefi_settings', array() );
+	$settings   = get_option( 'refitune_settings', array() );
 	$hide_roles = isset( $settings['hide_admin_bar_roles'] ) ? (array) $settings['hide_admin_bar_roles'] : array();
 
 	if ( empty( $hide_roles ) ) {
@@ -38,4 +38,4 @@ function wprefi_hide_admin_bar_for_roles(): void {
 		}
 	}
 }
-add_action( 'after_setup_theme', 'wprefi_hide_admin_bar_for_roles' );
+add_action( 'after_setup_theme', 'refitune_hide_admin_bar_for_roles' );

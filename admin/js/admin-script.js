@@ -1,4 +1,4 @@
-﻿/**
+/**
  * WP Refiner - Admin script.
  *
  * "Összes be-/kikapcsolása" checkbox logika csoportos beállításokhoz.
@@ -8,11 +8,11 @@
 	'use strict';
 
 	document.addEventListener( 'DOMContentLoaded', function () {
-		var groupAlls = document.querySelectorAll( '.wprefi-group-all' );
+		var groupAlls = document.querySelectorAll( '.refitune-group-all' );
 
 		groupAlls.forEach( function ( allCheckbox ) {
 			var group = allCheckbox.dataset.group;
-			var items = document.querySelectorAll( '.wprefi-group-item[data-group="' + group + '"]' );
+			var items = document.querySelectorAll( '.refitune-group-item[data-group="' + group + '"]' );
 
 			/**
 			 * Az "összes" checkbox állapotát frissíti az egyedi checkboxok alapján.
@@ -49,7 +49,7 @@
 
 		// WordPress Color Picker inicializálása.
 		if ( typeof jQuery !== 'undefined' && jQuery.fn.wpColorPicker ) {
-			jQuery( '.wprefi-color-picker' ).wpColorPicker();
+			jQuery( '.refitune-color-picker' ).wpColorPicker();
 		}
 	} );
 }() );

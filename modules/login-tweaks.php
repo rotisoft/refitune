@@ -2,7 +2,7 @@
 /**
  * Bejelentkezési tweaks – általánosított hibaüzenet biztonsági okokból.
  *
- * @package WP_Refiner
+ * @package RefiTune
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param string $errors Hibaüzenet(ek).
  * @return string
  */
-function wprefi_login_error_message( $errors ) {
+function refitune_login_error_message( $errors ) {
 	// Ha a hibaüzenet tartalmazza a lockout szöveget, ne írjuk felül!
 	if ( strpos( $errors, 'login_locked' ) !== false || 
 	     strpos( $errors, 'failed login attempts' ) !== false ||
@@ -28,6 +28,6 @@ function wprefi_login_error_message( $errors ) {
 		return $errors;
 	}
 	
-	return __( 'Incorrect username or password.', 'refinerpress' );
+	return __( 'Incorrect username or password.', 'refitune' );
 }
-add_filter( 'login_errors', 'wprefi_login_error_message' );
+add_filter( 'login_errors', 'refitune_login_error_message' );

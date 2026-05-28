@@ -1,6 +1,6 @@
-=== RefinerPress Toolkit ===
-Contributors: rtomo
-Tags: performance, security, tweaks, optimization, admin
+=== RefiTune - Site refiner toolkit ===
+Contributors: rtomo, rotistudio
+Tags: performance, security, tweaks, optimization, toolkit
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
@@ -9,80 +9,80 @@ License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://rotistudio.com/contact/
 
-Take control of WordPress with smart performance tweaks, security enhancements, and usability improvements — all in one toolkit.
+Take control of WordPress with smart performance tweaks, security enhancements, and usability improvements. RefiTune is all in one toolkit.
 
 == Description ==
 
-Hungarian: [Magyar nyelvű bővítmény leírás](https://rotistudio.hu/bovitmenyek/refinerpress-toolkit-wordpress-bovitmeny)
+Hungarian: [Magyar nyelvű bővítmény leírás](https://rotistudio.hu/bovitmenyek/refitune-eszkoztar-wordpress-finomhangolashoz/)
 
-**RefinerPress Toolkit** is your Swiss Army knife for WordPress optimization. Whether you're cleaning up unnecessary code, securing your login page, or customizing the admin experience, this plugin puts the power in your hands.
+**RefiTune - Site refiner toolkit** is your Swiss Army knife for WordPress optimization. Whether you're cleaning up unnecessary code, securing your login page, or customizing the admin experience, this plugin puts the power in your hands.
 
 Each feature can be enabled or disabled individually with just one click — no coding required. A clean, organized dashboard shows you exactly what's active and what's not.
 
-**What's Inside? (24+ Features)**
+**What's Inside? (28 Modules)**
 
-**Performance Tweaks:**
+**Performance:**
 * **Header Cleanup** – Strip out unnecessary wp_head bloat for faster loading.
 * **Feed Management** – Take control of your RSS/Atom feeds.
-* **Emoji Disable** – Remove WordPress emoji scripts (because who needs them?).
-* **jQuery Migrate Disable** – Drop legacy jquery-migrate for leaner pages.
+* **Disable Emoji** – Remove WordPress emoji scripts.
+* **Disable jQuery Migrate** – Drop legacy jquery-migrate for leaner pages.
 * **Post Revisions Limit** – Keep your database tidy by limiting stored revisions.
 * **Auto-save Interval** – Control how often WordPress auto-saves your work.
 * **Trash Auto-Delete** – Set how long items stay in trash before permanent deletion.
+* **Heartbeat API Control** – Tune or disable Heartbeat in admin, frontend, and post editor.
 
-**Security & Access Control:**
-* **XML-RPC Disable** – Lock down the XML-RPC interface completely.
-* **Trackback/Pingback Disable** – Stop spam by disabling trackbacks and pingbacks.
-* **File Editor Disable** – Hide the built-in code editor for extra security.
+**Security:**
+* **Disable XML-RPC** – Lock down the XML-RPC interface completely.
+* **Disable Trackback/Pingback** – Stop spam by disabling trackbacks and pingbacks.
+* **Disable File Editor** – Hide the built-in code editor for extra security.
 * **Login Error Messages** – Make login errors generic to prevent username fishing.
-* **Admin Access Restrictions** – Choose which roles can access wp-admin.
+* **Restrict Admin Access** – Choose which roles can access wp-admin.
 * **REST API Restrictions** – Smart restrictions for sensitive REST API endpoints.
 * **Login Limit** – Block brute-force attacks by limiting failed login attempts.
-* **Maintenance Mode** – Temporarily block visitors while you work on the site.
 
-**Visual & UX Improvements:**
+**Visual:**
 * **Hide Admin Bar** – Selectively hide the admin bar for specific roles.
-* **Block Visibility** – Show/hide Gutenberg blocks on mobile or desktop.
+* **Block Visibility (Mobile)** – Show/hide Gutenberg blocks on mobile or desktop.
 * **Login Page Customization** – Brand your wp-login.php with custom logo and colors.
 
-**Email & Communication:**
+**Email:**
 * **Email Notifications** – Fine-tune or disable WordPress system emails.
-* **Email SMTP** – Configure external SMTP or disable all emails completely.
+* **Email sending** – Configure external SMTP or disable all emails completely.
 
-**Content & Media:**
-* **Comments Disable** – Turn off comments site-wide (with WooCommerce review support).
-* **External Links** – Auto-open external links in new tabs (with proper rel attributes).
-* **Page Excerpt** – Enable excerpt fields for pages (not just posts).
+**Miscellaneous:**
+* **Disable Comments** – Turn off comments site-wide (with WooCommerce review support).
+* **External Links in New Window** – Auto-open external links in new tabs (with proper rel attributes).
+* **Enable Page Excerpt** – Enable excerpt fields for pages (not just posts).
 * **SVG Upload** – Allow SVG uploads with built-in security filtering.
 * **AVIF Upload** – Support modern AVIF image format uploads.
-
-**Advanced Features:**
 * **Role Redirects** – Send users to custom pages after login or logout based on their role.
+* **Maintenance Mode** – Temporarily block visitors while you work on the site.
+* **Dynamic Year Shortcodes** – Display the current year or duration via `[refi-year]` shortcodes.
 
 == Installation ==
 
 **Getting Started is Easy:**
 
-1. Upload the plugin to `/wp-content/plugins/refinerpress` (or install directly from WordPress).
+1. Upload the plugin to `/wp-content/plugins/refitune` (or install directly from WordPress).
 2. Activate it through the 'Plugins' menu.
-3. Head to **Tools > RefinerPress Toolkit** and start enabling features.
+3. Head to **Tools > RefiTune - Site refiner toolkit** and start enabling features.
 4. That's it! Each feature has helpful descriptions and a detailed Help page.
 
 == Translations ==
 
-RefinerPress Toolkit speaks your language! Currently available in:
+RefiTune - Site refiner toolkit speaks your language! Currently available in:
 * 🇬🇧 English (default)
 * 🇭🇺 Hungarian (Magyar)
 
-The plugin is fully translation-ready. Want to contribute a translation? Language files go in `/wp-content/plugins/refinerpress/languages/`.
+The plugin is fully translation-ready. Want to contribute a translation? Language files go in `/wp-content/plugins/refitune/languages/`.
 
-Text Domain: `refinerpress`
+Text Domain: `refitune`
 
 == Frequently Asked Questions ==
 
 = Will this plugin slow down my site? =
 
-Nope! RefinerPress is designed to *speed up* your site by removing bloat. Most features actively improve performance.
+Nope! RefiTune is designed to *speed up* your site by removing bloat. Most features actively improve performance.
 
 = Is it safe to disable jQuery Migrate? =
 

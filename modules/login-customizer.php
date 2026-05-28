@@ -6,17 +6,15 @@
  * - Háttérszín beállítás
  * - Primary szín beállítás
  *
- * @package WP_Refiner
+ * @package RefiTune
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$wprefi_login_settings = get_option( 'wprefi_settings', array() );
-
 // ---------------------------------------------------------------------------
-// 1. Logo URL és szöveg customizálása
+// Logo URL és szöveg customizálása
 // ---------------------------------------------------------------------------
 add_filter(
 	'login_headerurl',
@@ -32,111 +30,107 @@ add_filter(
 	}
 );
 
-// ---------------------------------------------------------------------------
-// 2. Logo, háttérszín és primary szín CSS injektálása
-// ---------------------------------------------------------------------------
-add_action(
-	'login_head',
-	static function () use ( $wprefi_login_settings ): void {
-		$logo_source = isset( $wprefi_login_settings['login_logo_source'] ) ? $wprefi_login_settings['login_logo_source'] : 'site_icon';
-		$logo_url    = '';
+/**
+ * Build dynamic login page CSS from plugin settings.
+ *
+ * @return string CSS rules (no style tags).
+ */
+function refitune_login_customizer_get_inline_css(): string {
+	$settings = get_option( 'refitune_settings', array() );
+	$rules    = array();
 
-		// Logo URL meghatározása.
-		if ( 'custom' === $logo_source && ! empty( $wprefi_login_settings['login_logo_custom_url'] ) ) {
-			$logo_url = home_url( $wprefi_login_settings['login_logo_custom_url'] );
-		} else {
-			// Site Icon használata (ha van).
-			$site_icon_id = get_option( 'site_icon' );
-			if ( $site_icon_id ) {
-				$logo_url = wp_get_attachment_image_url( $site_icon_id, 'full' );
-			}
+	$logo_source = isset( $settings['login_logo_source'] ) ? $settings['login_logo_source'] : 'site_icon';
+	$logo_url    = '';
+
+	if ( 'custom' === $logo_source && ! empty( $settings['login_logo_custom_url'] ) ) {
+		$logo_url = home_url( $settings['login_logo_custom_url'] );
+	} else {
+		$site_icon_id = get_option( 'site_icon' );
+		if ( $site_icon_id ) {
+			$logo_url = wp_get_attachment_image_url( $site_icon_id, 'full' );
 		}
+	}
 
-		// Logo méret.
-		$logo_width  = isset( $wprefi_login_settings['login_logo_width'] ) && '' !== $wprefi_login_settings['login_logo_width']
-			? (int) $wprefi_login_settings['login_logo_width']
-			: 84;
-		$logo_height = isset( $wprefi_login_settings['login_logo_height'] ) && '' !== $wprefi_login_settings['login_logo_height']
-			? (int) $wprefi_login_settings['login_logo_height']
-			: 84;
+	$logo_width  = isset( $settings['login_logo_width'] ) && '' !== $settings['login_logo_width']
+		? (int) $settings['login_logo_width']
+		: 84;
+	$logo_height = isset( $settings['login_logo_height'] ) && '' !== $settings['login_logo_height']
+		? (int) $settings['login_logo_height']
+		: 84;
 
-		// Háttérszín.
-		$bg_color = isset( $wprefi_login_settings['login_bg_color'] ) && '' !== $wprefi_login_settings['login_bg_color']
-			? sanitize_hex_color( $wprefi_login_settings['login_bg_color'] )
-			: '';
+	if ( $logo_url ) {
+		$rules[] = sprintf(
+			'#login h1 a, .login h1 a { background-image: url(%s); width: %dpx; height: %dpx; background-size: contain; background-position: center; background-repeat: no-repeat; }',
+			esc_url( $logo_url ),
+			$logo_width,
+			$logo_height
+		);
+	}
 
-	// Primary szín.
-	$primary_color = isset( $wprefi_login_settings['login_primary_color'] ) && '' !== $wprefi_login_settings['login_primary_color']
-		? sanitize_hex_color( $wprefi_login_settings['login_primary_color'] )
+	$bg_color = isset( $settings['login_bg_color'] ) && '' !== $settings['login_bg_color']
+		? sanitize_hex_color( $settings['login_bg_color'] )
 		: '';
 
-	// Nyelvválasztó elrejtése.
-	$hide_language_switcher = ! empty( $wprefi_login_settings['login_hide_language_switcher'] );
+	if ( $bg_color ) {
+		$rules[] = sprintf( 'body.login { background: %s !important; }', esc_attr( $bg_color ) );
+	}
 
-	// CSS output.
-	?>
-	<style type="text/css">
-			<?php if ( $logo_url ) : ?>
-			#login h1 a,
-			.login h1 a {
-				background-image: url('<?php echo esc_url( $logo_url ); ?>');
-				width: <?php echo (int) $logo_width; ?>px;
-				height: <?php echo (int) $logo_height; ?>px;
-				background-size: contain;
-				background-position: center;
-				background-repeat: no-repeat;
-			}
-			<?php endif; ?>
+	$primary_color = isset( $settings['login_primary_color'] ) && '' !== $settings['login_primary_color']
+		? sanitize_hex_color( $settings['login_primary_color'] )
+		: '';
 
-			<?php if ( $bg_color ) : ?>
-			body.login {
-				background: <?php echo esc_attr( $bg_color ); ?> !important;
-			}
-			<?php endif; ?>
+	if ( $primary_color ) {
+		$color = esc_attr( $primary_color );
+		$rules[] = sprintf(
+			'.wp-core-ui .button-primary { background: %1$s !important; border-color: %1$s !important; }',
+			$color
+		);
+		$rules[] = sprintf(
+			'.wp-core-ui .button-primary:hover, .wp-core-ui .button-primary:focus { background: %1$s !important; border-color: %1$s !important; opacity: 0.9; }',
+			$color
+		);
+		$rules[] = sprintf( '.login .language-switcher .button { color: %1$s !important; border-color: %1$s !important; }', $color );
+		$rules[] = sprintf( '.login .button.wp-hide-pw .dashicons { color: %1$s !important; }', $color );
+		$rules[] = sprintf(
+			'.login #backtoblog a, .login #nav a { color: %1$s !important; }',
+			$color
+		);
+		$rules[] = sprintf(
+			'.login #backtoblog a:hover, .login #nav a:hover, .login h1 a:hover { color: %1$s !important; }',
+			$color
+		);
+		$rules[] = sprintf(
+			'.login #backtoblog a:focus, .login #nav a:focus, .login h1 a:focus { color: %1$s !important; }',
+			$color
+		);
+		$rules[] = sprintf( '.language-switcher label .dashicons { color: %1$s !important; }', $color );
+	}
 
-			<?php if ( $primary_color ) : ?>
-			.wp-core-ui .button-primary {
-				background: <?php echo esc_attr( $primary_color ); ?> !important;
-				border-color: <?php echo esc_attr( $primary_color ); ?> !important;
-			}
-			.wp-core-ui .button-primary:hover,
-			.wp-core-ui .button-primary:focus {
-				background: <?php echo esc_attr( $primary_color ); ?> !important;
-				border-color: <?php echo esc_attr( $primary_color ); ?> !important;
-				opacity: 0.9;
-			}
-			.login .language-switcher .button {
-				color: <?php echo esc_attr( $primary_color ); ?> !important;
-				border-color: <?php echo esc_attr( $primary_color ); ?> !important;
-			}
-			.login .button.wp-hide-pw .dashicons {
-				color: <?php echo esc_attr( $primary_color ); ?> !important;
-			}
-			.login #backtoblog a,
-			.login #nav a {
-				color: <?php echo esc_attr( $primary_color ); ?> !important;
-			}
-			.login #backtoblog a:hover,
-			.login #nav a:hover,
-			.login h1 a:hover {
-				color: <?php echo esc_attr( $primary_color ); ?> !important;
-			}
-			.login #backtoblog a:focus,
-			.login #nav a:focus,
-			.login h1 a:focus {
-				color: <?php echo esc_attr( $primary_color ); ?> !important;
-			}
-		.language-switcher label .dashicons {
-			color: <?php echo esc_attr( $primary_color ); ?> !important;
-		}
-		<?php endif; ?>
+	if ( ! empty( $settings['login_hide_language_switcher'] ) ) {
+		$rules[] = '.language-switcher { display: none !important; }';
+	}
 
-		<?php if ( $hide_language_switcher ) : ?>
-		.language-switcher {
-			display: none !important;
-		}
-		<?php endif; ?>
-	</style>
-	<?php
+	return implode( "\n", $rules );
 }
-);
+
+/**
+ * Enqueue login page styles via login_enqueue_scripts.
+ */
+function refitune_login_customizer_enqueue_styles(): void {
+	$css_file = REFITUNE_PATH . 'modules/css/login-customizer.css';
+	$version  = file_exists( $css_file ) ? (string) filemtime( $css_file ) : REFITUNE_VERSION;
+
+	wp_enqueue_style(
+		'refitune-login-customizer',
+		REFITUNE_URL . 'modules/css/login-customizer.css',
+		array( 'login' ),
+		$version
+	);
+
+	$inline_css = refitune_login_customizer_get_inline_css();
+
+	if ( '' !== $inline_css ) {
+		wp_add_inline_style( 'refitune-login-customizer', $inline_css );
+	}
+}
+add_action( 'login_enqueue_scripts', 'refitune_login_customizer_enqueue_styles', 10 );

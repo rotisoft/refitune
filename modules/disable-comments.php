@@ -8,28 +8,28 @@
  * - Eltávolítja a Hozzászólások menüt és a dashboard widzetet.
  * - WooCommerce aktív esetén opcionálisan megőrzi a termék értékeléseket.
  *
- * @package WP_Refiner
+ * @package RefiTune
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$wprefi_comments_settings = get_option( 'wprefi_settings', array() );
-$wprefi_keep_reviews      = class_exists( 'WooCommerce' )
-	&& ! empty( $wprefi_comments_settings['disable_comments_keep_reviews'] );
+$refitune_comments_settings = get_option( 'refitune_settings', array() );
+$refitune_keep_reviews      = class_exists( 'WooCommerce' )
+	&& ! empty( $refitune_comments_settings['disable_comments_keep_reviews'] );
 
 // Egyszeri WordPress core opció frissítés (Site Health kompatibilitás).
 // Ha a Disable Comments aktív, de a WordPress opciókat még nem állítottuk át,
 // akkor most megtesszük.
-if ( ! get_transient( 'wprefi_disable_comments_migrated' ) ) {
+if ( ! get_transient( 'refitune_disable_comments_migrated' ) ) {
 	if ( get_option( 'default_comment_status' ) !== 'closed' ) {
 		update_option( 'default_comment_status', 'closed' );
 	}
 	if ( get_option( 'default_ping_status' ) !== 'closed' ) {
 		update_option( 'default_ping_status', 'closed' );
 	}
-	set_transient( 'wprefi_disable_comments_migrated', true, WEEK_IN_SECONDS );
+	set_transient( 'refitune_disable_comments_migrated', true, WEEK_IN_SECONDS );
 }
 
 // ---------------------------------------------------------------------------
@@ -37,8 +37,8 @@ if ( ! get_transient( 'wprefi_disable_comments_migrated' ) ) {
 // ---------------------------------------------------------------------------
 add_filter(
 	'comments_open',
-	static function ( $open, $post_id ) use ( $wprefi_keep_reviews ): bool {
-		if ( $wprefi_keep_reviews && $post_id && get_post_type( $post_id ) === 'product' ) {
+	static function ( $open, $post_id ) use ( $refitune_keep_reviews ): bool {
+		if ( $refitune_keep_reviews && $post_id && get_post_type( $post_id ) === 'product' ) {
 			return (bool) $open;
 		}
 		return false;
@@ -58,9 +58,9 @@ add_filter( 'default_comment_status', '__return_false' );
 // ---------------------------------------------------------------------------
 add_action(
 	'init',
-	static function () use ( $wprefi_keep_reviews ): void {
+	static function () use ( $refitune_keep_reviews ): void {
 		foreach ( get_post_types() as $post_type ) {
-			if ( $wprefi_keep_reviews && 'product' === $post_type ) {
+			if ( $refitune_keep_reviews && 'product' === $post_type ) {
 				continue;
 			}
 			if ( post_type_supports( $post_type, 'comments' ) ) {
@@ -77,8 +77,8 @@ add_action(
 // ---------------------------------------------------------------------------
 add_filter(
 	'rest_pre_insert_comment',
-	static function ( $prepared, $request ) use ( $wprefi_keep_reviews ) {
-		if ( $wprefi_keep_reviews ) {
+	static function ( $prepared, $request ) use ( $refitune_keep_reviews ) {
+		if ( $refitune_keep_reviews ) {
 			$post_id = isset( $prepared->comment_post_ID ) ? (int) $prepared->comment_post_ID : 0;
 			if ( $post_id && get_post_type( $post_id ) === 'product' ) {
 				return $prepared;
@@ -86,7 +86,7 @@ add_filter(
 		}
 		return new WP_Error(
 			'rest_comment_forbidden',
-			__( 'Hozzászólások le vannak tiltva ezen a webhelyen.', 'refinerpress' ),
+			__( 'Hozzászólások le vannak tiltva ezen a webhelyen.', 'refitune' ),
 			array( 'response' => 403 )
 		);
 	},
@@ -100,12 +100,12 @@ add_filter(
 // ---------------------------------------------------------------------------
 add_action(
 	'pre_comment_on_post',
-	static function ( int $post_id ) use ( $wprefi_keep_reviews ): void {
-		if ( $wprefi_keep_reviews && get_post_type( $post_id ) === 'product' ) {
+	static function ( int $post_id ) use ( $refitune_keep_reviews ): void {
+		if ( $refitune_keep_reviews && get_post_type( $post_id ) === 'product' ) {
 			return;
 		}
 		wp_die(
-			esc_html__( 'Hozzászólások le vannak tiltva ezen a webhelyen.', 'refinerpress' ),
+			esc_html__( 'Hozzászólások le vannak tiltva ezen a webhelyen.', 'refitune' ),
 			'',
 			array( 'response' => 403 )
 		);
@@ -151,9 +151,9 @@ add_action(
 // ---------------------------------------------------------------------------
 add_action(
 	'admin_init',
-	static function () use ( $wprefi_keep_reviews ): void {
+	static function () use ( $refitune_keep_reviews ): void {
 		foreach ( get_post_types( array( 'public' => true ) ) as $post_type ) {
-			if ( $wprefi_keep_reviews && 'product' === $post_type ) {
+			if ( $refitune_keep_reviews && 'product' === $post_type ) {
 				continue;
 			}
 			remove_meta_box( 'commentstatusdiv', $post_type, 'normal' );

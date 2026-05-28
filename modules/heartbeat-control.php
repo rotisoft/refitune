@@ -5,19 +5,19 @@
  * Control WordPress Heartbeat API frequency or disable it entirely
  * in three independent contexts: Admin, Frontend, and Post Editor.
  *
- * @package WP_Refiner
+ * @package RefiTune
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$wprefi_heartbeat_settings = get_option( 'wprefi_settings', array() );
+$refitune_heartbeat_settings = get_option( 'refitune_settings', array() );
 
 // ============================================================================
 // 1. ADMIN HEARTBEAT (Dashboard and other admin pages, NOT post editor)
 // ============================================================================
-$admin_value = isset( $wprefi_heartbeat_settings['heartbeat_admin'] ) ? $wprefi_heartbeat_settings['heartbeat_admin'] : '';
+$admin_value = isset( $refitune_heartbeat_settings['heartbeat_admin'] ) ? $refitune_heartbeat_settings['heartbeat_admin'] : '';
 
 if ( 'disable' === $admin_value ) {
 	add_action(
@@ -47,7 +47,7 @@ if ( 'disable' === $admin_value ) {
 // ============================================================================
 // 2. FRONTEND HEARTBEAT
 // ============================================================================
-$frontend_value = isset( $wprefi_heartbeat_settings['heartbeat_frontend'] ) ? $wprefi_heartbeat_settings['heartbeat_frontend'] : '';
+$frontend_value = isset( $refitune_heartbeat_settings['heartbeat_frontend'] ) ? $refitune_heartbeat_settings['heartbeat_frontend'] : '';
 
 if ( 'disable' === $frontend_value ) {
 	add_action(
@@ -74,7 +74,7 @@ if ( 'disable' === $frontend_value ) {
 // ============================================================================
 // 3. POST EDITOR HEARTBEAT (Gutenberg + Classic Editor)
 // ============================================================================
-$editor_value = isset( $wprefi_heartbeat_settings['heartbeat_editor'] ) ? $wprefi_heartbeat_settings['heartbeat_editor'] : '';
+$editor_value = isset( $refitune_heartbeat_settings['heartbeat_editor'] ) ? $refitune_heartbeat_settings['heartbeat_editor'] : '';
 
 if ( 'disable' === $editor_value ) {
 	add_action(

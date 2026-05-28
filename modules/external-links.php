@@ -5,7 +5,7 @@
  * Minden belső domainen kívülre mutató <a href="..."> taghez hozzáadja a
  * target="_blank" és rel="noopener noreferrer" attribútumokat.
  *
- * @package WP_Refiner
+ * @package RefiTune
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param string $content HTML tartalom.
  * @return string Módosított HTML tartalom.
  */
-function wprefi_external_links_new_tab( string $content ): string {
+function refitune_external_links_new_tab( string $content ): string {
 	if ( empty( $content ) ) {
 		return $content;
 	}
@@ -73,5 +73,5 @@ function wprefi_external_links_new_tab( string $content ): string {
 		$content
 	);
 }
-add_filter( 'the_content', 'wprefi_external_links_new_tab' );
-add_filter( 'widget_text', 'wprefi_external_links_new_tab' );
+add_filter( 'the_content', 'refitune_external_links_new_tab' );
+add_filter( 'widget_text', 'refitune_external_links_new_tab' );

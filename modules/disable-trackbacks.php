@@ -8,7 +8,7 @@
  * - Eltávolítja az X-Pingback HTTP fejlécet.
  * - Közvetlen trackback kéréseket visszautasítja (403).
  *
- * @package WP_Refiner
+ * @package RefiTune
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -61,7 +61,7 @@ add_action(
 	static function (): void {
 		if ( is_trackback() ) {
 			wp_die(
-				esc_html__( 'A trackback le van tiltva ezen a webhelyen.', 'refinerpress' ),
+				esc_html__( 'A trackback le van tiltva ezen a webhelyen.', 'refitune' ),
 				'',
 				array( 'response' => 403 )
 			);

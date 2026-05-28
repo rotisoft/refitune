@@ -2,7 +2,7 @@
 /**
  * Admin menü regisztráció, beállítások kezelése, asset betöltés és oldal renderelés.
  *
- * @package RefinerPress_Toolkit
+ * @package RefiTune
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -20,108 +20,108 @@ if ( ! is_admin() ) {
  *  - (nincs) : egyszerű boolean kapcsoló
  *  - sub_options : albeállítások listája (egyenként boolean)
  *  - role_select : WordPress szerepkörök checkbox listája (tömb érték)
- *    - option_key     : az option kulcsa a wprefi_settings-ben (array)
+ *    - option_key     : az option kulcsa a refitune_settings-ben (array)
  *    - required_roles : mindig bejelölt/zárolt szerepkörök
  *    - enable_key     : opcionális master boolean kapcsoló a feature be/kikapcsolásához
  *
  * @return array
  */
-function wprefi_get_features() {
+function refitune_get_features() {
 	// Header cleanup sub_options dynamic structure.
 	$cleanup_head_sub_options = array(
-		'cleanup_head_generator'      => __( 'Hide WordPress version (Remove Generator tag)', 'refinerpress' ),
+		'cleanup_head_generator'      => __( 'Hide WordPress version (Remove Generator tag)', 'refitune' ),
 	);
 
 	// If WooCommerce is active, add WC generator option.
 	if ( class_exists( 'WooCommerce' ) ) {
-		$cleanup_head_sub_options['cleanup_head_wc_generator'] = __( 'Hide WooCommerce version (Remove Generator tag)', 'refinerpress' );
+		$cleanup_head_sub_options['cleanup_head_wc_generator'] = __( 'Hide WooCommerce version (Remove Generator tag)', 'refitune' );
 	}
 
-	$cleanup_head_sub_options['cleanup_head_rsd']            = __( 'Remove RSD (Really Simple Discovery) link', 'refinerpress' );
-	$cleanup_head_sub_options['cleanup_head_wlwmanifest']    = __( 'Remove Windows Live Writer manifest link', 'refinerpress' );
-	$cleanup_head_sub_options['cleanup_head_shortlink']      = __( 'Remove Shortlink', 'refinerpress' );
-	$cleanup_head_sub_options['cleanup_head_adjacent_posts'] = __( 'Remove Previous and Next post rel links', 'refinerpress' );
+	$cleanup_head_sub_options['cleanup_head_rsd']            = __( 'Remove RSD (Really Simple Discovery) link', 'refitune' );
+	$cleanup_head_sub_options['cleanup_head_wlwmanifest']    = __( 'Remove Windows Live Writer manifest link', 'refitune' );
+	$cleanup_head_sub_options['cleanup_head_shortlink']      = __( 'Remove Shortlink', 'refitune' );
+	$cleanup_head_sub_options['cleanup_head_adjacent_posts'] = __( 'Remove Previous and Next post rel links', 'refitune' );
 
 	return array(
 		'cleanup_head'    => array(
-			'label'       => __( 'Header Cleanup', 'refinerpress' ),
-			'description' => __( 'Removes unnecessary wp_head elements from the source.', 'refinerpress' ),
+			'label'       => __( 'Header Cleanup', 'refitune' ),
+			'description' => __( 'Removes unnecessary wp_head elements from the source.', 'refitune' ),
 			'sub_options' => $cleanup_head_sub_options,
 			'category'    => 'performance',
 		),
 	'disable_feeds'   => array(
-		'label'       => __( 'Feed Management', 'refinerpress' ),
-		'description' => __( 'Removes default WordPress RSS/Atom feeds from HTML source.', 'refinerpress' ),
+		'label'       => __( 'Feed Management', 'refitune' ),
+		'description' => __( 'Removes default WordPress RSS/Atom feeds from HTML source.', 'refitune' ),
 		'sub_options' => array(
-			'disable_feeds_posts'    => __( 'Disable main posts feed (domain.com/feed/)', 'refinerpress' ),
-			'disable_feeds_comments' => __( 'Disable comment feeds', 'refinerpress' ),
-			'disable_feeds_extra'    => __( 'Remove additional feeds (categories, authors, etc.)', 'refinerpress' ),
+			'disable_feeds_posts'    => __( 'Disable main posts feed (domain.com/feed/)', 'refitune' ),
+			'disable_feeds_comments' => __( 'Disable comment feeds', 'refitune' ),
+			'disable_feeds_extra'    => __( 'Remove additional feeds (categories, authors, etc.)', 'refitune' ),
 		),
 		'category'    => 'performance',
 	),
 		'disable_emoji'   => array(
-			'label'       => __( 'Disable Emoji', 'refinerpress' ),
-			'description' => __( 'Disables WordPress built-in emoji processing scripts and stylesheet, reducing page load times.', 'refinerpress' ),
+			'label'       => __( 'Disable Emoji', 'refitune' ),
+			'description' => __( 'Disables WordPress built-in emoji processing scripts and stylesheet, reducing page load times.', 'refitune' ),
 			'category'    => 'performance',
 		),
 	'disable_jquery_migrate' => array(
-		'label'       => __( 'Disable jQuery Migrate', 'refinerpress' ),
-		'description' => __( 'Removes the jquery-migrate script from frontend pages.', 'refinerpress' ),
+		'label'       => __( 'Disable jQuery Migrate', 'refitune' ),
+		'description' => __( 'Removes the jquery-migrate script from frontend pages.', 'refitune' ),
 		'category'    => 'performance',
 	),
 	'post_revisions'  => array(
-		'label'       => __( 'Post Revisions Limit', 'refinerpress' ),
-		'description' => __( 'How many post revisions WordPress should store per post (Recommended: 5-10)', 'refinerpress' ),
+		'label'       => __( 'Post Revisions Limit', 'refitune' ),
+		'description' => __( 'How many post revisions WordPress should store per post (Recommended: 5-10)', 'refitune' ),
 		'type'        => 'number_input',
 		'option_key'  => 'post_revisions_limit',
 		'min'         => 0,
 		'category'    => 'performance',
 	),
 	'autosave_interval' => array(
-		'label'       => __( 'Auto-save Interval', 'refinerpress' ),
-		'description' => __( 'Here you can specify how many seconds to save the post. Recommended: 120 or 300 (2 minutes or 5 minutes)', 'refinerpress' ),
+		'label'       => __( 'Auto-save Interval', 'refitune' ),
+		'description' => __( 'Here you can specify how many seconds to save the post. Recommended: 120 or 300 (2 minutes or 5 minutes)', 'refitune' ),
 		'type'        => 'number_input',
 		'option_key'  => 'autosave_interval',
 		'min'         => 10,
 		'category'    => 'performance',
 	),
 	'trash_auto_delete' => array(
-		'label'       => __( 'Trash Auto-Delete', 'refinerpress' ),
-		'description' => __( 'Number of days before items in trash are permanently deleted. Recommended: 7-30 days. Default: 30 days', 'refinerpress' ),
+		'label'       => __( 'Trash Auto-Delete', 'refitune' ),
+		'description' => __( 'Number of days before items in trash are permanently deleted. Recommended: 7-30 days. Default: 30 days', 'refitune' ),
 		'type'        => 'number_input',
 		'option_key'  => 'trash_auto_delete_days',
 		'min'         => 1,
 		'category'    => 'performance',
 	),
 	'heartbeat_control' => array(
-		'label'       => __( 'Heartbeat API Control', 'refinerpress' ),
-		'description' => __( 'Control WordPress Heartbeat API frequency or disable it in admin, frontend, and post editor contexts independently.', 'refinerpress' ),
+		'label'       => __( 'Heartbeat API Control', 'refitune' ),
+		'description' => __( 'Control WordPress Heartbeat API frequency or disable it in admin, frontend, and post editor contexts independently.', 'refitune' ),
 		'type'        => 'heartbeat_control',
 		'category'    => 'performance',
 	),
 	'disable_xmlrpc'  => array(
-		'label'       => __( 'Disable XML-RPC', 'refinerpress' ),
-		'description' => __( 'Completely disables the XML-RPC remote API interface (404 Not Found response).', 'refinerpress' ),
+		'label'       => __( 'Disable XML-RPC', 'refitune' ),
+		'description' => __( 'Completely disables the XML-RPC remote API interface (404 Not Found response).', 'refitune' ),
 		'category'    => 'security',
 	),
 	'disable_trackbacks' => array(
-		'label'       => __( 'Disable Trackback/Pingback', 'refinerpress' ),
-		'description' => __( 'Disables trackback and pingback mechanism (inter-post notifications): closes pings on all posts, removes pingback methods.', 'refinerpress' ),
+		'label'       => __( 'Disable Trackback/Pingback', 'refitune' ),
+		'description' => __( 'Disables trackback and pingback mechanism (inter-post notifications): closes pings on all posts, removes pingback methods.', 'refitune' ),
 		'category'    => 'security',
 	),
 	'disable_file_edit' => array(
-		'label'       => __( 'Disable File Editor', 'refinerpress' ),
-		'description' => __( 'Disables the built-in plugin and theme editor in admin area (DISALLOW_FILE_EDIT).', 'refinerpress' ),
+		'label'       => __( 'Disable File Editor', 'refitune' ),
+		'description' => __( 'Disables the built-in plugin and theme editor in admin area (DISALLOW_FILE_EDIT).', 'refitune' ),
 		'category'    => 'security',
 	),
 	'login_tweaks'    => array(
-		'label'       => __( 'Login Error Messages', 'refinerpress' ),
-		'description' => __( 'Generalizes login error messages so it doesn\'t reveal whether username or password was incorrect.', 'refinerpress' ),
+		'label'       => __( 'Login Error Messages', 'refitune' ),
+		'description' => __( 'Generalizes login error messages so it doesn\'t reveal whether username or password was incorrect.', 'refitune' ),
 		'category'    => 'security',
 	),
 	'admin_access'    => array(
-		'label'         => __( 'Restrict Admin Access', 'refinerpress' ),
-		'description'   => __( 'Determines which user roles can access the wp-admin area.', 'refinerpress' ),
+		'label'         => __( 'Restrict Admin Access', 'refitune' ),
+		'description'   => __( 'Determines which user roles can access the wp-admin area.', 'refitune' ),
 		'type'          => 'role_select',
 		'option_key'    => 'admin_access_roles',
 		'required_roles' => array( 'administrator' ),
@@ -129,98 +129,98 @@ function wprefi_get_features() {
 		'category'      => 'security',
 	),
 	'rest_api_restrictions' => array(
-		'label'       => __( 'REST API Restrictions', 'refinerpress' ),
-		'description' => __( 'Intelligent restriction of certain WordPress REST API endpoints.', 'refinerpress' ),
+		'label'       => __( 'REST API Restrictions', 'refitune' ),
+		'description' => __( 'Intelligent restriction of certain WordPress REST API endpoints.', 'refitune' ),
 		'sub_options' => array(
-			'rest_disable_users'    => __( 'Restrict Users endpoint (block external requests) - /wp-json/wp/v2/users', 'refinerpress' ),
-			'rest_restrict_index'   => __( 'Restrict REST index (block external requests) - /wp-json/', 'refinerpress' ),
-			'rest_disable_media'    => __( 'Restrict Media endpoint (block external requests) - /wp-json/wp/v2/media', 'refinerpress' ),
-			'rest_disable_comments' => __( 'Restrict Comments endpoint (block external requests) - /wp-json/wp/v2/comments', 'refinerpress' ),
-			'rest_disable_search'   => __( 'Restrict Search endpoint (block external requests) - /wp-json/wp/v2/search', 'refinerpress' ),
+			'rest_disable_users'    => __( 'Restrict Users endpoint (block external requests) - /wp-json/wp/v2/users', 'refitune' ),
+			'rest_restrict_index'   => __( 'Restrict REST index (block external requests) - /wp-json/', 'refitune' ),
+			'rest_disable_media'    => __( 'Restrict Media endpoint (block external requests) - /wp-json/wp/v2/media', 'refitune' ),
+			'rest_disable_comments' => __( 'Restrict Comments endpoint (block external requests) - /wp-json/wp/v2/comments', 'refitune' ),
+			'rest_disable_search'   => __( 'Restrict Search endpoint (block external requests) - /wp-json/wp/v2/search', 'refitune' ),
 		),
 		'category'    => 'security',
 	),
 	'login_limit'          => array(
-		'label'       => __( 'Login Limit', 'refinerpress' ),
-		'description' => __( 'Limits failed login attempts based on IP address and username/email.', 'refinerpress' ),
+		'label'       => __( 'Login Limit', 'refitune' ),
+		'description' => __( 'Limits failed login attempts based on IP address and username/email.', 'refitune' ),
 		'type'        => 'login_limit',
 		'enable_key'  => 'login_limit_enabled',
 		'category'    => 'security',
 	),
 	'hide_admin_bar'  => array(
-		'label'       => __( 'Hide Admin Bar', 'refinerpress' ),
-		'description' => __( 'Hides the admin bar for logged-in users with selected roles.', 'refinerpress' ),
+		'label'       => __( 'Hide Admin Bar', 'refitune' ),
+		'description' => __( 'Hides the admin bar for logged-in users with selected roles.', 'refitune' ),
 		'type'        => 'role_select',
 		'option_key'  => 'hide_admin_bar_roles',
 		'enable_key'  => 'hide_admin_bar_enabled',
 		'category'    => 'visual',
 	),
 	'block_visibility' => array(
-		'label'       => __( 'Block Visibility (Mobile)', 'refinerpress' ),
-		'description' => __( 'Adds a visibility option to every Gutenberg block to control whether it appears on mobile, desktop, or both.', 'refinerpress' ),
+		'label'       => __( 'Block Visibility (Mobile)', 'refitune' ),
+		'description' => __( 'Adds a visibility option to every Gutenberg block to control whether it appears on mobile, desktop, or both.', 'refitune' ),
 		'category'    => 'visual',
 	),
 	'login_customizer' => array(
-		'label'       => __( 'Login Page Customization', 'refinerpress' ),
-		'description' => __( 'Customize WordPress login page (wp-login.php) logo, background color and primary color.', 'refinerpress' ),
+		'label'       => __( 'Login Page Customization', 'refitune' ),
+		'description' => __( 'Customize WordPress login page (wp-login.php) logo, background color and primary color.', 'refitune' ),
 		'type'        => 'login_customizer',
 		'enable_key'  => 'login_customizer_enabled',
 		'category'    => 'visual',
 	),
 		'email_controls'  => array(
-			'label'       => __( 'Email Notifications', 'refinerpress' ),
-			'description' => __( 'Disable WordPress system emails or redirect them to a custom address.', 'refinerpress' ),
+			'label'       => __( 'Email Notifications', 'refitune' ),
+			'description' => __( 'Disable WordPress system emails or redirect them to a custom address.', 'refitune' ),
 			'type'        => 'email_controls',
 			'category'    => 'email',
 		),
 		'email_smtp'      => array(
-			'label'       => __( 'Email sending', 'refinerpress' ),
-			'description' => __( 'Configure SMTP server or completely disable all emails.', 'refinerpress' ),
+			'label'       => __( 'Email sending', 'refitune' ),
+			'description' => __( 'Configure SMTP server or completely disable all emails.', 'refitune' ),
 			'type'        => 'email_smtp',
 			'category'    => 'email',
 		),
 	'disable_comments' => array(
-		'label'       => __( 'Disable Comments', 'refinerpress' ),
-		'description' => __( 'Completely disables comments and comment submission options.', 'refinerpress' ),
+		'label'       => __( 'Disable Comments', 'refitune' ),
+		'description' => __( 'Completely disables comments and comment submission options.', 'refitune' ),
 		'type'        => 'comments_control',
 		'category'    => 'misc',
 	),
 	'external_links'  => array(
-		'label'       => __( 'External Links in New Window', 'refinerpress' ),
-		'description' => __( 'Automatically adds target="_blank" and rel="noopener noreferrer" to all external links.', 'refinerpress' ),
+		'label'       => __( 'External Links in New Window', 'refitune' ),
+		'description' => __( 'Automatically adds target="_blank" and rel="noopener noreferrer" to all external links.', 'refitune' ),
 		'category'    => 'misc',
 	),
 		'page_excerpt'    => array(
-			'label'       => __( 'Enable Page Excerpt', 'refinerpress' ),
-			'description' => __( 'Enables the excerpt field for pages in both Gutenberg and Classic editor.', 'refinerpress' ),
+			'label'       => __( 'Enable Page Excerpt', 'refitune' ),
+			'description' => __( 'Enables the excerpt field for pages in both Gutenberg and Classic editor.', 'refitune' ),
 			'category'    => 'misc',
 		),
 	'svg_upload'      => array(
-		'label'       => __( 'SVG Upload', 'refinerpress' ),
-		'description' => __( 'Allows SVG file uploads with security filtering. Select which roles can upload SVG.', 'refinerpress' ),
+		'label'       => __( 'SVG Upload', 'refitune' ),
+		'description' => __( 'Allows SVG file uploads with security filtering. Select which roles can upload SVG.', 'refitune' ),
 		'type'        => 'role_select',
 		'option_key'  => 'svg_upload_roles',
 		'enable_key'  => 'svg_upload_enabled',
 		'category'    => 'misc',
 	),
 	'avif_upload'     => array(
-		'label'       => __( 'AVIF Upload', 'refinerpress' ),
-		'description' => __( 'Allows AVIF image file uploads. Select which roles can upload AVIF.', 'refinerpress' ),
+		'label'       => __( 'AVIF Upload', 'refitune' ),
+		'description' => __( 'Allows AVIF image file uploads. Select which roles can upload AVIF.', 'refitune' ),
 		'type'        => 'role_select',
 		'option_key'  => 'avif_upload_roles',
 		'enable_key'  => 'avif_upload_enabled',
 		'category'    => 'misc',
 	),
 	'role_redirects'  => array(
-		'label'       => __( 'Role Redirects', 'refinerpress' ),
-		'description' => __( 'Set custom login and logout redirect URLs per user role.', 'refinerpress' ),
+		'label'       => __( 'Role Redirects', 'refitune' ),
+		'description' => __( 'Set custom login and logout redirect URLs per user role.', 'refitune' ),
 		'type'        => 'role_redirects',
 		'enable_key'  => 'role_redirects_enabled',
 		'category'    => 'misc',
 	),
 	'maintenance_mode' => array(
-		'label'          => __( 'Maintenance Mode', 'refinerpress' ),
-		'description'    => __( 'Temporarily block visitors from accessing the site. Select which roles can still view the site.', 'refinerpress' ),
+		'label'          => __( 'Maintenance Mode', 'refitune' ),
+		'description'    => __( 'Temporarily block visitors from accessing the site. Select which roles can still view the site.', 'refitune' ),
 		'type'           => 'maintenance_mode',
 		'option_key'     => 'maintenance_mode_roles',
 		'required_roles' => array( 'administrator' ),
@@ -229,8 +229,8 @@ function wprefi_get_features() {
 		'category'       => 'misc',
 	),
 	'dynamic_year'     => array(
-		'label'       => __( 'Dynamic Year Shortcodes', 'refinerpress' ),
-		'description' => __( 'Provides shortcodes to display current year or calculate duration. Use [refi-year] or [refi-year from="2006"]', 'refinerpress' ),
+		'label'       => __( 'Dynamic Year Shortcodes', 'refitune' ),
+		'description' => __( 'Provides shortcodes to display current year or calculate duration. Use [refi-year] or [refi-year from="2006"]', 'refitune' ),
 		'category'    => 'misc',
 	),
 	);
@@ -246,39 +246,39 @@ function wprefi_get_features() {
  *
  * @return void
  */
-function wprefi_register_admin_menu(): void {
+function refitune_register_admin_menu(): void {
 	add_submenu_page(
 		'tools.php',
-		__( 'RefinerPress Toolkit', 'refinerpress' ),
-		__( 'RefinerPress Toolkit', 'refinerpress' ),
+		__( 'RefiTune - Site refiner toolkit', 'refitune' ),
+		__( 'RefiTune Toolkit', 'refitune' ),
 		'manage_options',
-		'wprefi-refinements',
-		'wprefi_render_dashboard_page'
+		'refitune-refinements',
+		'refitune_render_dashboard_page'
 	);
 
 	add_submenu_page(
 		'tools.php',
-		__( 'RefinerPress Toolkit – Settings', 'refinerpress' ),
-		__( 'RPT Settings', 'refinerpress' ),
+		__( 'RefiTune – Settings', 'refitune' ),
+		__( 'RefiTune Settings', 'refitune' ),
 		'manage_options',
-		'wprefi-settings',
-		'wprefi_render_settings_page'
+		'refitune-settings',
+		'refitune_render_settings_page'
 	);
 
 	add_submenu_page(
 		'tools.php',
-		__( 'RefinerPress Toolkit – Help', 'refinerpress' ),
-		__( 'RPT Help', 'refinerpress' ),
+		__( 'RefiTune – Help', 'refitune' ),
+		__( 'RefiTune Help', 'refitune' ),
 		'manage_options',
-		'wprefi-help',
-		'wprefi_render_help_page'
+		'refitune-help',
+		'refitune_render_help_page'
 	);
 
 	// Csak a főoldal látszik a menüben; a Settings és Help elérhetők URL-en.
-	remove_submenu_page( 'tools.php', 'wprefi-settings' );
-	remove_submenu_page( 'tools.php', 'wprefi-help' );
+	remove_submenu_page( 'tools.php', 'refitune-settings' );
+	remove_submenu_page( 'tools.php', 'refitune-help' );
 }
-add_action( 'admin_menu', 'wprefi_register_admin_menu', 10 );
+add_action( 'admin_menu', 'refitune_register_admin_menu', 10 );
 
 /**
  * Előre beállítja a $GLOBALS['title'] változót a rejtett aloldalakhoz.
@@ -292,17 +292,17 @@ add_action( 'admin_menu', 'wprefi_register_admin_menu', 10 );
  *
  * @return void
  */
-function wprefi_set_hidden_page_title(): void {
+function refitune_set_hidden_page_title(): void {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
 
-	if ( 'wprefi-settings' === $page ) {
-		$GLOBALS['title'] = __( 'RefinerPress Toolkit – Settings', 'refinerpress' );
-	} elseif ( 'wprefi-help' === $page ) {
-		$GLOBALS['title'] = __( 'RefinerPress Toolkit – Help', 'refinerpress' );
+	if ( 'refitune-settings' === $page ) {
+		$GLOBALS['title'] = __( 'RefiTune – Settings', 'refitune' );
+	} elseif ( 'refitune-help' === $page ) {
+		$GLOBALS['title'] = __( 'RefiTune – Help', 'refitune' );
 	}
 }
-add_action( 'current_screen', 'wprefi_set_hidden_page_title' );
+add_action( 'current_screen', 'refitune_set_hidden_page_title' );
 
 /**
  * "Settings" link hozzáadása a plugin listában a plugin sorához.
@@ -310,17 +310,17 @@ add_action( 'current_screen', 'wprefi_set_hidden_page_title' );
  * @param array $links Meglévő plugin action linkek.
  * @return array Kiegészített linkek.
  */
-function wprefi_plugin_action_links( array $links ): array {
+function refitune_plugin_action_links( array $links ): array {
 	$settings_link = sprintf(
 		'<a href="%s">%s</a>',
-		esc_url( admin_url( 'tools.php?page=wprefi-settings' ) ),
-		esc_html__( 'Settings', 'refinerpress' )
+		esc_url( admin_url( 'tools.php?page=refitune-settings' ) ),
+		esc_html__( 'Settings', 'refitune' )
 	);
 	
 	$help_link = sprintf(
 		'<a href="%s">%s</a>',
-		esc_url( admin_url( 'tools.php?page=wprefi-help' ) ),
-		esc_html__( 'Help', 'refinerpress' )
+		esc_url( admin_url( 'tools.php?page=refitune-help' ) ),
+		esc_html__( 'Help', 'refitune' )
 	);
 	
 	// Settings és Help linkek hozzáadása az elejére (fordított sorrendben, mert unshift).
@@ -329,25 +329,86 @@ function wprefi_plugin_action_links( array $links ): array {
 	
 	return $links;
 }
-add_filter( 'plugin_action_links_refinerpress/refinerpress.php', 'wprefi_plugin_action_links' );
+add_filter( 'plugin_action_links_refitune/refitune.php', 'refitune_plugin_action_links' );
 
 /**
  * Plugin beállítások regisztrálása a Settings API-val.
  *
  * @return void
  */
-function wprefi_register_settings() {
+function refitune_register_settings() {
 	register_setting(
-		'wprefi_settings_group',
-		'wprefi_settings',
+		'refitune_settings_group',
+		'refitune_settings',
 		array(
 			'type'              => 'array',
-			'sanitize_callback' => 'wprefi_sanitize_settings',
+			'sanitize_callback' => 'refitune_sanitize_settings',
 			'default'           => array(),
 		)
 	);
 }
-add_action( 'admin_init', 'wprefi_register_settings', 10 );
+add_action( 'admin_init', 'refitune_register_settings', 10 );
+
+/**
+ * Sanitize a site-relative path for storage (must resolve to this site only).
+ *
+ * @param mixed $path Raw path from settings input.
+ * @return string Sanitized relative path with leading slash, or empty string if invalid.
+ */
+function refitune_sanitize_relative_site_path( $path ): string {
+	if ( ! is_string( $path ) ) {
+		return '';
+	}
+
+	$path = trim( wp_unslash( $path ) );
+	if ( '' === $path ) {
+		return '';
+	}
+
+	$path = sanitize_text_field( $path );
+
+	// Disallow external URLs, protocol-relative URLs, whitespace, and path traversal.
+	if ( preg_match( '#\s|[\\\\]|(^|[^/])(https?:)?//#i', $path ) || false !== strpos( $path, '..' ) ) {
+		return '';
+	}
+
+	if ( '/' !== $path[0] ) {
+		$path = '/' . $path;
+	}
+
+	$full_url = esc_url_raw( home_url( $path ) );
+	if ( '' === $full_url || ! wp_http_validate_url( $full_url ) ) {
+		return '';
+	}
+
+	$home_parts = wp_parse_url( home_url() );
+	$url_parts  = wp_parse_url( $full_url );
+
+	if ( empty( $home_parts['host'] ) || empty( $url_parts['host'] ) ) {
+		return '';
+	}
+
+	if ( strtolower( $home_parts['host'] ) !== strtolower( $url_parts['host'] ) ) {
+		return '';
+	}
+
+	return $path;
+}
+
+/**
+ * Sanitize a redirect URL that must belong to this WordPress site.
+ *
+ * @param mixed $path Raw relative path from settings input.
+ * @return string Internal redirect URL from esc_url_raw(), or empty string if invalid.
+ */
+function refitune_sanitize_internal_redirect_url( $path ): string {
+	$relative = refitune_sanitize_relative_site_path( $path );
+	if ( '' === $relative ) {
+		return '';
+	}
+
+	return esc_url_raw( home_url( $relative ) );
+}
 
 /**
  * Beállítások szanitizálása mentés előtt.
@@ -357,13 +418,13 @@ add_action( 'admin_init', 'wprefi_register_settings', 10 );
  * @param mixed $input A beküldött nyers adatok.
  * @return array Szanitizált beállítások.
  */
-function wprefi_sanitize_settings( $input ): array {
+function refitune_sanitize_settings( $input ): array {
 	if ( ! is_array( $input ) ) {
 		return array();
 	}
 
 	$sanitized = array();
-	$features  = wprefi_get_features();
+	$features  = refitune_get_features();
 	$all_roles = array_keys( wp_roles()->get_names() );
 
 	foreach ( $features as $key => $feature ) {
@@ -378,12 +439,10 @@ function wprefi_sanitize_settings( $input ): array {
 				? 'custom'
 				: 'site_icon';
 
-			// Logo custom URL (relatív).
-			$custom_url = isset( $input['login_logo_custom_url'] ) ? trim( $input['login_logo_custom_url'] ) : '';
-			if ( '' !== $custom_url && '/' !== substr( $custom_url, 0, 1 ) ) {
-				$custom_url = '/' . $custom_url;
-			}
-			$sanitized['login_logo_custom_url'] = $custom_url;
+			// Logo custom URL (site-relative path).
+			$sanitized['login_logo_custom_url'] = refitune_sanitize_relative_site_path(
+				$input['login_logo_custom_url'] ?? ''
+			);
 
 			// Logo szélesség és magasság (pixel).
 			$sanitized['login_logo_width']  = isset( $input['login_logo_width'] ) && is_numeric( $input['login_logo_width'] ) && (int) $input['login_logo_width'] > 0
@@ -405,38 +464,32 @@ function wprefi_sanitize_settings( $input ): array {
 			$login_redirects  = array();
 			$logout_redirects = array();
 
-			// Login átirányítások sanitálása (relatív útvonalak).
+			// Login redirects (site-relative path → validated internal URL).
 			if ( isset( $input['role_redirects_login'] ) && is_array( $input['role_redirects_login'] ) ) {
 				foreach ( $input['role_redirects_login'] as $role => $relative_path ) {
-					$role          = sanitize_key( $role );
-					$relative_path = trim( $relative_path );
+					$role = sanitize_key( $role );
+					if ( ! in_array( $role, $all_roles, true ) ) {
+						continue;
+					}
 
-					if ( '' !== $relative_path && in_array( $role, $all_roles, true ) ) {
-						// Ha nem "/" -vel kezdődik, hozzáadjuk.
-						if ( '/' !== substr( $relative_path, 0, 1 ) ) {
-							$relative_path = '/' . $relative_path;
-						}
-
-						// Teljes URL összerakása home_url() + relatív útvonal.
-						$login_redirects[ $role ] = home_url( $relative_path );
+					$redirect_url = refitune_sanitize_internal_redirect_url( $relative_path );
+					if ( '' !== $redirect_url ) {
+						$login_redirects[ $role ] = $redirect_url;
 					}
 				}
 			}
 
-			// Logout átirányítások sanitálása (relatív útvonalak).
+			// Logout redirects (site-relative path → validated internal URL).
 			if ( isset( $input['role_redirects_logout'] ) && is_array( $input['role_redirects_logout'] ) ) {
 				foreach ( $input['role_redirects_logout'] as $role => $relative_path ) {
-					$role          = sanitize_key( $role );
-					$relative_path = trim( $relative_path );
+					$role = sanitize_key( $role );
+					if ( ! in_array( $role, $all_roles, true ) ) {
+						continue;
+					}
 
-					if ( '' !== $relative_path && in_array( $role, $all_roles, true ) ) {
-						// Ha nem "/" -vel kezdődik, hozzáadjuk.
-						if ( '/' !== substr( $relative_path, 0, 1 ) ) {
-							$relative_path = '/' . $relative_path;
-						}
-
-						// Teljes URL összerakása home_url() + relatív útvonal.
-						$logout_redirects[ $role ] = home_url( $relative_path );
+					$redirect_url = refitune_sanitize_internal_redirect_url( $relative_path );
+					if ( '' !== $redirect_url ) {
+						$logout_redirects[ $role ] = $redirect_url;
 					}
 				}
 			}
@@ -461,7 +514,7 @@ function wprefi_sanitize_settings( $input ): array {
 		$sanitized['email_smtp_username']   = isset( $input['email_smtp_username'] ) ? sanitize_text_field( $input['email_smtp_username'] ) : '';
 
 		// SMTP jelszó: titkosítás Sodium-mal.
-		$old_settings    = get_option( 'wprefi_settings', array() );
+		$old_settings    = get_option( 'refitune_settings', array() );
 		$old_password    = isset( $old_settings['email_smtp_password'] ) ? $old_settings['email_smtp_password'] : '';
 		$new_password    = isset( $input['email_smtp_password'] ) ? $input['email_smtp_password'] : '';
 		$password_to_save = '';
@@ -469,7 +522,7 @@ function wprefi_sanitize_settings( $input ): array {
 		if ( '' !== $new_password ) {
 			// Ha a jelszó megváltozott (nem egyezik a régi értékkel), titkosítjuk.
 			if ( $new_password !== $old_password ) {
-				$password_to_save = wprefi_encrypt( $new_password );
+				$password_to_save = refitune_encrypt( $new_password );
 			} else {
 				// Ha nem változott, megtartjuk a régi (már titkosított) értéket.
 				$password_to_save = $old_password;
@@ -644,7 +697,7 @@ function wprefi_sanitize_settings( $input ): array {
 
 	$sanitized['delete_data_on_uninstall'] = ! empty( $input['delete_data_on_uninstall'] );
 
-	$old_settings = get_option( 'wprefi_settings', array() );
+	$old_settings = get_option( 'refitune_settings', array() );
 
 	unset( $sanitized['file_restrictions'] );
 
@@ -674,11 +727,11 @@ function wprefi_sanitize_settings( $input ): array {
  * @param string $hook_suffix Az aktuális admin oldal hook suffix-e.
  * @return void
  */
-function wprefi_enqueue_admin_assets( $hook_suffix ) {
+function refitune_enqueue_admin_assets( $hook_suffix ) {
 	$plugin_pages = array(
-		'tools_page_wprefi-refinements',
-		'tools_page_wprefi-settings',
-		'tools_page_wprefi-help',
+		'tools_page_refitune-refinements',
+		'tools_page_refitune-settings',
+		'tools_page_refitune-help',
 	);
 
 	if ( ! in_array( $hook_suffix, $plugin_pages, true ) ) {
@@ -686,41 +739,41 @@ function wprefi_enqueue_admin_assets( $hook_suffix ) {
 	}
 
 	// Color Picker (WordPress core).
-	if ( 'tools_page_wprefi-settings' === $hook_suffix ) {
+	if ( 'tools_page_refitune-settings' === $hook_suffix ) {
 		wp_enqueue_style( 'wp-color-picker' );
 	}
 
-	$css_file = WPREFI_PATH . 'admin/css/admin-style.css';
+	$css_file = REFITUNE_PATH . 'admin/css/admin-style.css';
 
 	wp_enqueue_style(
-		'wprefi-admin-style',
-		WPREFI_URL . 'admin/css/admin-style.css',
+		'refitune-admin-style',
+		REFITUNE_URL . 'admin/css/admin-style.css',
 		array( 'wp-color-picker' ),
-		file_exists( $css_file ) ? filemtime( $css_file ) : WPREFI_VERSION
+		file_exists( $css_file ) ? filemtime( $css_file ) : REFITUNE_VERSION
 	);
 
-	$js_file = WPREFI_PATH . 'admin/js/admin-script.js';
+	$js_file = REFITUNE_PATH . 'admin/js/admin-script.js';
 
 	wp_enqueue_script(
-		'wprefi-admin-script',
-		WPREFI_URL . 'admin/js/admin-script.js',
+		'refitune-admin-script',
+		REFITUNE_URL . 'admin/js/admin-script.js',
 		array( 'wp-color-picker' ),
-		file_exists( $js_file ) ? filemtime( $js_file ) : WPREFI_VERSION,
+		file_exists( $js_file ) ? filemtime( $js_file ) : REFITUNE_VERSION,
 		true
 	);
 }
-add_action( 'admin_enqueue_scripts', 'wprefi_enqueue_admin_assets', 10 );
+add_action( 'admin_enqueue_scripts', 'refitune_enqueue_admin_assets', 10 );
 
 /**
  * Admin fejléc navigáció linkjeinek definiálása.
  *
  * @return array Slug => label párok.
  */
-function wprefi_get_admin_nav_links() {
+function refitune_get_admin_nav_links() {
 	return array(
-		'wprefi-refinements' => __( 'Modules', 'refinerpress' ),
-		'wprefi-settings'    => __( 'Settings', 'refinerpress' ),
-		'wprefi-help'        => __( 'Help', 'refinerpress' ),
+		'refitune-refinements' => __( 'Modules', 'refitune' ),
+		'refitune-settings'    => __( 'Settings', 'refitune' ),
+		'refitune-help'        => __( 'Help', 'refitune' ),
 	);
 }
 
@@ -729,7 +782,7 @@ function wprefi_get_admin_nav_links() {
  *
  * @return string Az aktuális oldal slug-ja.
  */
-function wprefi_get_current_page_slug() {
+function refitune_get_current_page_slug() {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Oldal azonosítás, nincs állapotváltozás.
 	return isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
 }
@@ -740,25 +793,25 @@ function wprefi_get_current_page_slug() {
  * @param string $page_file A betöltendő oldal fájl neve (pl. 'page-dashboard.php').
  * @return void
  */
-function wprefi_render_admin_wrapper( $page_file ) {
-	$nav_links    = wprefi_get_admin_nav_links();
-	$current_slug = wprefi_get_current_page_slug();
+function refitune_render_admin_wrapper( $page_file ) {
+	$nav_links    = refitune_get_admin_nav_links();
+	$current_slug = refitune_get_current_page_slug();
 	?>
-	<h1 style="display: none !important;"><?php esc_html_e( 'RefinerPress Toolkit', 'refinerpress' ); ?></h1>
-	<div class="wrap wprefi-admin-wrap">
-		<h2 class="wprefi-hidden-title"><?php echo esc_html( get_admin_page_title() ); ?></h2>
+	<h1 style="display: none !important;"><?php esc_html_e( 'RefiTune - Site refiner toolkit', 'refitune' ); ?></h1>
+	<div class="wrap refitune-admin-wrap">
+		<h2 class="refitune-hidden-title"><?php echo esc_html( get_admin_page_title() ); ?></h2>
 
-		<div class="wprefi-admin-header">
-			<h1 class="wprefi-admin-title"><?php esc_html_e( 'RefinerPress Toolkit', 'refinerpress' ); ?></h1>
+		<div class="refitune-admin-header">
+			<h1 class="refitune-admin-title"><?php esc_html_e( 'RefiTune - Site refiner toolkit', 'refitune' ); ?></h1>
 
-			<nav class="wprefi-admin-nav">
+			<nav class="refitune-admin-nav">
 				<?php
 				foreach ( $nav_links as $slug => $label ) {
 					$url          = admin_url( 'tools.php?page=' . $slug );
-					$active_class = ( $current_slug === $slug ) ? ' wprefi-admin-nav-active' : '';
+					$active_class = ( $current_slug === $slug ) ? ' refitune-admin-nav-active' : '';
 
 					printf(
-						'<a href="%s" class="wprefi-admin-nav-link%s">%s</a>',
+						'<a href="%s" class="refitune-admin-nav-link%s">%s</a>',
 						esc_url( $url ),
 						esc_attr( $active_class ),
 						esc_html( $label )
@@ -768,9 +821,9 @@ function wprefi_render_admin_wrapper( $page_file ) {
 			</nav>
 		</div>
 
-		<div class="wprefi-admin-content">
+		<div class="refitune-admin-content">
 			<?php
-			$file_path = WPREFI_PATH . 'admin/' . $page_file;
+			$file_path = REFITUNE_PATH . 'admin/' . $page_file;
 
 			if ( file_exists( $file_path ) ) {
 				require $file_path;
@@ -778,9 +831,9 @@ function wprefi_render_admin_wrapper( $page_file ) {
 			?>
 		</div>
 
-		<div class="wprefi-admin-footer">
+		<div class="refitune-admin-footer">
 			<?php
-			$plugin_data = get_plugin_data( WPREFI_PATH . 'refinerpress.php' );
+			$plugin_data = get_plugin_data( REFITUNE_PATH . 'refitune.php' );
 
 			printf(
 				'%s - %s - <a href="%s" target="_blank" rel="noopener">%s</a>',
@@ -800,8 +853,8 @@ function wprefi_render_admin_wrapper( $page_file ) {
  *
  * @return void
  */
-function wprefi_render_dashboard_page() {
-	wprefi_render_admin_wrapper( 'page-dashboard.php' );
+function refitune_render_dashboard_page() {
+	refitune_render_admin_wrapper( 'page-dashboard.php' );
 }
 
 /**
@@ -809,8 +862,8 @@ function wprefi_render_dashboard_page() {
  *
  * @return void
  */
-function wprefi_render_settings_page() {
-	wprefi_render_admin_wrapper( 'page-settings.php' );
+function refitune_render_settings_page() {
+	refitune_render_admin_wrapper( 'page-settings.php' );
 }
 
 /**
@@ -818,6 +871,6 @@ function wprefi_render_settings_page() {
  *
  * @return void
  */
-function wprefi_render_help_page() {
-	wprefi_render_admin_wrapper( 'page-help.php' );
+function refitune_render_help_page() {
+	refitune_render_admin_wrapper( 'page-help.php' );
 }

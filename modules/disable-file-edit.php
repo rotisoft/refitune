@@ -7,7 +7,7 @@
  * Szerkesztő menüpontokat, és a közvetlen URL-en sem érhető el az
  * oldal a jogosultsággal rendelkező felhasználók számára sem.
  *
- * @package WP_Refiner
+ * @package RefiTune
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
