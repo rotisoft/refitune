@@ -19,18 +19,7 @@ $refitune_comments_settings = get_option( 'refitune_settings', array() );
 $refitune_keep_reviews      = class_exists( 'WooCommerce' )
 	&& ! empty( $refitune_comments_settings['disable_comments_keep_reviews'] );
 
-// Egyszeri WordPress core opció frissítés (Site Health kompatibilitás).
-// Ha a Disable Comments aktív, de a WordPress opciókat még nem állítottuk át,
-// akkor most megtesszük.
-if ( ! get_transient( 'refitune_disable_comments_migrated' ) ) {
-	if ( get_option( 'default_comment_status' ) !== 'closed' ) {
-		update_option( 'default_comment_status', 'closed' );
-	}
-	if ( get_option( 'default_ping_status' ) !== 'closed' ) {
-		update_option( 'default_ping_status', 'closed' );
-	}
-	set_transient( 'refitune_disable_comments_migrated', true, WEEK_IN_SECONDS );
-}
+// Disable Comments: one-time core option sync (handled on settings save in admin-core.php).
 
 // ---------------------------------------------------------------------------
 // 1. Hozzászólások lezárása minden bejegyzésen (futásidőben, DB érintése nélkül)

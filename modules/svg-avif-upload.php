@@ -1,8 +1,8 @@
 <?php
 /**
- * SVG és AVIF fájlok feltöltésének engedélyezése szerepkör alapján.
+ * SVG and AVIF upload support by user role.
  *
- * SVG esetén biztonsági ellenőrzést is végez a feltöltés előtt.
+ * SVG uploads require content inspection before acceptance.
  *
  * @package RefiTune
  */
@@ -11,10 +11,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once REFITUNE_PATH . 'includes/svg-sanitizer.php';
+
 /**
- * Ellenőrzi, hogy az aktuális felhasználó a megadott szerepkörök egyikébe tartozik-e.
+ * Check whether the current user belongs to one of the allowed roles.
  *
- * @param array $roles Engedélyezett szerepkörök.
+ * @param array $roles Allowed roles.
  * @return bool
  */
 function refitune_user_has_upload_role( array $roles ): bool {
@@ -26,22 +28,69 @@ function refitune_user_has_upload_role( array $roles ): bool {
 }
 
 /**
- * SVG és AVIF MIME típusok hozzáadása az engedélyezett listához.
+ * Whether the current user may upload the given extension.
  *
- * @param array $mimes Engedélyezett MIME típusok.
+ * @param string $ext File extension (svg or avif).
+ * @return bool
+ */
+function refitune_user_can_upload_extension( string $ext ): bool {
+	$settings = get_option( 'refitune_settings', array() );
+
+	if ( 'svg' === $ext ) {
+		$roles = isset( $settings['svg_upload_roles'] ) ? (array) $settings['svg_upload_roles'] : array();
+		return ! empty( $roles ) && refitune_user_has_upload_role( $roles );
+	}
+
+	if ( 'avif' === $ext ) {
+		$roles = isset( $settings['avif_upload_roles'] ) ? (array) $settings['avif_upload_roles'] : array();
+		return ! empty( $roles ) && refitune_user_has_upload_role( $roles );
+	}
+
+	return false;
+}
+
+/**
+ * Sanitize an SVG file in place using the allowlist sanitizer.
+ *
+ * @param string $path Path to the uploaded temp file.
+ * @return bool True when the file is safe (and was rewritten with clean markup).
+ */
+function refitune_svg_sanitize_file( string $path ): bool {
+	if ( ! is_readable( $path ) || ! is_writable( $path ) ) {
+		return false;
+	}
+
+	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local temp upload file.
+	$content = file_get_contents( $path );
+
+	if ( false === $content || '' === trim( (string) $content ) ) {
+		return false;
+	}
+
+	$clean = refitune_sanitize_svg_markup( $content );
+
+	if ( false === $clean ) {
+		return false;
+	}
+
+	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_put_contents_file_put_contents -- Local temp upload file.
+	$written = file_put_contents( $path, $clean );
+
+	return false !== $written;
+}
+
+/**
+ * Add SVG and AVIF MIME types for authorized roles only.
+ *
+ * @param array $mimes Allowed MIME types.
  * @return array
  */
 function refitune_svg_avif_enable_mimes( array $mimes ): array {
-	$settings   = get_option( 'refitune_settings', array() );
-	$svg_roles  = isset( $settings['svg_upload_roles'] )  ? (array) $settings['svg_upload_roles']  : array();
-	$avif_roles = isset( $settings['avif_upload_roles'] ) ? (array) $settings['avif_upload_roles'] : array();
-
-	if ( ! empty( $svg_roles ) && refitune_user_has_upload_role( $svg_roles ) ) {
-		$mimes['svg']  = 'image/svg+xml';
-		$mimes['svgz'] = 'image/svg+xml';
+	if ( refitune_user_can_upload_extension( 'svg' ) ) {
+		$mimes['svg'] = 'image/svg+xml';
 	}
 
-	if ( ! empty( $avif_roles ) && refitune_user_has_upload_role( $avif_roles ) ) {
+	if ( refitune_user_can_upload_extension( 'avif' ) ) {
 		$mimes['avif'] = 'image/avif';
 	}
 
@@ -50,115 +99,86 @@ function refitune_svg_avif_enable_mimes( array $mimes ): array {
 add_filter( 'upload_mimes', 'refitune_svg_avif_enable_mimes' );
 
 /**
- * MIME type ellenőrzés javítása SVG és AVIF fájlokhoz.
+ * Allow SVG/AVIF only when the user is authorized and the file passes checks.
  *
- * @param array       $data     Fájl adatok.
- * @param string      $file     Fájl elérési út.
- * @param string      $filename Fájlnév.
- * @param array|null  $mimes    Engedélyezett MIME típusok (lehet null).
+ * Does not override a core rejection (type/ext already false).
+ *
+ * @param array      $data     File data.
+ * @param string     $file     File path.
+ * @param string     $filename File name.
+ * @param array|null $mimes    Allowed MIME types.
  * @return array
  */
-function refitune_svg_avif_fix_mime_type( array $data, string $file, string $filename, ?array $mimes ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Required by filter signature.
-	$ext = isset( $data['ext'] ) ? $data['ext'] : '';
-
-	if ( strlen( $ext ) < 1 ) {
-		$exploded = explode( '.', $filename );
-		$ext      = strtolower( end( $exploded ) );
-	}
-
-	if ( 'svg' === $ext || 'svgz' === $ext ) {
-		$data['type']            = 'image/svg+xml';
-		$data['ext']             = $ext;
-		$data['proper_filename'] = $filename;
-	}
-
-	if ( 'avif' === $ext ) {
-		$data['type']            = 'image/avif';
-		$data['ext']             = 'avif';
-		$data['proper_filename'] = $filename;
-	}
-
-	return $data;
-}
-add_filter( 'wp_check_filetype_and_ext', 'refitune_svg_avif_fix_mime_type', 10, 4 );
-
-/**
- * WordPress beépített real MIME ellenőrzés kikapcsolása SVG és AVIF fájloknál.
- *
- * @param array        $data      Fájl adatok.
- * @param string       $file      Fájl elérési út.
- * @param string       $filename  Fájlnév.
- * @param array|null   $mimes     Engedélyezett MIME típusok (lehet null).
- * @param string|null  $real_mime Valódi MIME típus (lehet null).
- * @return array
- */
-function refitune_svg_avif_disable_real_mime_check( array $data, string $file, string $filename, ?array $mimes, ?string $real_mime ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Required by filter signature.
-	if ( empty( $data['ext'] ) ) {
+function refitune_svg_avif_validate_filetype( array $data, string $file, string $filename, ?array $mimes ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Required by filter signature.
+	if ( false === $data['type'] && false === $data['ext'] ) {
 		return $data;
 	}
 
-	$settings = get_option( 'refitune_settings', array() );
+	$ext = strtolower( pathinfo( $filename, PATHINFO_EXTENSION ) );
 
-	if ( 'svg' === $data['ext'] || 'svgz' === $data['ext'] ) {
-		$svg_roles = isset( $settings['svg_upload_roles'] ) ? (array) $settings['svg_upload_roles'] : array();
-		if ( ! empty( $svg_roles ) && refitune_user_has_upload_role( $svg_roles ) ) {
-			$data['type']            = 'image/svg+xml';
-			$data['proper_filename'] = $filename;
-		}
+	if ( ! in_array( $ext, array( 'svg', 'avif' ), true ) ) {
+		return $data;
 	}
 
-	if ( 'avif' === $data['ext'] ) {
-		$avif_roles = isset( $settings['avif_upload_roles'] ) ? (array) $settings['avif_upload_roles'] : array();
-		if ( ! empty( $avif_roles ) && refitune_user_has_upload_role( $avif_roles ) ) {
-			$data['type']            = 'image/avif';
-			$data['proper_filename'] = $filename;
-		}
+	if ( ! refitune_user_can_upload_extension( $ext ) ) {
+		return array(
+			'ext'             => false,
+			'type'            => false,
+			'proper_filename' => false,
+		);
 	}
+
+	$allowed_mimes = null !== $mimes ? $mimes : get_allowed_mime_types();
+	$filetype      = wp_check_filetype( $filename, $allowed_mimes );
+
+	if ( empty( $filetype['type'] ) || empty( $filetype['ext'] ) ) {
+		return array(
+			'ext'             => false,
+			'type'            => false,
+			'proper_filename' => false,
+		);
+	}
+
+	if ( 'svg' === $ext && ! refitune_svg_sanitize_file( $file ) ) {
+		return array(
+			'ext'             => false,
+			'type'            => false,
+			'proper_filename' => false,
+		);
+	}
+
+	$data['ext']             = $filetype['ext'];
+	$data['type']            = $filetype['type'];
+	$data['proper_filename'] = $filename;
 
 	return $data;
 }
-add_filter( 'wp_check_filetype_and_ext', 'refitune_svg_avif_disable_real_mime_check', 99, 5 );
+add_filter( 'wp_check_filetype_and_ext', 'refitune_svg_avif_validate_filetype', 10, 4 );
 
 /**
- * SVG biztonsági ellenőrzés feltöltés előtt.
+ * Final SVG security check before the file is moved into uploads.
  *
- * @param array $file Feltöltött fájl adatai.
- * @return array Fájl adatok, esetleg hibaüzenettel.
+ * @param array $file Uploaded file data.
+ * @return array
  */
 function refitune_svg_security_check( array $file ): array {
-	$settings  = get_option( 'refitune_settings', array() );
-	$svg_roles = isset( $settings['svg_upload_roles'] ) ? (array) $settings['svg_upload_roles'] : array();
-
-	if ( empty( $svg_roles ) || ! refitune_user_has_upload_role( $svg_roles ) ) {
+	if ( empty( $file['tmp_name'] ) || ! is_uploaded_file( $file['tmp_name'] ) ) {
 		return $file;
 	}
 
-	if ( ! isset( $file['type'] ) || 'image/svg+xml' !== $file['type'] ) {
+	$ext = strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) );
+
+	if ( 'svg' !== $ext ) {
 		return $file;
 	}
 
-	if ( ! isset( $file['tmp_name'] ) || ! file_exists( $file['tmp_name'] ) ) {
+	if ( ! refitune_user_can_upload_extension( 'svg' ) ) {
+		$file['error'] = __( 'You are not allowed to upload SVG files.', 'refitune' );
 		return $file;
 	}
 
-	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Helyi temp fájl olvasása.
-	$file_content = file_get_contents( $file['tmp_name'] );
-
-	$dangerous_patterns = array(
-		'/<script[^>]*>/i',
-		'/<iframe[^>]*>/i',
-		'/<embed[^>]*>/i',
-		'/<object[^>]*>/i',
-		'/\s(onclick|onload|onmouseover|onmouseout|onerror|onkeypress|onkeydown|onkeyup)\s*=/i',
-		'/href\s*=\s*["\']?\s*javascript:/i',
-		'/src\s*=\s*["\']?\s*javascript:/i',
-	);
-
-	foreach ( $dangerous_patterns as $pattern ) {
-		if ( preg_match( $pattern, $file_content ) ) {
-			$file['error'] = __( 'Biztonsági okokból ez az SVG fájl nem tölthető fel. Potenciálisan veszélyes kódot tartalmaz.', 'refitune' );
-			return $file;
-		}
+	if ( ! refitune_svg_sanitize_file( $file['tmp_name'] ) ) {
+		$file['error'] = __( 'This SVG file cannot be uploaded for security reasons. It may contain dangerous code.', 'refitune' );
 	}
 
 	return $file;
@@ -166,9 +186,9 @@ function refitune_svg_security_check( array $file ): array {
 add_filter( 'wp_handle_upload_prefilter', 'refitune_svg_security_check' );
 
 /**
- * SVG előnézet javítása a médiatárban (JS válasz).
+ * Fix SVG preview in the media library (JS response).
  *
- * @param array $response Attachment válasz adatok.
+ * @param array $response Attachment response data.
  * @return array
  */
 function refitune_svg_fix_display( array $response ): array {
@@ -184,17 +204,17 @@ function refitune_svg_fix_display( array $response ): array {
 add_filter( 'wp_prepare_attachment_for_js', 'refitune_svg_fix_display' );
 
 /**
- * SVG thumbnail megjelenítés javítása a médiatárban.
+ * Fix SVG thumbnail display in the media library.
  *
- * @param array   $response   Attachment válasz adatok.
- * @param WP_Post $attachment Attachment objektum.
- * @param array   $meta       Attachment meta adatok.
+ * @param array   $response   Attachment response data.
+ * @param WP_Post $attachment Attachment object.
+ * @param array   $meta       Attachment meta data.
  * @return array
  */
 function refitune_svg_media_thumbnails( array $response, WP_Post $attachment, array $meta ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Required by filter signature.
 	if ( 'image/svg+xml' === $response['mime'] && empty( $response['sizes'] ) ) {
 		$svg_path = get_attached_file( $attachment->ID );
-		if ( file_exists( $svg_path ) ) {
+		if ( $svg_path && file_exists( $svg_path ) ) {
 			$response['sizes'] = array(
 				'full' => array(
 					'url'         => $response['url'],

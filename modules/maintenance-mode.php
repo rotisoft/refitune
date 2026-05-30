@@ -158,12 +158,12 @@ function refitune_show_maintenance_page( string $custom_message ): void {
 		<meta charset="<?php bloginfo( 'charset' ); ?>">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="robots" content="noindex, nofollow">
-		<title><?php esc_html_e( 'Maintenance Mode', 'refitune' ); ?> - <?php bloginfo( 'name' ); ?></title>
+		<title><?php esc_html_e( 'Maintenance Mode', 'refitune' ); ?> - <?php echo esc_html( get_bloginfo( 'name' ) ); ?></title>
 		<link rel="stylesheet" href="<?php echo esc_url( refitune_maintenance_mode_get_page_stylesheet_url() ); ?>" />
 	</head>
 	<body>
 		<div class="maintenance-container">
-			<h1><?php bloginfo( 'name' ); ?></h1>
+			<h1><?php echo esc_html( get_bloginfo( 'name' ) ); ?></h1>
 			<p><?php echo $message; // Already escaped above. ?></p>
 		</div>
 	</body>

@@ -1,9 +1,8 @@
 <?php
 /**
- * External linkek automatikusan új ablakban nyílnak meg.
+ * Open external links in a new tab.
  *
- * Minden belső domainen kívülre mutató <a href="..."> taghez hozzáadja a
- * target="_blank" és rel="noopener noreferrer" attribútumokat.
+ * Adds target="_blank" and rel="noopener noreferrer" to external links only.
  *
  * @package RefiTune
  */
@@ -13,65 +12,87 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * A tartalom összes külső linkjéhez hozzáadja a target és rel attribútumokat.
+ * Check whether a link host belongs to this site (exact or subdomain).
  *
- * @param string $content HTML tartalom.
- * @return string Módosított HTML tartalom.
+ * @param string $link_host Host from the link URL.
+ * @param string $site_host Site host from home_url().
+ * @return bool
+ */
+function refitune_is_same_site_host( string $link_host, string $site_host ): bool {
+	$link_host = strtolower( $link_host );
+	$site_host = strtolower( $site_host );
+
+	if ( '' === $link_host || '' === $site_host ) {
+		return false;
+	}
+
+	if ( $link_host === $site_host ) {
+		return true;
+	}
+
+	$suffix = '.' . $site_host;
+
+	return strlen( $link_host ) > strlen( $suffix ) && substr( $link_host, -strlen( $suffix ) ) === $suffix;
+}
+
+/**
+ * Add target and rel attributes to external links in HTML content.
+ *
+ * @param string $content HTML content.
+ * @return string
  */
 function refitune_external_links_new_tab( string $content ): string {
-	if ( empty( $content ) ) {
+	if ( empty( $content ) || false === strpos( $content, '<a' ) ) {
+		return $content;
+	}
+
+	if ( ! class_exists( 'WP_HTML_Tag_Processor' ) ) {
 		return $content;
 	}
 
 	$site_host = (string) wp_parse_url( home_url(), PHP_URL_HOST );
 
-	return preg_replace_callback(
-		'/<a(\s[^>]*)>/i',
-		static function ( array $matches ) use ( $site_host ): string {
-			$attrs = $matches[1];
+	if ( '' === $site_host ) {
+		return $content;
+	}
 
-			if ( ! preg_match( '/\bhref\s*=\s*(["\'])([^"\']*)\1/i', $attrs, $href_match ) ) {
-				return $matches[0];
+	$processor = new WP_HTML_Tag_Processor( $content );
+
+	while ( $processor->next_tag( array( 'tag_name' => 'A' ) ) ) {
+		$href = $processor->get_attribute( 'href' );
+
+		if ( ! is_string( $href ) || '' === $href ) {
+			continue;
+		}
+
+		$parsed = wp_parse_url( $href );
+
+		if ( empty( $parsed['host'] ) ) {
+			continue;
+		}
+
+		if ( refitune_is_same_site_host( $parsed['host'], $site_host ) ) {
+			continue;
+		}
+
+		if ( null === $processor->get_attribute( 'target' ) ) {
+			$processor->set_attribute( 'target', '_blank' );
+		}
+
+		$rel = $processor->get_attribute( 'rel' );
+		$rel = is_string( $rel ) ? preg_split( '/\s+/', trim( $rel ) ) : array();
+		$rel = is_array( $rel ) ? $rel : array();
+
+		foreach ( array( 'noopener', 'noreferrer' ) as $token ) {
+			if ( ! in_array( $token, $rel, true ) ) {
+				$rel[] = $token;
 			}
+		}
 
-			$href   = $href_match[2];
-			$parsed = wp_parse_url( $href );
+		$processor->set_attribute( 'rel', implode( ' ', $rel ) );
+	}
 
-			if ( ! isset( $parsed['host'] ) ) {
-				return $matches[0];
-			}
-
-			if ( false !== strpos( $parsed['host'], $site_host ) ) {
-				return $matches[0];
-			}
-
-			if ( ! preg_match( '/\btarget\s*=/i', $attrs ) ) {
-				$attrs .= ' target="_blank"';
-			}
-
-			if ( ! preg_match( '/\brel\s*=/i', $attrs ) ) {
-				$attrs .= ' rel="noopener noreferrer"';
-			} else {
-				$attrs = preg_replace_callback(
-					'/\brel\s*=\s*(["\'])([^"\']*)\1/i',
-					static function ( array $rel_match ): string {
-						$val = $rel_match[2];
-						if ( false === strpos( $val, 'noopener' ) ) {
-							$val .= ' noopener';
-						}
-						if ( false === strpos( $val, 'noreferrer' ) ) {
-							$val .= ' noreferrer';
-						}
-						return 'rel="' . trim( $val ) . '"';
-					},
-					$attrs
-				);
-			}
-
-			return '<a' . $attrs . '>';
-		},
-		$content
-	);
+	return $processor->get_updated_html();
 }
 add_filter( 'the_content', 'refitune_external_links_new_tab' );
 add_filter( 'widget_text', 'refitune_external_links_new_tab' );

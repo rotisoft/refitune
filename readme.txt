@@ -4,7 +4,7 @@ Tags: performance, security, tweaks, optimization, toolkit
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://rotistudio.com/contact/
@@ -59,6 +59,10 @@ Each feature can be enabled or disabled individually with just one click — no 
 * **Maintenance Mode** – Temporarily block visitors while you work on the site.
 * **Dynamic Year Shortcodes** – Display the current year or duration via `[refi-year]` shortcodes.
 
+Do you have other plugins? Yes, check my plugins website: [rotistudio.com](https://rotistudio.com/)
+Where can we learn more about your work? Check my personal website there: [rottenbacher.hu](https://rottenbacher.hu/)
+Plugin GitHub repository: [github.com/rotisoft/refitune](https://github.com/rotisoft/refitune)
+
 == Installation ==
 
 **Getting Started is Easy:**
@@ -112,12 +116,19 @@ Perfect for when you're making updates and don't want visitors seeing broken pag
 
 == Changelog ==
 
+= 1.1.0 =
+* Security: Safer redirect validation, SVG sanitization, REST API restrictions, and SMTP credential handling.
+* Refactor: Modular settings sanitization.
+
 = 1.0.0 =
 * Initial release — everything is shiny and new!
 * WordPress 7.0 compatibility check
 * PHP 8.5 compatibility check
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+* Recommended security update: hardened redirects, SVG sanitization, REST API restrictions, and SMTP credential handling.
 
 = 1.0.0 =
 * Initial release — everything is shiny and new!

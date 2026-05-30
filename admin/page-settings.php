@@ -175,11 +175,20 @@ foreach ( $features as $key => $feature ) {
 												type="password"
 												id="refitune_email_smtp_password"
 												name="refitune_settings[email_smtp_password]"
-												value="<?php echo esc_attr( $refitune_settings['email_smtp_password'] ?? '' ); ?>"
+												value=""
 												class="regular-text"
 												autocomplete="new-password"
+												placeholder="<?php esc_attr_e( 'Leave blank to keep the current password', 'refitune' ); ?>"
 											/>
-											<p class="description"><?php esc_html_e( 'Password is stored encrypted with Sodium in the database.', 'refitune' ); ?></p>
+											<p class="description">
+												<?php
+												if ( ! empty( $refitune_settings['email_smtp_password'] ) ) {
+													esc_html_e( 'A password is already stored. Enter a new value only to change it.', 'refitune' );
+												} else {
+													esc_html_e( 'Password is stored encrypted with Sodium in the database.', 'refitune' );
+												}
+												?>
+											</p>
 										</td>
 									</tr>
 									<tr>
@@ -206,23 +215,6 @@ foreach ( $features as $key => $feature ) {
 												class="regular-text"
 												placeholder="<?php esc_attr_e( 'e.g. Website Name', 'refitune' ); ?>"
 											/>
-										</td>
-									</tr>
-									<tr>
-										<th scope="row"><?php esc_html_e( 'SSL Certificate Verification', 'refitune' ); ?></th>
-										<td>
-											<label>
-												<input
-													type="checkbox"
-													name="refitune_settings[email_smtp_disable_ssl_verify]"
-													value="1"
-													<?php checked( ! empty( $refitune_settings['email_smtp_disable_ssl_verify'] ) ); ?>
-												/>
-												<?php esc_html_e( 'Disable SSL certificate verification', 'refitune' ); ?>
-											</label>
-											<p class="description">
-												<?php esc_html_e( 'Enable this if you experience SSL certificate errors in local/development environments. NOT recommended for production sites.', 'refitune' ); ?>
-											</p>
 										</td>
 									</tr>
 								</table>
@@ -925,64 +917,6 @@ foreach ( $features as $key => $feature ) {
 									><?php echo esc_textarea( $refitune_settings['login_limit_whitelist_ips'] ?? '' ); ?></textarea>
 									<p class="description">
 										<?php esc_html_e( 'IP addresses exempt from the limit (one IP per line). For example, if you have a static IP.', 'refitune' ); ?>
-									</p>
-								</td>
-							</tr>
-							<tr>
-								<th scope="row" colspan="2" style="background: #f9f9f9; padding: 12px;">
-									<label style="font-weight: 600; display: flex; align-items: center; gap: 8px;">
-										<input
-											type="checkbox"
-											name="refitune_settings[login_limit_global_enabled]"
-											value="1"
-											<?php checked( ! empty( $refitune_settings['login_limit_global_enabled'] ) ); ?>
-										/>
-										<span><?php esc_html_e( 'Global Rate Limiting (DDoS Protection)', 'refitune' ); ?></span>
-									</label>
-									<p class="description" style="margin: 8px 0 0 28px; font-weight: normal;">
-										<?php esc_html_e( 'Additional protection against distributed brute-force attacks from multiple IP addresses.', 'refitune' ); ?>
-									</p>
-								</th>
-							</tr>
-							<tr>
-								<th scope="row">
-									<label for="refitune_login_limit_global_attempts">
-										<?php esc_html_e( 'Global Attempts Limit', 'refitune' ); ?>
-									</label>
-								</th>
-								<td>
-									<input
-										type="number"
-										id="refitune_login_limit_global_attempts"
-										name="refitune_settings[login_limit_global_attempts]"
-										value="<?php echo esc_attr( $refitune_settings['login_limit_global_attempts'] ?? 50 ); ?>"
-										class="small-text"
-										min="1"
-										max="1000"
-									/>
-									<p class="description">
-										<?php esc_html_e( 'Maximum total failed login attempts from all sources. Default: 50', 'refitune' ); ?>
-									</p>
-								</td>
-							</tr>
-							<tr>
-								<th scope="row">
-									<label for="refitune_login_limit_global_time_window">
-										<?php esc_html_e( 'Global Time Window (minutes)', 'refitune' ); ?>
-									</label>
-								</th>
-								<td>
-									<input
-										type="number"
-										id="refitune_login_limit_global_time_window"
-										name="refitune_settings[login_limit_global_time_window]"
-										value="<?php echo esc_attr( $refitune_settings['login_limit_global_time_window'] ?? 5 ); ?>"
-										class="small-text"
-										min="1"
-										max="60"
-									/>
-									<p class="description">
-										<?php esc_html_e( 'Time period (in minutes) to count total failed attempts. If exceeded, all login attempts will be blocked. Default: 5 minutes', 'refitune' ); ?>
 									</p>
 								</td>
 							</tr>

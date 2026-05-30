@@ -10,6 +10,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Whether the Sodium encryption library is available.
+ *
+ * @return bool
+ */
+function refitune_encryption_available(): bool {
+	return function_exists( 'sodium_crypto_secretbox' )
+		&& function_exists( 'sodium_crypto_secretbox_open' )
+		&& defined( 'SODIUM_CRYPTO_SECRETBOX_NONCEBYTES' );
+}
+
+/**
  * Titkosítási kulcs generálása WordPress konstansokból.
  *
  * A kulcs a WordPress AUTH_KEY, SECURE_AUTH_KEY és NONCE_KEY
@@ -35,9 +46,8 @@ function refitune_encrypt( string $plaintext ): string {
 		return '';
 	}
 
-	if ( ! function_exists( 'sodium_crypto_secretbox' ) ) {
-		// Fallback: ha Sodium nem elérhető (bár PHP 7.2+-ban beépített).
-		return $plaintext;
+	if ( ! refitune_encryption_available() ) {
+		return '';
 	}
 
 	$key   = refitune_get_encryption_key();
@@ -60,10 +70,8 @@ function refitune_decrypt( string $encrypted ): string {
 		return '';
 	}
 
-	if ( ! function_exists( 'sodium_crypto_secretbox_open' ) ) {
-		// Fallback: ha Sodium nem elérhető, visszaadjuk az eredeti értéket
-		// (ez történhet régi plain text jelszavaknál a migrálás után).
-		return $encrypted;
+	if ( ! refitune_encryption_available() ) {
+		return '';
 	}
 
 	$decoded = base64_decode( $encrypted, true );

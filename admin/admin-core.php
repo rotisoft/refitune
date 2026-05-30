@@ -132,11 +132,11 @@ function refitune_get_features() {
 		'label'       => __( 'REST API Restrictions', 'refitune' ),
 		'description' => __( 'Intelligent restriction of certain WordPress REST API endpoints.', 'refitune' ),
 		'sub_options' => array(
-			'rest_disable_users'    => __( 'Restrict Users endpoint (block external requests) - /wp-json/wp/v2/users', 'refitune' ),
-			'rest_restrict_index'   => __( 'Restrict REST index (block external requests) - /wp-json/', 'refitune' ),
-			'rest_disable_media'    => __( 'Restrict Media endpoint (block external requests) - /wp-json/wp/v2/media', 'refitune' ),
-			'rest_disable_comments' => __( 'Restrict Comments endpoint (block external requests) - /wp-json/wp/v2/comments', 'refitune' ),
-			'rest_disable_search'   => __( 'Restrict Search endpoint (block external requests) - /wp-json/wp/v2/search', 'refitune' ),
+			'rest_disable_users'    => __( 'Restrict Users endpoint (authentication required) - /wp-json/wp/v2/users', 'refitune' ),
+			'rest_restrict_index'   => __( 'Restrict REST index (authentication required) - /wp-json/', 'refitune' ),
+			'rest_disable_media'    => __( 'Restrict Media endpoint (authentication required) - /wp-json/wp/v2/media', 'refitune' ),
+			'rest_disable_comments' => __( 'Restrict Comments endpoint (authentication required) - /wp-json/wp/v2/comments', 'refitune' ),
+			'rest_disable_search'   => __( 'Restrict Search endpoint (authentication required) - /wp-json/wp/v2/search', 'refitune' ),
 		),
 		'category'    => 'security',
 	),
@@ -329,7 +329,7 @@ function refitune_plugin_action_links( array $links ): array {
 	
 	return $links;
 }
-add_filter( 'plugin_action_links_refitune/refitune.php', 'refitune_plugin_action_links' );
+add_filter( 'plugin_action_links_' . plugin_basename( REFITUNE_PATH . 'refitune.php' ), 'refitune_plugin_action_links' );
 
 /**
  * Plugin beállítások regisztrálása a Settings API-val.
@@ -349,377 +349,7 @@ function refitune_register_settings() {
 }
 add_action( 'admin_init', 'refitune_register_settings', 10 );
 
-/**
- * Sanitize a site-relative path for storage (must resolve to this site only).
- *
- * @param mixed $path Raw path from settings input.
- * @return string Sanitized relative path with leading slash, or empty string if invalid.
- */
-function refitune_sanitize_relative_site_path( $path ): string {
-	if ( ! is_string( $path ) ) {
-		return '';
-	}
-
-	$path = trim( wp_unslash( $path ) );
-	if ( '' === $path ) {
-		return '';
-	}
-
-	$path = sanitize_text_field( $path );
-
-	// Disallow external URLs, protocol-relative URLs, whitespace, and path traversal.
-	if ( preg_match( '#\s|[\\\\]|(^|[^/])(https?:)?//#i', $path ) || false !== strpos( $path, '..' ) ) {
-		return '';
-	}
-
-	if ( '/' !== $path[0] ) {
-		$path = '/' . $path;
-	}
-
-	$full_url = esc_url_raw( home_url( $path ) );
-	if ( '' === $full_url || ! wp_http_validate_url( $full_url ) ) {
-		return '';
-	}
-
-	$home_parts = wp_parse_url( home_url() );
-	$url_parts  = wp_parse_url( $full_url );
-
-	if ( empty( $home_parts['host'] ) || empty( $url_parts['host'] ) ) {
-		return '';
-	}
-
-	if ( strtolower( $home_parts['host'] ) !== strtolower( $url_parts['host'] ) ) {
-		return '';
-	}
-
-	return $path;
-}
-
-/**
- * Sanitize a redirect URL that must belong to this WordPress site.
- *
- * @param mixed $path Raw relative path from settings input.
- * @return string Internal redirect URL from esc_url_raw(), or empty string if invalid.
- */
-function refitune_sanitize_internal_redirect_url( $path ): string {
-	$relative = refitune_sanitize_relative_site_path( $path );
-	if ( '' === $relative ) {
-		return '';
-	}
-
-	return esc_url_raw( home_url( $relative ) );
-}
-
-/**
- * Beállítások szanitizálása mentés előtt.
- *
- * Boolean típusú és role_select típusú értékeket is kezel.
- *
- * @param mixed $input A beküldött nyers adatok.
- * @return array Szanitizált beállítások.
- */
-function refitune_sanitize_settings( $input ): array {
-	if ( ! is_array( $input ) ) {
-		return array();
-	}
-
-	$sanitized = array();
-	$features  = refitune_get_features();
-	$all_roles = array_keys( wp_roles()->get_names() );
-
-	foreach ( $features as $key => $feature ) {
-		$type = isset( $feature['type'] ) ? $feature['type'] : '';
-
-		if ( 'login_customizer' === $type ) {
-			// Enable checkbox.
-			$sanitized['login_customizer_enabled'] = ! empty( $input['login_customizer_enabled'] );
-
-			// Logo forrás (site_icon vagy custom).
-			$sanitized['login_logo_source'] = isset( $input['login_logo_source'] ) && 'custom' === $input['login_logo_source']
-				? 'custom'
-				: 'site_icon';
-
-			// Logo custom URL (site-relative path).
-			$sanitized['login_logo_custom_url'] = refitune_sanitize_relative_site_path(
-				$input['login_logo_custom_url'] ?? ''
-			);
-
-			// Logo szélesség és magasság (pixel).
-			$sanitized['login_logo_width']  = isset( $input['login_logo_width'] ) && is_numeric( $input['login_logo_width'] ) && (int) $input['login_logo_width'] > 0
-				? (int) $input['login_logo_width']
-				: 84;
-			$sanitized['login_logo_height'] = isset( $input['login_logo_height'] ) && is_numeric( $input['login_logo_height'] ) && (int) $input['login_logo_height'] > 0
-				? (int) $input['login_logo_height']
-				: 84;
-
-		// Háttérszín (hex).
-		$sanitized['login_bg_color'] = isset( $input['login_bg_color'] ) ? sanitize_hex_color( $input['login_bg_color'] ) : '';
-
-		// Primary szín (hex).
-		$sanitized['login_primary_color'] = isset( $input['login_primary_color'] ) ? sanitize_hex_color( $input['login_primary_color'] ) : '';
-
-		// Nyelvválasztó elrejtése.
-		$sanitized['login_hide_language_switcher'] = ! empty( $input['login_hide_language_switcher'] );
-	} elseif ( 'role_redirects' === $type ) {
-			$login_redirects  = array();
-			$logout_redirects = array();
-
-			// Login redirects (site-relative path → validated internal URL).
-			if ( isset( $input['role_redirects_login'] ) && is_array( $input['role_redirects_login'] ) ) {
-				foreach ( $input['role_redirects_login'] as $role => $relative_path ) {
-					$role = sanitize_key( $role );
-					if ( ! in_array( $role, $all_roles, true ) ) {
-						continue;
-					}
-
-					$redirect_url = refitune_sanitize_internal_redirect_url( $relative_path );
-					if ( '' !== $redirect_url ) {
-						$login_redirects[ $role ] = $redirect_url;
-					}
-				}
-			}
-
-			// Logout redirects (site-relative path → validated internal URL).
-			if ( isset( $input['role_redirects_logout'] ) && is_array( $input['role_redirects_logout'] ) ) {
-				foreach ( $input['role_redirects_logout'] as $role => $relative_path ) {
-					$role = sanitize_key( $role );
-					if ( ! in_array( $role, $all_roles, true ) ) {
-						continue;
-					}
-
-					$redirect_url = refitune_sanitize_internal_redirect_url( $relative_path );
-					if ( '' !== $redirect_url ) {
-						$logout_redirects[ $role ] = $redirect_url;
-					}
-				}
-			}
-
-		$sanitized['role_redirects_login']  = $login_redirects;
-		$sanitized['role_redirects_logout'] = $logout_redirects;
-
-		// Enable checkbox.
-		$sanitized['role_redirects_enabled'] = ! empty( $input['role_redirects_enabled'] );
-	} elseif ( 'email_smtp' === $type ) {
-		// Email mode: 'default', 'disable_all', 'smtp'.
-		$email_mode = isset( $input['email_mode'] ) ? $input['email_mode'] : 'default';
-		if ( ! in_array( $email_mode, array( 'default', 'disable_all', 'smtp' ), true ) ) {
-			$email_mode = 'default';
-		}
-		$sanitized['email_mode'] = $email_mode;
-
-		$sanitized['email_smtp_host']       = isset( $input['email_smtp_host'] ) ? sanitize_text_field( $input['email_smtp_host'] ) : '';
-		$sanitized['email_smtp_port']       = isset( $input['email_smtp_port'] ) && is_numeric( $input['email_smtp_port'] )
-			? (int) $input['email_smtp_port']
-			: 587;
-		$sanitized['email_smtp_username']   = isset( $input['email_smtp_username'] ) ? sanitize_text_field( $input['email_smtp_username'] ) : '';
-
-		// SMTP jelszó: titkosítás Sodium-mal.
-		$old_settings    = get_option( 'refitune_settings', array() );
-		$old_password    = isset( $old_settings['email_smtp_password'] ) ? $old_settings['email_smtp_password'] : '';
-		$new_password    = isset( $input['email_smtp_password'] ) ? $input['email_smtp_password'] : '';
-		$password_to_save = '';
-
-		if ( '' !== $new_password ) {
-			// Ha a jelszó megváltozott (nem egyezik a régi értékkel), titkosítjuk.
-			if ( $new_password !== $old_password ) {
-				$password_to_save = refitune_encrypt( $new_password );
-			} else {
-				// Ha nem változott, megtartjuk a régi (már titkosított) értéket.
-				$password_to_save = $old_password;
-			}
-		}
-		$sanitized['email_smtp_password'] = $password_to_save;
-
-	$sanitized['email_smtp_encryption'] = isset( $input['email_smtp_encryption'] ) && in_array( $input['email_smtp_encryption'], array( 'none', 'ssl', 'tls' ), true )
-		? $input['email_smtp_encryption']
-		: 'tls';
-	$sanitized['email_smtp_from_email']        = isset( $input['email_smtp_from_email'] ) ? sanitize_email( $input['email_smtp_from_email'] ) : '';
-	$sanitized['email_smtp_from_name']         = isset( $input['email_smtp_from_name'] ) ? sanitize_text_field( $input['email_smtp_from_name'] ) : '';
-	$sanitized['email_smtp_disable_ssl_verify'] = ! empty( $input['email_smtp_disable_ssl_verify'] );
-	} elseif ( 'comments_control' === $type ) {
-			$sanitized['disable_comments']              = ! empty( $input['disable_comments'] );
-			$sanitized['disable_comments_keep_reviews'] = ! empty( $input['disable_comments_keep_reviews'] );
-		} elseif ( 'number_input' === $type ) {
-			$option_key = $feature['option_key'];
-			$raw        = isset( $input[ $option_key ] ) ? trim( (string) $input[ $option_key ] ) : '';
-			if ( '' !== $raw && is_numeric( $raw ) && (int) $raw >= 0 ) {
-				$sanitized[ $option_key ] = (int) $raw;
-			} else {
-				$sanitized[ $option_key ] = '';
-			}
-		} elseif ( 'email_controls' === $type ) {
-			$bool_keys = array(
-				'email_disable_all',
-				'email_disable_update',
-				'email_disable_new_user',
-				'email_disable_password_reset',
-				'email_disable_comments',
-				'email_disable_privacy',
-				'email_disable_critical',
-			);
-			foreach ( $bool_keys as $bk ) {
-				$sanitized[ $bk ] = ! empty( $input[ $bk ] );
-			}
-			$sanitized['email_update_address']   = isset( $input['email_update_address'] )
-				? sanitize_email( $input['email_update_address'] )
-				: '';
-			$sanitized['email_critical_address'] = isset( $input['email_critical_address'] )
-				? sanitize_email( $input['email_critical_address'] )
-				: '';
-		} elseif ( 'role_select' === $type ) {
-			$option_key = $feature['option_key'];
-			$submitted  = isset( $input[ $option_key ] ) && is_array( $input[ $option_key ] )
-				? $input[ $option_key ]
-				: array();
-
-			$sanitized_roles = array();
-			foreach ( $submitted as $role ) {
-				$role = sanitize_key( $role );
-				if ( in_array( $role, $all_roles, true ) ) {
-					$sanitized_roles[] = $role;
-				}
-			}
-
-			if ( ! empty( $feature['required_roles'] ) ) {
-				foreach ( $feature['required_roles'] as $required ) {
-					if ( ! in_array( $required, $sanitized_roles, true ) ) {
-						$sanitized_roles[] = $required;
-					}
-				}
-			}
-
-	$sanitized[ $option_key ] = $sanitized_roles;
-
-	if ( isset( $feature['enable_key'] ) ) {
-		$sanitized[ $feature['enable_key'] ] = ! empty( $input[ $feature['enable_key'] ] );
-	}
-} elseif ( 'maintenance_mode' === $type ) {
-	// Enable checkbox
-	$sanitized[ $feature['enable_key'] ] = ! empty( $input[ $feature['enable_key'] ] );
-
-	// Szerepkörök sanitálása (ugyanaz mint role_select)
-	$option_key = $feature['option_key'];
-	$submitted  = isset( $input[ $option_key ] ) && is_array( $input[ $option_key ] )
-		? $input[ $option_key ]
-		: array();
-
-	$sanitized_roles = array();
-	foreach ( $submitted as $role ) {
-		$role = sanitize_key( $role );
-		if ( in_array( $role, $all_roles, true ) ) {
-			$sanitized_roles[] = $role;
-		}
-	}
-
-	// Required roles hozzáadása
-	if ( ! empty( $feature['required_roles'] ) ) {
-		foreach ( $feature['required_roles'] as $required ) {
-			if ( ! in_array( $required, $sanitized_roles, true ) ) {
-				$sanitized_roles[] = $required;
-			}
-		}
-	}
-
-	$sanitized[ $option_key ] = $sanitized_roles;
-
-	// Üzenet sanitálása
-	$message_key = $feature['message_key'];
-	$sanitized[ $message_key ] = isset( $input[ $message_key ] )
-		? sanitize_textarea_field( $input[ $message_key ] )
-		: '';
-	} elseif ( 'login_limit' === $type ) {
-		// Enable checkbox.
-		$sanitized['login_limit_enabled'] = ! empty( $input['login_limit_enabled'] );
-
-		// Block "admin" username instantly checkbox.
-		$sanitized['login_limit_block_admin_username'] = ! empty( $input['login_limit_block_admin_username'] );
-
-		// Max attempts.
-		$max_attempts = isset( $input['login_limit_max_attempts'] ) ? trim( (string) $input['login_limit_max_attempts'] ) : '5';
-		$sanitized['login_limit_max_attempts'] = ( '' !== $max_attempts && is_numeric( $max_attempts ) && (int) $max_attempts > 0 )
-			? (int) $max_attempts
-			: 5;
-
-		// Lockout duration.
-		$lockout_duration = isset( $input['login_limit_lockout_duration'] ) ? trim( (string) $input['login_limit_lockout_duration'] ) : '15';
-		$sanitized['login_limit_lockout_duration'] = ( '' !== $lockout_duration && is_numeric( $lockout_duration ) && (int) $lockout_duration > 0 )
-			? (int) $lockout_duration
-			: 15;
-
-		// Whitelist IPs - sortörésenként egy IP.
-		$whitelist = isset( $input['login_limit_whitelist_ips'] ) ? $input['login_limit_whitelist_ips'] : '';
-		$ips       = array_filter( array_map( 'trim', explode( "\n", $whitelist ) ) );
-		$valid_ips = array();
-		foreach ( $ips as $ip ) {
-			if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
-				$valid_ips[] = $ip;
-			}
-		}
-		$sanitized['login_limit_whitelist_ips'] = implode( "\n", $valid_ips );
-
-		// Global rate limiting: enable checkbox.
-		$sanitized['login_limit_global_enabled'] = ! empty( $input['login_limit_global_enabled'] );
-
-		// Global rate limiting: attempts.
-		$global_attempts = isset( $input['login_limit_global_attempts'] ) ? trim( (string) $input['login_limit_global_attempts'] ) : '50';
-		$sanitized['login_limit_global_attempts'] = ( '' !== $global_attempts && is_numeric( $global_attempts ) && (int) $global_attempts > 0 )
-			? (int) $global_attempts
-			: 50;
-
-		// Global rate limiting: time window.
-		$global_time = isset( $input['login_limit_global_time_window'] ) ? trim( (string) $input['login_limit_global_time_window'] ) : '5';
-		$sanitized['login_limit_global_time_window'] = ( '' !== $global_time && is_numeric( $global_time ) && (int) $global_time > 0 )
-			? (int) $global_time
-			: 5;
-	} elseif ( 'heartbeat_control' === $type ) {
-		// Main checkbox
-		$sanitized['heartbeat_control'] = ! empty( $input['heartbeat_control'] );
-
-		// Admin Heartbeat
-		$admin_value = isset( $input['heartbeat_admin'] ) ? $input['heartbeat_admin'] : '';
-		$sanitized['heartbeat_admin'] = in_array( $admin_value, array( '', '15', '30', '60', '120', 'disable' ), true ) ? $admin_value : '';
-
-		// Frontend Heartbeat
-		$frontend_value = isset( $input['heartbeat_frontend'] ) ? $input['heartbeat_frontend'] : '';
-		$sanitized['heartbeat_frontend'] = in_array( $frontend_value, array( '', '15', '30', '60', '120', 'disable' ), true ) ? $frontend_value : '';
-
-		// Post Editor Heartbeat
-		$editor_value = isset( $input['heartbeat_editor'] ) ? $input['heartbeat_editor'] : '';
-		$sanitized['heartbeat_editor'] = in_array( $editor_value, array( '', '15', '30', '60', '120', 'disable' ), true ) ? $editor_value : '';
-	} elseif ( isset( $feature['sub_options'] ) ) {
-			foreach ( array_keys( $feature['sub_options'] ) as $sub_key ) {
-				$sanitized[ $sub_key ] = ! empty( $input[ $sub_key ] );
-			}
-		} else {
-			$sanitized[ $key ] = ! empty( $input[ $key ] );
-		}
-	}
-
-	$sanitized['delete_data_on_uninstall'] = ! empty( $input['delete_data_on_uninstall'] );
-
-	$old_settings = get_option( 'refitune_settings', array() );
-
-	unset( $sanitized['file_restrictions'] );
-
-	// Disable Comments: automatikus opció frissítés a WordPress Site Health számára.
-	$old_disable_comments = ! empty( $old_settings['disable_comments'] );
-	$new_disable_comments = ! empty( $sanitized['disable_comments'] );
-
-	// Ha változott a beállítás, frissítjük a WordPress core opciókat.
-	if ( $old_disable_comments !== $new_disable_comments ) {
-		if ( $new_disable_comments ) {
-			// Disable Comments aktiválva -> WordPress opciókat 'closed'-ra állítjuk.
-			update_option( 'default_comment_status', 'closed' );
-			update_option( 'default_ping_status', 'closed' );
-		} else {
-			// Disable Comments kikapcsolva -> WordPress opciókat visszaállítjuk 'open'-re.
-			update_option( 'default_comment_status', 'open' );
-			update_option( 'default_ping_status', 'open' );
-		}
-	}
-
-	return $sanitized;
-}
+require_once REFITUNE_PATH . 'admin/settings-sanitizer.php';
 
 /**
  * Admin CSS és JS betöltése kizárólag a plugin oldalain.
@@ -788,6 +418,21 @@ function refitune_get_current_page_slug() {
 }
 
 /**
+ * Cached plugin header data for admin footer.
+ *
+ * @return array
+ */
+function refitune_get_plugin_header_data(): array {
+	static $plugin_data = null;
+
+	if ( null === $plugin_data ) {
+		$plugin_data = get_plugin_data( REFITUNE_PATH . 'refitune.php', false, false );
+	}
+
+	return $plugin_data;
+}
+
+/**
  * Admin oldal wrapper renderelése egységes fejléccel.
  *
  * @param string $page_file A betöltendő oldal fájl neve (pl. 'page-dashboard.php').
@@ -833,7 +478,7 @@ function refitune_render_admin_wrapper( $page_file ) {
 
 		<div class="refitune-admin-footer">
 			<?php
-			$plugin_data = get_plugin_data( REFITUNE_PATH . 'refitune.php' );
+			$plugin_data = refitune_get_plugin_header_data();
 
 			printf(
 				'%s - %s - <a href="%s" target="_blank" rel="noopener">%s</a>',

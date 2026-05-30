@@ -2,8 +2,8 @@
 /**
  * Plugin Name: RefiTune - Site refiner toolkit
  * Plugin URI: https://rotistudio.com/plugins/refitune-site-refiner-toolkit-for-wordpress
- * Description: Take control of WordPress with smart performance tweaks, security enhancements, and usability improvements — all in one toolkit.
- * Version: 1.0.0
+ * Description: Take control of WordPress with smart performance tweaks, security enhancements, and usability improvements. RefiTune is all in one toolkit.
+ * Version: 1.1.0
  * Requires at least: 5.9
  * Requires PHP: 7.4
  * Author: RotiStudio - Tamas Rottenbacher
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'REFITUNE_VERSION', '1.0.0' );
+define( 'REFITUNE_VERSION', '1.1.0' );
 define( 'REFITUNE_PATH', plugin_dir_path( __FILE__ ) );
 define( 'REFITUNE_URL', plugin_dir_url( __FILE__ ) );
 
@@ -240,3 +240,26 @@ add_filter(
 if ( is_admin() ) {
 	require_once REFITUNE_PATH . 'admin/admin-core.php';
 }
+
+/**
+ * Show an admin warning when encryption is unavailable but SMTP needs it.
+ *
+ * @return void
+ */
+function refitune_encryption_admin_notice() {
+	if ( ! current_user_can( 'manage_options' ) || refitune_encryption_available() ) {
+		return;
+	}
+
+	$settings = get_option( 'refitune_settings', array() );
+
+	if ( 'smtp' !== ( $settings['email_mode'] ?? 'default' ) ) {
+		return;
+	}
+
+	printf(
+		'<div class="notice notice-error"><p><strong>RefiTune:</strong> %s</p></div>',
+		esc_html__( 'The PHP Sodium extension is not available, so SMTP credentials cannot be decrypted securely. SMTP email sending is disabled until Sodium is enabled on the server.', 'refitune' )
+	);
+}
+add_action( 'admin_notices', 'refitune_encryption_admin_notice', 10 );

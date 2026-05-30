@@ -70,6 +70,13 @@ if ( '' === $smtp_host ) {
 	return;
 }
 
+// SMTP requires the stored password to be decryptable. Without Sodium we cannot
+// safely read the credentials, so the SMTP configuration is disabled and the
+// admin is warned (see refitune_encryption_admin_notice()).
+if ( ! empty( $refitune_smtp_settings['email_smtp_password'] ) && ! refitune_encryption_available() ) {
+	return;
+}
+
 add_action(
 	'phpmailer_init',
 	static function ( $phpmailer ) use ( $refitune_smtp_settings ): void {
@@ -83,8 +90,8 @@ add_action(
 		$phpmailer->SMTPSecure = $encryption;
 	}
 
-	// SSL/TLS opciók beállítása (főleg Windows/fejlesztői környezetben hasznos).
-	if ( ! empty( $refitune_smtp_settings['email_smtp_disable_ssl_verify'] ) ) {
+	// SSL/TLS options: only when explicitly enabled in wp-config.php (development).
+	if ( defined( 'REFITUNE_SMTP_DISABLE_SSL_VERIFY' ) && REFITUNE_SMTP_DISABLE_SSL_VERIFY ) {
 		$phpmailer->SMTPOptions = array(
 			'ssl' => array(
 				'verify_peer'       => false,

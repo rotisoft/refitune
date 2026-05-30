@@ -16,6 +16,25 @@ $refitune_redirect_settings = get_option( 'refitune_settings', array() );
 // ---------------------------------------------------------------------------
 
 /**
+ * Validate a redirect URL against this site's host.
+ *
+ * @param string $url Redirect URL.
+ * @return string Safe internal URL.
+ */
+function refitune_validate_internal_redirect_url( string $url ): string {
+	$url = wp_validate_redirect( $url, home_url( '/' ) );
+
+	$home_host   = wp_parse_url( home_url(), PHP_URL_HOST );
+	$target_host = wp_parse_url( $url, PHP_URL_HOST );
+
+	if ( empty( $target_host ) || (string) $target_host === (string) $home_host ) {
+		return $url;
+	}
+
+	return home_url( '/' );
+}
+
+/**
  * Login redirect URL lekérése szerepkör alapján.
  *
  * @param WP_User $user A bejelentkezett felhasználó.
@@ -29,7 +48,7 @@ function refitune_get_login_redirect_url( $user, $login_redirects ) {
 
 	foreach ( (array) $user->roles as $role ) {
 		if ( isset( $login_redirects[ $role ] ) && '' !== trim( $login_redirects[ $role ] ) ) {
-			return esc_url_raw( $login_redirects[ $role ] );
+			return refitune_validate_internal_redirect_url( $login_redirects[ $role ] );
 		}
 	}
 
@@ -50,7 +69,7 @@ function refitune_get_logout_redirect_url( $user, $logout_redirects ) {
 
 	foreach ( (array) $user->roles as $role ) {
 		if ( isset( $logout_redirects[ $role ] ) && '' !== trim( $logout_redirects[ $role ] ) ) {
-			return esc_url_raw( $logout_redirects[ $role ] );
+			return refitune_validate_internal_redirect_url( $logout_redirects[ $role ] );
 		}
 	}
 
@@ -106,11 +125,11 @@ add_action(
 		add_filter(
 			'woocommerce_logout_default_redirect_url',
 			static function ( string $redirect_to ) {
-				// Ha van redirect_to paraméter a URL-ben, használjuk azt (prioritás!).
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Validated against site host below.
 				if ( ! empty( $_GET['redirect_to'] ) ) {
-					return esc_url_raw( wp_unslash( $_GET['redirect_to'] ) );
+					return refitune_validate_internal_redirect_url( wp_unslash( $_GET['redirect_to'] ) );
 				}
-				
+
 				return $redirect_to;
 			},
 			999
@@ -129,11 +148,11 @@ add_action(
 add_filter(
 	'logout_redirect',
 	static function ( string $redirect_to, string $requested_redirect_to, $user ) use ( $refitune_redirect_settings ) {
-		// Ha van redirect_to paraméter a URL-ben, használjuk azt (prioritás!).
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Validated against site host below.
 		if ( ! empty( $_GET['redirect_to'] ) ) {
-			return esc_url_raw( wp_unslash( $_GET['redirect_to'] ) );
+			return refitune_validate_internal_redirect_url( wp_unslash( $_GET['redirect_to'] ) );
 		}
-		
+
 		$logout_redirects = isset( $refitune_redirect_settings['role_redirects_logout'] ) && is_array( $refitune_redirect_settings['role_redirects_logout'] )
 			? $refitune_redirect_settings['role_redirects_logout']
 			: array();

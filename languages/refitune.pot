@@ -1,197 +1,542 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: RefiTune - Site refiner toolkit 1.0.0\n"
+"Project-Id-Version: RefiTune - Site refiner toolkit 1.1.0\n"
 "Report-Msgid-Bugs-To: https://rotistudio.com\n"
-"POT-Creation-Date: 2026-05-25 14:33+0000\n"
+"POT-Creation-Date: 2026-05-30 22:18+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: refitune\n"
 
-# Main plugin description
+#: refitune.php:0
 msgid ""
 "Take control of WordPress with smart performance tweaks, security "
-"enhancements, and usability improvements — all in one toolkit."
+"enhancements, and usability improvements. RefiTune is all in one toolkit."
 msgstr ""
 
-# Navigation
-msgid "Modules"
+#: refitune.php:234
+msgid ""
+"Collects useful refinements and fine-tuning options (performance, security, "
+"usability)."
 msgstr ""
 
-msgid "Settings"
+#: refitune.php:262
+msgid ""
+"The PHP Sodium extension is not available, so SMTP credentials cannot be "
+"decrypted securely. SMTP email sending is disabled until Sodium is enabled "
+"on the server."
 msgstr ""
 
-msgid "Help"
-msgstr ""
-
-msgid "RefiTune - Site refiner toolkit"
-msgstr ""
-
-msgid "RefiTune Toolkit"
-msgstr ""
-
-msgid "RefiTune – Settings"
-msgstr ""
-
-msgid "RefiTune – Help"
-msgstr ""
-
-msgid "RefiTune Settings"
-msgstr ""
-
-msgid "RefiTune Help"
-msgstr ""
-
-# Categories
-msgid "Performance"
-msgstr ""
-
-msgid "Security"
-msgstr ""
-
-msgid "Visual"
-msgstr ""
-
-msgid "Email"
-msgstr ""
-
-msgid "Miscellaneous"
-msgstr ""
-
-# Feature: Header Cleanup
-msgid "Header Cleanup"
-msgstr ""
-
-msgid "Removes unnecessary wp_head elements from the source."
-msgstr ""
-
+#: admin/admin-core.php:32
 msgid "Hide WordPress version (Remove Generator tag)"
 msgstr ""
 
+#: admin/admin-core.php:37
 msgid "Hide WooCommerce version (Remove Generator tag)"
 msgstr ""
 
+#: admin/admin-core.php:40
 msgid "Remove RSD (Really Simple Discovery) link"
 msgstr ""
 
+#: admin/admin-core.php:41
 msgid "Remove Windows Live Writer manifest link"
 msgstr ""
 
+#: admin/admin-core.php:42
 msgid "Remove Shortlink"
 msgstr ""
 
+#: admin/admin-core.php:43
 msgid "Remove Previous and Next post rel links"
 msgstr ""
 
-# Feature: Feed Management
+#: admin/admin-core.php:47 admin/page-help.php:25
+msgid "Header Cleanup"
+msgstr ""
+
+#: admin/admin-core.php:48
+msgid "Removes unnecessary wp_head elements from the source."
+msgstr ""
+
+#: admin/admin-core.php:53 admin/page-help.php:31
 msgid "Feed Management"
 msgstr ""
 
+#: admin/admin-core.php:54
 msgid "Removes default WordPress RSS/Atom feeds from HTML source."
 msgstr ""
 
+#: admin/admin-core.php:56
 msgid "Disable main posts feed (domain.com/feed/)"
 msgstr ""
 
+#: admin/admin-core.php:57
 msgid "Disable comment feeds"
 msgstr ""
 
+#: admin/admin-core.php:58
 msgid "Remove additional feeds (categories, authors, etc.)"
 msgstr ""
 
-# Feature: Disable Emoji
+#: admin/admin-core.php:63 admin/page-help.php:37
 msgid "Disable Emoji"
 msgstr ""
 
+#: admin/admin-core.php:64
 msgid ""
 "Disables WordPress built-in emoji processing scripts and stylesheet, "
 "reducing page load times."
 msgstr ""
 
-# Feature: Disable jQuery Migrate
+#: admin/admin-core.php:68 admin/page-help.php:43
 msgid "Disable jQuery Migrate"
 msgstr ""
 
+#: admin/admin-core.php:69
 msgid "Removes the jquery-migrate script from frontend pages."
 msgstr ""
 
-# Feature: Post Revisions
+#: admin/admin-core.php:73 admin/page-help.php:49
 msgid "Post Revisions Limit"
 msgstr ""
 
+#: admin/admin-core.php:74
 msgid ""
 "How many post revisions WordPress should store per post (Recommended: 5-10)"
 msgstr ""
 
-# Feature: Auto-save Interval
+#: admin/admin-core.php:81 admin/page-help.php:55
 msgid "Auto-save Interval"
 msgstr ""
 
+#: admin/admin-core.php:82
 msgid ""
 "Here you can specify how many seconds to save the post. Recommended: 120 or "
 "300 (2 minutes or 5 minutes)"
 msgstr ""
 
-# Feature: Trash Auto-Delete
+#: admin/admin-core.php:89 admin/page-help.php:61
 msgid "Trash Auto-Delete"
 msgstr ""
 
+#: admin/admin-core.php:90
 msgid ""
 "Number of days before items in trash are permanently deleted. Recommended: "
 "7-30 days. Default: 30 days"
 msgstr ""
 
-# Feature: Heartbeat API Control
+#: admin/admin-core.php:97 admin/page-help.php:67
 msgid "Heartbeat API Control"
 msgstr ""
 
+#: admin/admin-core.php:98
 msgid ""
 "Control WordPress Heartbeat API frequency or disable it in admin, frontend, "
 "and post editor contexts independently."
 msgstr ""
 
-# Settings page - Heartbeat Control
-msgid "Admin Heartbeat:"
+#: admin/admin-core.php:103 admin/page-help.php:75
+msgid "Disable XML-RPC"
 msgstr ""
 
-msgid "Frontend Heartbeat:"
+#: admin/admin-core.php:104
+msgid ""
+"Completely disables the XML-RPC remote API interface (404 Not Found "
+"response)."
 msgstr ""
 
-msgid "Post Editor Heartbeat:"
+#: admin/admin-core.php:108 admin/page-help.php:81
+msgid "Disable Trackback/Pingback"
 msgstr ""
 
-msgid "WordPress default"
+#: admin/admin-core.php:109
+msgid ""
+"Disables trackback and pingback mechanism (inter-post notifications): closes"
+" pings on all posts, removes pingback methods."
 msgstr ""
 
-msgid "15 seconds, dense"
+#: admin/admin-core.php:113 admin/page-help.php:87
+msgid "Disable File Editor"
 msgstr ""
 
-msgid "30 seconds, frequent"
+#: admin/admin-core.php:114
+msgid ""
+"Disables the built-in plugin and theme editor in admin area "
+"(DISALLOW_FILE_EDIT)."
 msgstr ""
 
-msgid "30 seconds, frequent - Recommended"
+#: admin/admin-core.php:118 admin/page-help.php:93
+msgid "Login Error Messages"
 msgstr ""
 
-msgid "60 seconds, medium"
+#: admin/admin-core.php:119
+msgid ""
+"Generalizes login error messages so it doesn't reveal whether username or "
+"password was incorrect."
 msgstr ""
 
-msgid "60 seconds, medium - Recommended"
+#: admin/admin-core.php:123 admin/page-help.php:99
+msgid "Restrict Admin Access"
 msgstr ""
 
-msgid "120 seconds, rare"
+#: admin/admin-core.php:124
+msgid "Determines which user roles can access the wp-admin area."
 msgstr ""
 
-msgid "Disable"
+#: admin/admin-core.php:132 admin/page-help.php:105
+msgid "REST API Restrictions"
 msgstr ""
 
-msgid "Disable (Recommended, check other plugins)"
+#: admin/admin-core.php:133
+msgid "Intelligent restriction of certain WordPress REST API endpoints."
 msgstr ""
 
-msgid "Disable (It's disable autosave and post locking)"
+#: admin/admin-core.php:135
+msgid ""
+"Restrict Users endpoint (authentication required) - /wp-json/wp/v2/users"
 msgstr ""
 
-# Help page - Heartbeat Control
+#: admin/admin-core.php:136
+msgid "Restrict REST index (authentication required) - /wp-json/"
+msgstr ""
+
+#: admin/admin-core.php:137
+msgid ""
+"Restrict Media endpoint (authentication required) - /wp-json/wp/v2/media"
+msgstr ""
+
+#: admin/admin-core.php:138
+msgid ""
+"Restrict Comments endpoint (authentication required) - /wp-"
+"json/wp/v2/comments"
+msgstr ""
+
+#: admin/admin-core.php:139
+msgid ""
+"Restrict Search endpoint (authentication required) - /wp-json/wp/v2/search"
+msgstr ""
+
+#: admin/admin-core.php:144 admin/page-help.php:111
+msgid "Login Limit"
+msgstr ""
+
+#: admin/admin-core.php:145
+msgid "Limits failed login attempts based on IP address and username/email."
+msgstr ""
+
+#: admin/admin-core.php:151 admin/page-help.php:119
+msgid "Hide Admin Bar"
+msgstr ""
+
+#: admin/admin-core.php:152
+msgid "Hides the admin bar for logged-in users with selected roles."
+msgstr ""
+
+#: admin/admin-core.php:159 admin/page-help.php:125
+msgid "Block Visibility (Mobile)"
+msgstr ""
+
+#: admin/admin-core.php:160
+msgid ""
+"Adds a visibility option to every Gutenberg block to control whether it "
+"appears on mobile, desktop, or both."
+msgstr ""
+
+#: admin/admin-core.php:164 admin/page-help.php:131
+msgid "Login Page Customization"
+msgstr ""
+
+#: admin/admin-core.php:165
+msgid ""
+"Customize WordPress login page (wp-login.php) logo, background color and "
+"primary color."
+msgstr ""
+
+#: admin/admin-core.php:171 admin/page-help.php:139
+msgid "Email Notifications"
+msgstr ""
+
+#: admin/admin-core.php:172
+msgid "Disable WordPress system emails or redirect them to a custom address."
+msgstr ""
+
+#: admin/admin-core.php:177
+msgid "Email sending"
+msgstr ""
+
+#: admin/admin-core.php:178
+msgid "Configure SMTP server or completely disable all emails."
+msgstr ""
+
+#: admin/admin-core.php:183 admin/page-help.php:153
+msgid "Disable Comments"
+msgstr ""
+
+#: admin/admin-core.php:184
+msgid "Completely disables comments and comment submission options."
+msgstr ""
+
+#: admin/admin-core.php:189 admin/page-help.php:159
+msgid "External Links in New Window"
+msgstr ""
+
+#: admin/admin-core.php:190
+msgid ""
+"Automatically adds target=\"_blank\" and rel=\"noopener noreferrer\" to all "
+"external links."
+msgstr ""
+
+#: admin/admin-core.php:194 admin/page-help.php:165
+msgid "Enable Page Excerpt"
+msgstr ""
+
+#: admin/admin-core.php:195
+msgid ""
+"Enables the excerpt field for pages in both Gutenberg and Classic editor."
+msgstr ""
+
+#: admin/admin-core.php:199 admin/page-help.php:171
+msgid "SVG Upload"
+msgstr ""
+
+#: admin/admin-core.php:200
+msgid ""
+"Allows SVG file uploads with security filtering. Select which roles can "
+"upload SVG."
+msgstr ""
+
+#: admin/admin-core.php:207 admin/page-help.php:177
+msgid "AVIF Upload"
+msgstr ""
+
+#: admin/admin-core.php:208
+msgid "Allows AVIF image file uploads. Select which roles can upload AVIF."
+msgstr ""
+
+#: admin/admin-core.php:215 admin/page-help.php:183
+msgid "Role Redirects"
+msgstr ""
+
+#: admin/admin-core.php:216
+msgid "Set custom login and logout redirect URLs per user role."
+msgstr ""
+
+#: admin/admin-core.php:222 admin/page-help.php:189
+#: modules/maintenance-mode.php:161
+msgid "Maintenance Mode"
+msgstr ""
+
+#: admin/admin-core.php:223
+msgid ""
+"Temporarily block visitors from accessing the site. Select which roles can "
+"still view the site."
+msgstr ""
+
+#: admin/admin-core.php:232 admin/page-help.php:195
+msgid "Dynamic Year Shortcodes"
+msgstr ""
+
+#: admin/admin-core.php:233
+msgid ""
+"Provides shortcodes to display current year or calculate duration. Use "
+"[refi-year] or [refi-year from=\"2006\"]"
+msgstr ""
+
+#: admin/admin-core.php:252 admin/admin-core.php:445 admin/admin-core.php:450
+msgid "RefiTune - Site refiner toolkit"
+msgstr ""
+
+#: admin/admin-core.php:253
+msgid "RefiTune Toolkit"
+msgstr ""
+
+#: admin/admin-core.php:261 admin/admin-core.php:300
+msgid "RefiTune – Settings"
+msgstr ""
+
+#: admin/admin-core.php:262
+msgid "RefiTune Settings"
+msgstr ""
+
+#: admin/admin-core.php:270 admin/admin-core.php:302
+msgid "RefiTune – Help"
+msgstr ""
+
+#: admin/admin-core.php:271
+msgid "RefiTune Help"
+msgstr ""
+
+#: admin/admin-core.php:317 admin/admin-core.php:405
+msgid "Settings"
+msgstr ""
+
+#: admin/admin-core.php:323 admin/admin-core.php:406
+msgid "Help"
+msgstr ""
+
+#: admin/admin-core.php:404
+msgid "Modules"
+msgstr ""
+
+#: admin/page-dashboard.php:18 admin/page-help.php:14
+#: admin/page-settings.php:18
+msgid "Performance"
+msgstr ""
+
+#: admin/page-dashboard.php:19 admin/page-help.php:15
+#: admin/page-settings.php:19
+msgid "Security"
+msgstr ""
+
+#: admin/page-dashboard.php:20 admin/page-help.php:16
+#: admin/page-settings.php:20
+msgid "Visual"
+msgstr ""
+
+#: admin/page-dashboard.php:21 admin/page-help.php:17
+#: admin/page-settings.php:21
+msgid "Email"
+msgstr ""
+
+#: admin/page-dashboard.php:22 admin/page-help.php:18
+#: admin/page-settings.php:22
+msgid "Miscellaneous"
+msgstr ""
+
+#: admin/page-dashboard.php:121
+msgid "Inactive"
+msgstr ""
+
+#: admin/page-dashboard.php:134
+msgid "Customized"
+msgstr ""
+
+#: admin/page-dashboard.php:147
+msgid "%1$d login / %2$d logout"
+msgstr ""
+
+#: admin/page-dashboard.php:159
+msgid "All emails disabled"
+msgstr ""
+
+#: admin/page-dashboard.php:160
+msgid "SMTP active"
+msgstr ""
+
+#: admin/page-dashboard.php:167
+msgid "Active (reviews preserved)"
+msgstr ""
+
+#: admin/page-dashboard.php:168 admin/page-dashboard.php:276
+msgid "Active"
+msgstr ""
+
+#: admin/page-dashboard.php:176
+msgid "Disabled"
+msgstr ""
+
+#: admin/page-dashboard.php:179
+msgid "Max %d"
+msgstr ""
+
+#: admin/page-dashboard.php:196
+msgid "%d disabled"
+msgstr ""
+
+#: admin/page-dashboard.php:209 admin/page-dashboard.php:220
+#: admin/page-dashboard.php:250
+msgid "%d roles"
+msgstr ""
+
+#: admin/page-dashboard.php:238
+msgid "Max %1$d / %2$d min"
+msgstr ""
+
+#: admin/page-dashboard.php:267
+msgid "%1$d / %2$d active"
+msgstr ""
+
+#: admin/page-dashboard.php:306
+msgid "Edit Settings"
+msgstr ""
+
+#: admin/page-dashboard.php:313
+msgid "%1$d / %2$d features active"
+msgstr ""
+
+#: admin/page-help.php:26
+msgid ""
+"WordPress adds several links and meta tags to the <code>&lt;head&gt;</code> "
+"section by default, most of which are unnecessary for most websites. This "
+"feature removes: the generator tag showing WordPress version (also "
+"recommended for security reasons), the RSD (Really Simple Discovery) link, "
+"the Windows Live Writer manifest link, the shortlink, and the adjacent posts"
+" rel links."
+msgstr ""
+
+#: admin/page-help.php:32
+msgid ""
+"WordPress adds three types of feed <code>&lt;link&gt;</code> elements to the"
+" <code>&lt;head&gt;</code>: the main posts feed (domain.com/feed/), the "
+"comments feed, and additional feeds (categories, authors, tags, etc.). These"
+" elements can be disabled individually. Important: this only removes the "
+"<code>&lt;head&gt;</code> reference – the feed URLs remain directly "
+"accessible via browser."
+msgstr ""
+
+#: admin/page-help.php:38
+msgid ""
+"WordPress has had built-in emoji support since version 4.2, which loads an "
+"external JavaScript file and a CSS file. If your website doesn't use emojis "
+"in content, it's worth disabling these unnecessary resources for faster page"
+" loading. This feature also removes the emoji plugin from the editor "
+"(TinyMCE)."
+msgstr ""
+
+#: admin/page-help.php:44
+msgid ""
+"jquery-migrate is a compatibility layer that makes older jQuery code run "
+"with newer jQuery versions. If all your website's themes and plugins are "
+"compatible with the current jQuery version, this package is unnecessary. "
+"Only enable this if you're sure none of your scripts require it."
+msgstr ""
+
+#: admin/page-help.php:50
+msgid ""
+"WordPress stores an unlimited number of revisions for each post by default, "
+"which can unnecessarily increase database size. This setting overrides the "
+"maximum number of revisions using the <code>wp_revisions_to_keep</code> "
+"filter – without needing to modify <code>wp-config.php</code>. Setting "
+"<strong>0</strong> completely disables revisions; a positive integer keeps "
+"at most that many revisions per post (older ones are automatically deleted "
+"on save). An empty field leaves the WordPress default in effect."
+msgstr ""
+
+#: admin/page-help.php:56
+msgid ""
+"WordPress automatically saves your post content while you're editing to "
+"prevent data loss. By default, this happens every 60 seconds. You can "
+"increase this interval to reduce server load and database writes. The value "
+"is specified in seconds. Recommended values: <strong>120</strong> (2 "
+"minutes) or <strong>300</strong> (5 minutes). Setting a higher value means "
+"less frequent auto-saves, which can improve performance on busy sites. Note:"
+" This does not affect the manual save when you click the Save or Publish "
+"button."
+msgstr ""
+
+#: admin/page-help.php:62
+msgid ""
+"WordPress keeps deleted posts, pages, and media files in the trash for 30 "
+"days by default before permanently deleting them. You can change this period"
+" to automatically clean up your database more frequently or keep items "
+"longer for recovery purposes. The value is specified in days. Setting a "
+"lower value (e.g., 7 days) reduces database size but gives you less time to "
+"recover accidentally deleted items."
+msgstr ""
+
+#: admin/page-help.php:68
 msgid ""
 "The WordPress Heartbeat API is a built-in feature that uses AJAX to "
 "communicate between the browser and the server at regular intervals. It "
@@ -233,555 +578,7 @@ msgid ""
 "environments or sites with limited resources."
 msgstr ""
 
-# Feature: Disable XML-RPC
-msgid "Disable XML-RPC"
-msgstr ""
-
-msgid ""
-"Completely disables the XML-RPC remote API interface (404 Not Found "
-"response)."
-msgstr ""
-
-# Feature: Disable Trackback/Pingback
-msgid "Disable Trackback/Pingback"
-msgstr ""
-
-msgid ""
-"Disables trackback and pingback mechanism (inter-post notifications): closes"
-" pings on all posts, removes pingback methods."
-msgstr ""
-
-# Feature: Disable File Editor
-msgid "Disable File Editor"
-msgstr ""
-
-msgid ""
-"Disables the built-in plugin and theme editor in admin area "
-"(DISALLOW_FILE_EDIT)."
-msgstr ""
-
-# Feature: Login Error Messages
-msgid "Login Error Messages"
-msgstr ""
-
-msgid ""
-"Generalizes login error messages so it doesn't reveal whether username or "
-"password was incorrect."
-msgstr ""
-
-msgid "Incorrect username or password."
-msgstr ""
-
-# Feature: Restrict Admin Access
-msgid "Restrict Admin Access"
-msgstr ""
-
-msgid "Determines which user roles can access the wp-admin area."
-msgstr ""
-
-# Feature: REST API Restrictions
-msgid "REST API Restrictions"
-msgstr ""
-
-msgid "Intelligent restriction of certain WordPress REST API endpoints."
-msgstr ""
-
-msgid ""
-"Restrict Users endpoint (block external requests) - /wp-json/wp/v2/users"
-msgstr ""
-
-msgid "Restrict REST index (block external requests) - /wp-json/"
-msgstr ""
-
-msgid ""
-"Restrict Media endpoint (block external requests) - /wp-json/wp/v2/media"
-msgstr ""
-
-msgid ""
-"Restrict Comments endpoint (block external requests) - /wp-"
-"json/wp/v2/comments"
-msgstr ""
-
-msgid ""
-"Restrict Search endpoint (block external requests) - /wp-json/wp/v2/search"
-msgstr ""
-
-# Feature: Login Limit
-msgid "Login Limit"
-msgstr ""
-
-msgid "Limits failed login attempts based on IP address and username/email."
-msgstr ""
-
-msgid "Block \"admin\" Username Instantly"
-msgstr ""
-
-msgid ""
-"Immediately blocks the IP address for 1 hour on the first login attempt with"
-" username \"admin\". Recommended for extra security."
-msgstr ""
-
-msgid "Too many failed login attempts. Please try again later."
-msgstr ""
-
-msgid "Login Blocked"
-msgstr ""
-
-msgid "This user account is temporarily locked. Please try again later."
-msgstr ""
-
-msgid "Global Rate Limiting (DDoS Protection)"
-msgstr ""
-
-msgid ""
-"Additional protection against distributed brute-force attacks from multiple "
-"IP addresses."
-msgstr ""
-
-msgid "Global Attempts Limit"
-msgstr ""
-
-msgid "Maximum total failed login attempts from all sources. Default: 50"
-msgstr ""
-
-msgid "Global Time Window (minutes)"
-msgstr ""
-
-msgid ""
-"Time period (in minutes) to count total failed attempts. If exceeded, all "
-"login attempts will be blocked. Default: 5 minutes"
-msgstr ""
-
-msgid ""
-"Too many failed login attempts from multiple sources. All logins are "
-"temporarily blocked. Please try again later."
-msgstr ""
-
-# Feature: Hide Admin Bar
-msgid "Hide Admin Bar"
-msgstr ""
-
-msgid "Hides the admin bar for logged-in users with selected roles."
-msgstr ""
-
-# Feature: Block Visibility
-msgid "Block Visibility (Mobile)"
-msgstr ""
-
-msgid ""
-"Adds a visibility option to every Gutenberg block to control whether it "
-"appears on mobile, desktop, or both."
-msgstr ""
-
-msgid "Visibility"
-msgstr ""
-
-msgid "Display by device"
-msgstr ""
-
-msgid "Always visible"
-msgstr ""
-
-msgid "Mobile only"
-msgstr ""
-
-msgid "Desktop only"
-msgstr ""
-
-msgid ""
-"The block HTML is omitted entirely on devices where it should not appear."
-msgstr ""
-
-# Feature: Login Page Customization
-msgid "Login Page Customization"
-msgstr ""
-
-msgid ""
-"Customize WordPress login page (wp-login.php) logo, background color and "
-"primary color."
-msgstr ""
-
-# Feature: Email Notifications
-msgid "Email Notifications"
-msgstr ""
-
-msgid "Disable WordPress system emails or redirect them to a custom address."
-msgstr ""
-
-# Feature: Email SMTP
-msgid "Email sending"
-msgstr ""
-
-msgid "Email SMTP / Complete Disable"
-msgstr ""
-
-msgid "Configure SMTP server or completely disable all emails."
-msgstr ""
-
-# Feature: Disable Comments
-msgid "Disable Comments"
-msgstr ""
-
-msgid "Completely disables comments and comment submission options."
-msgstr ""
-
-# Feature: External Links
-msgid "External Links in New Window"
-msgstr ""
-
-msgid ""
-"Automatically adds target=\"_blank\" and rel=\"noopener noreferrer\" to all "
-"external links."
-msgstr ""
-
-# Feature: Page Excerpt
-msgid "Enable Page Excerpt"
-msgstr ""
-
-msgid ""
-"Enables the excerpt field for pages in both Gutenberg and Classic editor."
-msgstr ""
-
-# Feature: SVG Upload
-msgid "SVG Upload"
-msgstr ""
-
-msgid ""
-"Allows SVG file uploads with security filtering. Select which roles can "
-"upload SVG."
-msgstr ""
-
-# Feature: AVIF Upload
-msgid "AVIF Upload"
-msgstr ""
-
-msgid "Allows AVIF image file uploads. Select which roles can upload AVIF."
-msgstr ""
-
-# Feature: Role Redirects
-msgid "Role Redirects"
-msgstr ""
-
-msgid "Set custom login and logout redirect URLs per user role."
-msgstr ""
-
-# Dashboard status badges
-msgid "Inactive"
-msgstr ""
-
-msgid "Active"
-msgstr ""
-
-msgid "Customized"
-msgstr ""
-
-msgid "%1$d login / %2$d logout"
-msgstr ""
-
-msgid "All emails disabled"
-msgstr ""
-
-msgid "Emails: DISABLED!"
-msgstr ""
-
-msgid "All email sending is disabled"
-msgstr ""
-
-msgid "SMTP active"
-msgstr ""
-
-msgid "Active (reviews preserved)"
-msgstr ""
-
-msgid "Disabled"
-msgstr ""
-
-msgid "Max %d"
-msgstr ""
-
-msgid "%d disabled"
-msgstr ""
-
-msgid "%d roles"
-msgstr ""
-
-msgid "Max %1$d / %2$d min"
-msgstr ""
-
-msgid "%1$d / %2$d active"
-msgstr ""
-
-msgid "%1$d / %2$d features active"
-msgstr ""
-
-# Dashboard button
-msgid "Edit Settings"
-msgstr ""
-
-# Settings page - General
-msgid "Open Help"
-msgstr ""
-
-# Settings page - Email SMTP
-msgid "WordPress default email sending (or other SMTP plugin)"
-msgstr ""
-
-msgid "Completely disable email sending"
-msgstr ""
-
-msgid "SMTP email sending"
-msgstr ""
-
-msgid "SMTP Settings"
-msgstr ""
-
-msgid ""
-"The following settings apply when \"SMTP email sending\" option is selected."
-msgstr ""
-
-msgid "e.g. smtp.domain.com"
-msgstr ""
-
-msgid "Usually 587 (TLS) or 465 (SSL)."
-msgstr ""
-
-msgid "Encryption"
-msgstr ""
-
-msgid "None"
-msgstr ""
-
-msgid "SMTP Username"
-msgstr ""
-
-msgid "SMTP Password"
-msgstr ""
-
-msgid "Password is stored encrypted with Sodium in the database."
-msgstr ""
-
-msgid "From Email Address"
-msgstr ""
-
-msgid "e.g. info@domain.com"
-msgstr ""
-
-msgid "From Name"
-msgstr ""
-
-msgid "e.g. Website Name"
-msgstr ""
-
-msgid "SSL Certificate Verification"
-msgstr ""
-
-msgid "Disable SSL certificate verification"
-msgstr ""
-
-msgid ""
-"Enable this if you experience SSL certificate errors in local/development "
-"environments. NOT recommended for production sites."
-msgstr ""
-
-# Settings page - Login Customizer
-msgid "Logo Settings"
-msgstr ""
-
-msgid "Logo Source"
-msgstr ""
-
-msgid "Use Site Icon (Settings → General → Site Icon)"
-msgstr ""
-
-msgid "Custom Image URL (relative)"
-msgstr ""
-
-msgid "Logo Size"
-msgstr ""
-
-msgid "Width:"
-msgstr ""
-
-msgid "Height:"
-msgstr ""
-
-msgid "Color Settings"
-msgstr ""
-
-msgid "Background Color"
-msgstr ""
-
-msgid "Login page background color. Default: #f0f0f1"
-msgstr ""
-
-msgid "Primary Color"
-msgstr ""
-
-msgid "Login button color. Default: #3858e9"
-msgstr ""
-
-msgid "Language Switcher"
-msgstr ""
-
-msgid "Hide language switcher on login page"
-msgstr ""
-
-msgid "Removes the language selector dropdown from the login screen."
-msgstr ""
-
-# Settings page - Role Redirects
-msgid "Role"
-msgstr ""
-
-msgid "Redirect After Login"
-msgstr ""
-
-msgid "Redirect After Logout"
-msgstr ""
-
-msgid "Leave fields empty where no custom redirect is needed."
-msgstr ""
-
-# Settings page - Comments
-msgid "Completely disable comments"
-msgstr ""
-
-msgid "Keep product reviews (WooCommerce)"
-msgstr ""
-
-# Settings page - Email Controls
-msgid "Disable update notifications (core, plugin, theme)"
-msgstr ""
-
-msgid "Custom address (if provided, redirects instead of disabling):"
-msgstr ""
-
-msgid "Disable new user registration — admin notification"
-msgstr ""
-
-msgid "Disable password reset — admin notification"
-msgstr ""
-
-msgid "Disable comment notifications"
-msgstr ""
-
-msgid "Disable privacy (GDPR) notifications"
-msgstr ""
-
-msgid "Disable critical error email"
-msgstr ""
-
-# Settings page - Role Select
-msgid "(required)"
-msgstr ""
-
-# Settings page - Login Limit
-msgid "Maximum Attempts"
-msgstr ""
-
-msgid ""
-"How many failed login attempts allowed per IP address and username. Default:"
-" 5"
-msgstr ""
-
-msgid "Lockout Duration (minutes)"
-msgstr ""
-
-msgid ""
-"How long the user should be locked out after reaching the limit (in "
-"minutes). Default: 15 minutes"
-msgstr ""
-
-msgid "Whitelist IP Addresses"
-msgstr ""
-
-msgid ""
-"IP addresses exempt from the limit (one IP per line). For example, if you "
-"have a static IP."
-msgstr ""
-
-# Settings page - Sub Options
-msgid "Disable All"
-msgstr ""
-
-# Settings page - Footer
-msgid "Plugin Settings"
-msgstr ""
-
-msgid "Uninstall"
-msgstr ""
-
-msgid "Delete plugin settings and data when uninstalling the plugin."
-msgstr ""
-
-msgid "Save Changes"
-msgstr ""
-
-# Help page - Performance category
-msgid ""
-"WordPress adds several links and meta tags to the <code>&lt;head&gt;</code> "
-"section by default, most of which are unnecessary for most websites. This "
-"feature removes: the generator tag showing WordPress version (also "
-"recommended for security reasons), the RSD (Really Simple Discovery) link, "
-"the Windows Live Writer manifest link, the shortlink, and the adjacent posts"
-" rel links."
-msgstr ""
-
-msgid ""
-"WordPress adds three types of feed <code>&lt;link&gt;</code> elements to the"
-" <code>&lt;head&gt;</code>: the main posts feed (domain.com/feed/), the "
-"comments feed, and additional feeds (categories, authors, tags, etc.). These"
-" elements can be disabled individually. Important: this only removes the "
-"<code>&lt;head&gt;</code> reference – the feed URLs remain directly "
-"accessible via browser."
-msgstr ""
-
-msgid ""
-"WordPress has had built-in emoji support since version 4.2, which loads an "
-"external JavaScript file and a CSS file. If your website doesn't use emojis "
-"in content, it's worth disabling these unnecessary resources for faster page"
-" loading. This feature also removes the emoji plugin from the editor "
-"(TinyMCE)."
-msgstr ""
-
-msgid ""
-"jquery-migrate is a compatibility layer that makes older jQuery code run "
-"with newer jQuery versions. If all your website's themes and plugins are "
-"compatible with the current jQuery version, this package is unnecessary. "
-"Only enable this if you're sure none of your scripts require it."
-msgstr ""
-
-msgid ""
-"WordPress stores an unlimited number of revisions for each post by default, "
-"which can unnecessarily increase database size. This setting overrides the "
-"maximum number of revisions using the <code>wp_revisions_to_keep</code> "
-"filter – without needing to modify <code>wp-config.php</code>. Setting "
-"<strong>0</strong> completely disables revisions; a positive integer keeps "
-"at most that many revisions per post (older ones are automatically deleted "
-"on save). An empty field leaves the WordPress default in effect."
-msgstr ""
-
-msgid ""
-"WordPress automatically saves your post content while you're editing to "
-"prevent data loss. By default, this happens every 60 seconds. You can "
-"increase this interval to reduce server load and database writes. The value "
-"is specified in seconds. Recommended values: <strong>120</strong> (2 "
-"minutes) or <strong>300</strong> (5 minutes). Setting a higher value means "
-"less frequent auto-saves, which can improve performance on busy sites. Note:"
-" This does not affect the manual save when you click the Save or Publish "
-"button."
-msgstr ""
-
-msgid ""
-"WordPress keeps deleted posts, pages, and media files in the trash for 30 "
-"days by default before permanently deleting them. You can change this period"
-" to automatically clean up your database more frequently or keep items "
-"longer for recovery purposes. The value is specified in days. Setting a "
-"lower value (e.g., 7 days) reduces database size but gives you less time to "
-"recover accidentally deleted items."
-msgstr ""
-
-# Help page - Security category
+#: admin/page-help.php:76
 msgid ""
 "XML-RPC is a remote API protocol that allows external applications (mobile "
 "apps, desktop clients) and plugins (e.g., Jetpack) to connect to WordPress. "
@@ -796,6 +593,7 @@ msgid ""
 " require XML-RPC!</strong>"
 msgstr ""
 
+#: admin/page-help.php:82
 msgid ""
 "The trackback and pingback mechanism is an automatic notification system "
 "between WordPress blogs, activated when you link to another WordPress site "
@@ -807,6 +605,7 @@ msgid ""
 "from the source, and rejects direct HTTP trackback requests with a 403."
 msgstr ""
 
+#: admin/page-help.php:88
 msgid ""
 "Disables WordPress's built-in plugin and theme editor functionality in the "
 "admin area. After activation, the <em>Plugins &gt; Editor</em> and "
@@ -817,6 +616,7 @@ msgid ""
 "server files in case of compromised administrator accounts."
 msgstr ""
 
+#: admin/page-help.php:94
 msgid ""
 "By default, WordPress provides separate error messages for when the username"
 " exists but the password is incorrect, and vice versa. This information can "
@@ -824,6 +624,7 @@ msgid ""
 "displays a generic, neutral error message in both cases."
 msgstr ""
 
+#: admin/page-help.php:100
 msgid ""
 "Determines which WordPress user roles can access the wp-admin area. Users "
 "without permission will be redirected to the website homepage when "
@@ -833,77 +634,57 @@ msgid ""
 " checked before activating."
 msgstr ""
 
+#: admin/page-help.php:106
 msgid ""
 "Intelligent restriction of certain WordPress REST API endpoints for security"
 " reasons. The REST API provides publicly accessible data by default (e.g., "
 "usernames, media files), which can pose a security risk in some "
 "cases.<br><br><strong>How it works:</strong><ul><li><strong>Logged-in "
-"users:</strong> always have access (any role)</li><li><strong>Non-logged-in "
-"users:</strong> only if the request comes from your own website (based on "
-"HTTP Referer or Origin header)</li><li><strong>WooCommerce guest "
-"customers:</strong> have access with an active session cookie (checkout, "
-"cart)</li><li><strong>External, non-logged-in requests:</strong> receive a "
-"401 Unauthorized error</li></ul>This ensures that the website's internal "
-"functions (Gutenberg, AJAX, blocks, plugins) work smoothly while external "
-"attackers/scrapers cannot access sensitive data.<br><br><strong>Restrictable"
-" endpoints:</strong><ul><li><strong>Users endpoint:</strong> Restricts the "
+"users:</strong> always have access (any role)</li><li><strong>Anonymous "
+"requests:</strong> receive a 401 Unauthorized error on restricted "
+"routes</li></ul>Access is based on an authenticated WordPress session, not "
+"on cookies or HTTP headers that can be spoofed by external "
+"clients.<br><br><strong>Restrictable "
+"endpoints:</strong><ul><li><strong>Users endpoint:</strong> Restricts the "
 "<code>/wp-json/wp/v2/users</code> endpoint, which exposes user data (names, "
 "slugs, email addresses). This makes it harder for attackers collecting "
 "usernames for brute-force attacks.</li><li><strong>REST index:</strong> The "
-"<code>/wp-json/</code> root index becomes available only for internal "
-"requests. This endpoint lists all available REST API routes, which is "
-"valuable information for attackers.</li><li><strong>Media endpoint:</strong>"
-" Restricts the <code>/wp-json/wp/v2/media</code> endpoint, which allows "
-"listing and querying uploaded media files. External scrapers cannot download"
-" media library content this way.</li><li><strong>Comments endpoint:</strong>"
-" Restricts the <code>/wp-json/wp/v2/comments</code> endpoint. This is "
-"especially useful if you've also disabled comments or want to prevent "
-"external querying of comments.</li><li><strong>Search endpoint:</strong> "
-"Restricts the <code>/wp-json/wp/v2/search</code> endpoint, which allows "
-"searching within page content. External users cannot automatically index "
-"content this way.</li></ul><strong>Important:</strong> WooCommerce's own "
-"REST API endpoints (<code>/wp-json/wc/v3/</code>, <code>/wp-json/wc-"
-"store/v1/</code>) are NOT affected, so guest checkout and cart functions "
-"work smoothly."
+"<code>/wp-json/</code> root index requires authentication. This endpoint "
+"lists all available REST API routes, which is valuable information for "
+"attackers.</li><li><strong>Media endpoint:</strong> Restricts the <code>/wp-"
+"json/wp/v2/media</code> endpoint, which allows listing and querying uploaded"
+" media files.</li><li><strong>Comments endpoint:</strong> Restricts the "
+"<code>/wp-json/wp/v2/comments</code> endpoint.</li><li><strong>Search "
+"endpoint:</strong> Restricts the <code>/wp-json/wp/v2/search</code> "
+"endpoint, which allows searching within page "
+"content.</li></ul><strong>Important:</strong> WooCommerce's own REST API "
+"endpoints (<code>/wp-json/wc/v3/</code>, <code>/wp-json/wc-store/v1/</code>)"
+" are NOT affected."
 msgstr ""
 
+#: admin/page-help.php:112
 msgid ""
 "Limits failed login attempts based on IP address and username, protecting "
 "the website against brute-force attacks.<br><br><strong>How it "
 "works:</strong><ul><li>Counts every failed login attempt both by <strong>IP "
 "address</strong> and by <strong>username</strong></li><li>If either reaches "
-"the limit, a timed lockout occurs</li><li>Successful login clears the "
+"the limit, a timed lockout occurs</li><li>Username lockouts are checked "
+"before password verification</li><li>Successful login clears the "
 "counter</li></ul><strong>Settings:</strong><ul><li><strong>Block \"admin\" "
 "Username Instantly:</strong> When enabled, immediately blocks the IP address"
-" for 1 hour on the first login attempt with username \"admin\". This "
-"provides extra protection against the most common brute-force target. The "
-"lockout happens instantly, without counting "
-"attempts.</li><li><strong>Maximum attempts:</strong> How many failed "
-"attempts the system allows (default: 5). This is counted separately per IP "
-"address AND per username.</li><li><strong>Lockout duration:</strong> How "
-"long the user should be locked out after reaching the limit in minutes "
-"(default: 15 minutes). During lockout, login attempts receive an error "
-"message.</li><li><strong>Whitelist IP addresses:</strong> IP addresses "
-"exempt from the limit (one IP per line). Useful for office IP addresses, VPN"
-" endpoints, or developer machines. These IPs can make unlimited login "
-"attempts.</li></ul><strong>Global Rate Limiting (DDoS "
-"Protection):</strong><br>Additional protection against distributed brute-"
-"force attacks from multiple IP addresses:<ul><li><strong>Global Attempts "
-"Limit:</strong> Maximum total failed login attempts from ALL sources within "
-"the time window (default: 50)</li><li><strong>Global Time Window:</strong> "
-"Time period in minutes to count all failed attempts (default: 5 "
-"minutes)</li><li>When the global limit is exceeded, <strong>ALL login "
-"attempts are blocked</strong> for everyone until the time window expires, "
-"protecting the database from overload</li></ul><strong>Storage:</strong> "
-"Attempts and lockouts are stored in the WordPress Transients API (database),"
-" which expires automatically. No separate table management or cleanup is "
-"needed.<br><br><strong>Note:</strong> This feature only works on the "
-"<code>wp-login.php</code> page. It does not affect XML-RPC or REST API-based"
-" login attempts (those are handled by separate XML-RPC and REST API "
-"restrictions)."
+" for 1 hour on the first login attempt with username "
+"\"admin\".</li><li><strong>Maximum attempts:</strong> How many failed "
+"attempts the system allows (default: 5). Counted separately per IP address "
+"and per username.</li><li><strong>Lockout duration:</strong> How long login "
+"is blocked after reaching the limit in minutes (default: 15 "
+"minutes).</li><li><strong>Whitelist IP addresses:</strong> IP addresses "
+"exempt from the limit (one IP per line).</li></ul><strong>Storage:</strong> "
+"Attempt counters use the WordPress Transients API with object-cache support "
+"when available.<br><br><strong>Note:</strong> This feature only works on the"
+" <code>wp-login.php</code> page."
 msgstr ""
 
-# Help page - Visual category
+#: admin/page-help.php:120
 msgid ""
 "When logged in, WordPress displays an admin bar at the top of the page. This"
 " is useful for administrators, but can be distracting for users with other "
@@ -913,6 +694,7 @@ msgid ""
 "feature is not active."
 msgstr ""
 
+#: admin/page-help.php:126
 msgid ""
 "Adds a \"Visibility\" panel to every Gutenberg block in the block editor "
 "(Inspector Controls). You can set whether the block is always visible, "
@@ -923,7 +705,7 @@ msgid ""
 " and cleaner HTML output."
 msgstr ""
 
-# Help page - Login Page Customization
+#: admin/page-help.php:132
 msgid ""
 "Customize the WordPress login page (wp-login.php) logo, background color, "
 "primary color, and language switcher visibility. <strong>Logo "
@@ -941,7 +723,7 @@ msgid ""
 "values."
 msgstr ""
 
-# Help page - Email Notifications
+#: admin/page-help.php:140
 msgid ""
 "Individual WordPress system emails can be disabled or redirected to a custom"
 " email address:<ul><li><strong>Update notifications</strong> – emails sent "
@@ -958,7 +740,11 @@ msgid ""
 "custom email address.</li></ul>"
 msgstr ""
 
-# Help page - Email SMTP
+#: admin/page-help.php:145
+msgid "Email SMTP / Complete Disable"
+msgstr ""
+
+#: admin/page-help.php:146
 msgid ""
 "<strong>Complete email sending disable:</strong> Uses the "
 "<code>pre_wp_mail</code> filter to block all <code>wp_mail()</code> calls – "
@@ -974,7 +760,7 @@ msgid ""
 "<code>SECURE_AUTH_KEY</code>, and <code>NONCE_KEY</code> constants."
 msgstr ""
 
-# Help page - Misc category - Disable Comments
+#: admin/page-help.php:154
 msgid ""
 "Completely disables the comment system: closes comments on all existing "
 "posts at runtime (without database modification), removes comment support "
@@ -987,7 +773,7 @@ msgid ""
 "<code>product</code> post type."
 msgstr ""
 
-# Help page - External Links
+#: admin/page-help.php:160
 msgid ""
 "Automatically adds <code>target=\"_blank\"</code> and <code>rel=\"noopener "
 "noreferrer\"</code> attributes to all links pointing outside your own "
@@ -996,7 +782,7 @@ msgid ""
 " preventing the opened page from accessing the original page."
 msgstr ""
 
-# Help page - Page Excerpt
+#: admin/page-help.php:166
 msgid ""
 "By default, WordPress pages (page post type) don't have the excerpt field "
 "available in the editor. This feature enables the excerpt field for pages in"
@@ -1005,7 +791,7 @@ msgid ""
 "SEO plugins."
 msgstr ""
 
-# Help page - SVG Upload
+#: admin/page-help.php:172
 msgid ""
 "Allows SVG image files to be uploaded to the media library for selected "
 "WordPress roles. Performs security checks before upload: examines whether "
@@ -1014,7 +800,7 @@ msgid ""
 "all other users, SVG remains prohibited."
 msgstr ""
 
-# Help page - AVIF Upload
+#: admin/page-help.php:178
 msgid ""
 "Allows AVIF image files to be uploaded to the media library for selected "
 "WordPress roles. AVIF is a modern, highly efficient image format that is not"
@@ -1022,7 +808,7 @@ msgid ""
 "ensures proper MIME type handling on older WP versions as well."
 msgstr ""
 
-# Help page - Role Redirects
+#: admin/page-help.php:184
 msgid ""
 "Set custom redirect URLs per role after login and logout. In the settings, "
 "two fields are available for each WordPress role (administrator, editor, "
@@ -1043,33 +829,7 @@ msgid ""
 "login/logout</li><li>Admin toolbar logout</li></ul>"
 msgstr ""
 
-# Maintenance Mode
-msgid "Maintenance Mode"
-msgstr ""
-
-msgid ""
-"Temporarily block visitors from accessing the site. Select which roles can "
-"still view the site."
-msgstr ""
-
-msgid "Visitor Message:"
-msgstr ""
-
-msgid "This site is temporarily under maintenance. Please check back soon!"
-msgstr ""
-
-msgid ""
-"This message will be displayed to visitors when maintenance mode is active. "
-"Leave empty for default message."
-msgstr ""
-
-msgid "Maintenance Mode is currently active"
-msgstr ""
-
-msgid "Maintenance: ACTIVE!"
-msgstr ""
-
-# Help page - Maintenance Mode
+#: admin/page-help.php:190
 msgid ""
 "Temporarily blocks visitors from accessing the site while allowing "
 "authorized users to continue working. Uses the <code>init</code> hook "
@@ -1094,16 +854,7 @@ msgid ""
 "in a clean, centered layout."
 msgstr ""
 
-# Dynamic Year Shortcodes
-msgid "Dynamic Year Shortcodes"
-msgstr ""
-
-msgid ""
-"Provides shortcodes to display current year or calculate duration. Use "
-"[refi-year] or [refi-year from=\"2006\"]"
-msgstr ""
-
-# Help page - Dynamic Year Shortcodes
+#: admin/page-help.php:196
 msgid ""
 "Provides two shortcodes for displaying dynamic year information anywhere on "
 "your site: <br><br><strong>1. Current Year:</strong> <code>[refi-"
@@ -1120,4 +871,434 @@ msgid ""
 "[refi-year from=\"2010\"]</code> → \"Established "
 "16\"</li></ul><strong>Note:</strong> Shortcodes work in posts, pages, text "
 "widgets, and most theme areas that support shortcode processing."
+msgstr ""
+
+#: admin/page-settings.php:69
+msgid "Open Help"
+msgstr ""
+
+#: admin/page-settings.php:90
+msgid "WordPress default email sending (or other SMTP plugin)"
+msgstr ""
+
+#: admin/page-settings.php:100
+msgid "Completely disable email sending"
+msgstr ""
+
+#: admin/page-settings.php:112
+msgid "SMTP email sending"
+msgstr ""
+
+#: admin/page-settings.php:116
+msgid "SMTP Settings"
+msgstr ""
+
+#: admin/page-settings.php:117
+msgid ""
+"The following settings apply when \"SMTP email sending\" option is selected."
+msgstr ""
+
+#: admin/page-settings.php:121
+msgid "SMTP Host"
+msgstr ""
+
+#: admin/page-settings.php:129
+msgid "e.g. smtp.domain.com"
+msgstr ""
+
+#: admin/page-settings.php:134
+msgid "SMTP Port"
+msgstr ""
+
+#: admin/page-settings.php:145
+msgid "Usually 587 (TLS) or 465 (SSL)."
+msgstr ""
+
+#: admin/page-settings.php:149
+msgid "Encryption"
+msgstr ""
+
+#: admin/page-settings.php:152
+msgid "None"
+msgstr ""
+
+#: admin/page-settings.php:159
+msgid "SMTP Username"
+msgstr ""
+
+#: admin/page-settings.php:172
+msgid "SMTP Password"
+msgstr ""
+
+#: admin/page-settings.php:181
+msgid "Leave blank to keep the current password"
+msgstr ""
+
+#: admin/page-settings.php:186
+msgid "A password is already stored. Enter a new value only to change it."
+msgstr ""
+
+#: admin/page-settings.php:188
+msgid "Password is stored encrypted with Sodium in the database."
+msgstr ""
+
+#: admin/page-settings.php:195
+msgid "From Email Address"
+msgstr ""
+
+#: admin/page-settings.php:203
+msgid "e.g. info@domain.com"
+msgstr ""
+
+#: admin/page-settings.php:208
+msgid "From Name"
+msgstr ""
+
+#: admin/page-settings.php:216
+msgid "e.g. Website Name"
+msgstr ""
+
+#: admin/page-settings.php:245
+msgid "Logo Settings"
+msgstr ""
+
+#: admin/page-settings.php:249
+msgid "Logo Source"
+msgstr ""
+
+#: admin/page-settings.php:258
+msgid "Use Site Icon (Settings → General → Site Icon)"
+msgstr ""
+
+#: admin/page-settings.php:268
+msgid "Custom Image URL (relative)"
+msgstr ""
+
+#: admin/page-settings.php:283
+msgid "Logo Size"
+msgstr ""
+
+#: admin/page-settings.php:286
+msgid "Width:"
+msgstr ""
+
+#: admin/page-settings.php:298
+msgid "Height:"
+msgstr ""
+
+#: admin/page-settings.php:312
+msgid "Color Settings"
+msgstr ""
+
+#: admin/page-settings.php:316
+msgid "Background Color"
+msgstr ""
+
+#: admin/page-settings.php:326
+msgid "Login page background color. Default: #f0f0f1"
+msgstr ""
+
+#: admin/page-settings.php:330
+msgid "Primary Color"
+msgstr ""
+
+#: admin/page-settings.php:340
+msgid "Login button color. Default: #3858e9"
+msgstr ""
+
+#: admin/page-settings.php:344
+msgid "Language Switcher"
+msgstr ""
+
+#: admin/page-settings.php:353
+msgid "Hide language switcher on login page"
+msgstr ""
+
+#: admin/page-settings.php:355
+msgid "Removes the language selector dropdown from the login screen."
+msgstr ""
+
+#: admin/page-settings.php:382
+msgid "Role"
+msgstr ""
+
+#: admin/page-settings.php:383
+msgid "Redirect After Login"
+msgstr ""
+
+#: admin/page-settings.php:384
+msgid "Redirect After Logout"
+msgstr ""
+
+#: admin/page-settings.php:440
+msgid "Leave fields empty where no custom redirect is needed."
+msgstr ""
+
+#: admin/page-settings.php:455
+msgid "Completely disable comments"
+msgstr ""
+
+#: admin/page-settings.php:467
+msgid "Keep product reviews (WooCommerce)"
+msgstr ""
+
+#: admin/page-settings.php:519
+msgid "Admin Heartbeat:"
+msgstr ""
+
+#: admin/page-settings.php:522 admin/page-settings.php:536
+#: admin/page-settings.php:550
+msgid "WordPress default"
+msgstr ""
+
+#: admin/page-settings.php:523 admin/page-settings.php:537
+#: admin/page-settings.php:551
+msgid "15 seconds, dense"
+msgstr ""
+
+#: admin/page-settings.php:524 admin/page-settings.php:538
+msgid "30 seconds, frequent"
+msgstr ""
+
+#: admin/page-settings.php:525
+msgid "60 seconds, medium - Recommended"
+msgstr ""
+
+#: admin/page-settings.php:526 admin/page-settings.php:540
+#: admin/page-settings.php:554
+msgid "120 seconds, rare"
+msgstr ""
+
+#: admin/page-settings.php:527
+msgid "Disable"
+msgstr ""
+
+#: admin/page-settings.php:533
+msgid "Frontend Heartbeat:"
+msgstr ""
+
+#: admin/page-settings.php:539 admin/page-settings.php:553
+msgid "60 seconds, medium"
+msgstr ""
+
+#: admin/page-settings.php:541
+msgid "Disable (Recommended, check other plugins)"
+msgstr ""
+
+#: admin/page-settings.php:547
+msgid "Post Editor Heartbeat:"
+msgstr ""
+
+#: admin/page-settings.php:552
+msgid "30 seconds, frequent - Recommended"
+msgstr ""
+
+#: admin/page-settings.php:555
+msgid "Disable (It's disable autosave and post locking)"
+msgstr ""
+
+#: admin/page-settings.php:576 admin/page-settings.php:937
+msgid "Disable All"
+msgstr ""
+
+#: admin/page-settings.php:592
+msgid "Disable update notifications (core, plugin, theme)"
+msgstr ""
+
+#: admin/page-settings.php:597 admin/page-settings.php:675
+msgid "Custom address (if provided, redirects instead of disabling):"
+msgstr ""
+
+#: admin/page-settings.php:620
+msgid "Disable new user registration – admin notification"
+msgstr ""
+
+#: admin/page-settings.php:632
+msgid "Disable password reset – admin notification"
+msgstr ""
+
+#: admin/page-settings.php:644
+msgid "Disable comment notifications"
+msgstr ""
+
+#: admin/page-settings.php:656
+msgid "Disable privacy (GDPR) notifications"
+msgstr ""
+
+#: admin/page-settings.php:670
+msgid "Disable critical error email"
+msgstr ""
+
+#: admin/page-settings.php:730 admin/page-settings.php:754
+#: admin/page-settings.php:803
+msgid "(required)"
+msgstr ""
+
+#: admin/page-settings.php:812
+msgid "Visitor Message:"
+msgstr ""
+
+#: admin/page-settings.php:819 modules/maintenance-mode.php:152
+msgid "This site is temporarily under maintenance. Please check back soon!"
+msgstr ""
+
+#: admin/page-settings.php:822
+msgid ""
+"This message will be displayed to visitors when maintenance mode is active. "
+"Leave empty for default message."
+msgstr ""
+
+#: admin/page-settings.php:855
+msgid "Block \"admin\" Username Instantly"
+msgstr ""
+
+#: admin/page-settings.php:858
+msgid ""
+"Immediately blocks the IP address for 1 hour on the first login attempt with"
+" username \"admin\". Recommended for extra security."
+msgstr ""
+
+#: admin/page-settings.php:865
+msgid "Maximum Attempts"
+msgstr ""
+
+#: admin/page-settings.php:879
+msgid ""
+"How many failed login attempts allowed per IP address and username. Default:"
+" 5"
+msgstr ""
+
+#: admin/page-settings.php:886
+msgid "Lockout Duration (minutes)"
+msgstr ""
+
+#: admin/page-settings.php:900
+msgid ""
+"How long the user should be locked out after reaching the limit (in "
+"minutes). Default: 15 minutes"
+msgstr ""
+
+#: admin/page-settings.php:907
+msgid "Whitelist IP Addresses"
+msgstr ""
+
+#: admin/page-settings.php:916
+msgid "192.168.1.1"
+msgstr ""
+
+#: admin/page-settings.php:919
+msgid ""
+"IP addresses exempt from the limit (one IP per line). For example, if you "
+"have a static IP."
+msgstr ""
+
+#: admin/page-settings.php:980
+msgid "Plugin Settings"
+msgstr ""
+
+#: admin/page-settings.php:985
+msgid "Uninstall"
+msgstr ""
+
+#: admin/page-settings.php:996
+msgid "Delete plugin settings and data when uninstalling the plugin."
+msgstr ""
+
+#: admin/page-settings.php:1003
+msgid "Save Changes"
+msgstr ""
+
+#: admin/js/block-visibility.js:55
+msgid "Visibility"
+msgstr ""
+
+#: admin/js/block-visibility.js:59
+msgid "Display by device"
+msgstr ""
+
+#: admin/js/block-visibility.js:63
+msgid "Always visible"
+msgstr ""
+
+#: admin/js/block-visibility.js:67
+msgid "Mobile only"
+msgstr ""
+
+#: admin/js/block-visibility.js:71
+msgid "Desktop only"
+msgstr ""
+
+#: admin/js/block-visibility.js:78
+msgid ""
+"The block HTML is omitted entirely on devices where it should not appear."
+msgstr ""
+
+#: modules/disable-comments.php:78 modules/disable-comments.php:97
+msgid "Hozzászólások le vannak tiltva ezen a webhelyen."
+msgstr ""
+
+#: modules/disable-trackbacks.php:64
+msgid "A trackback le van tiltva ezen a webhelyen."
+msgstr ""
+
+#: modules/email-smtp.php:37
+msgid "Emails: DISABLED!"
+msgstr ""
+
+#: modules/email-smtp.php:40
+msgid "All email sending is disabled"
+msgstr ""
+
+#: modules/login-limit.php:133
+msgid "Too many failed login attempts. Please try again later."
+msgstr ""
+
+#: modules/login-limit.php:134 modules/login-limit.php:146
+msgid "Login Blocked"
+msgstr ""
+
+#: modules/login-limit.php:145 modules/login-limit.php:175
+msgid "This user account is temporarily locked. Please try again later."
+msgstr ""
+
+#: modules/login-tweaks.php:31
+msgid "Incorrect username or password."
+msgstr ""
+
+#: modules/maintenance-mode.php:83
+msgid "Maintenance: ACTIVE!"
+msgstr ""
+
+#: modules/maintenance-mode.php:86
+msgid "Maintenance Mode is currently active"
+msgstr ""
+
+#: modules/rest-api-restrictions.php:37
+msgid "The users endpoint requires authentication."
+msgstr ""
+
+#: modules/rest-api-restrictions.php:58
+msgid "The REST API index requires authentication."
+msgstr ""
+
+#: modules/rest-api-restrictions.php:78
+msgid "The media endpoint requires authentication."
+msgstr ""
+
+#: modules/rest-api-restrictions.php:100
+msgid "The comments endpoint requires authentication."
+msgstr ""
+
+#: modules/rest-api-restrictions.php:122
+msgid "The search endpoint requires authentication."
+msgstr ""
+
+#: modules/svg-avif-upload.php:176
+msgid "You are not allowed to upload SVG files."
+msgstr ""
+
+#: modules/svg-avif-upload.php:181
+msgid ""
+"This SVG file cannot be uploaded for security reasons. It may contain "
+"dangerous code."
 msgstr ""
