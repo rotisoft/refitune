@@ -57,7 +57,7 @@ Each feature can be enabled or disabled individually with just one click — no 
 * **AVIF Upload** – Support modern AVIF image format uploads.
 * **Role Redirects** – Send users to custom pages after login or logout based on their role.
 * **Maintenance Mode** – Temporarily block visitors while you work on the site.
-* **Dynamic Year Shortcodes** – Display the current year or duration via `[refi-year]` shortcodes.
+* **Dynamic Year Shortcodes** – Display the current year via `[refi-year]` or duration via `[refi-year from="2006"]` shortcodes.
 
 Do you have other plugins? Yes, check my plugins website: [rotistudio.com](https://rotistudio.com/)
 Where can we learn more about your work? Check my personal website there: [rottenbacher.hu](https://rottenbacher.hu/)
