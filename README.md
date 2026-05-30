@@ -106,7 +106,8 @@ No hidden optimizations. No mysterious settings. Just clear controls for the fea
 - AVIF Upload – Enable AVIF image uploads.
 - Role Redirects – Redirect users after login or logout based on role.
 - Maintenance Mode – Put the site into maintenance mode.
-- Dynamic Year Shortcodes – Display dynamic years with `[refi-year]`.
+- Display the current year via `[refi-year]` or duration via `[refi-year from="2006"]` shortcodes.
+
 
 ## Screenshots
 
