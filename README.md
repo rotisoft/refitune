@@ -215,6 +215,7 @@ It forces automatic updates for every plugin or theme and overrides per-item tog
 - Verified Upload
 - Clean Upload Filenames
 - Disable oEmbed
+- Remove Asset Version Query Strings
 
 #### Fixes
 
