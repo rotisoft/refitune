@@ -3,7 +3,7 @@
  * Plugin Name: RefiTune - Site refiner toolkit
  * Plugin URI: https://rotistudio.com/plugins/refitune-site-refiner-toolkit-for-wordpress
  * Description: Take control of WordPress with smart performance tweaks, security enhancements, and usability improvements. RefiTune is all in one toolkit.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Requires at least: 5.9
  * Requires PHP: 7.4
  * Author: RotiStudio - Tamas Rottenbacher
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'REFITUNE_VERSION', '1.1.0' );
+define( 'REFITUNE_VERSION', '1.2.0' );
 define( 'REFITUNE_PATH', plugin_dir_path( __FILE__ ) );
 define( 'REFITUNE_URL', plugin_dir_url( __FILE__ ) );
 
@@ -28,8 +28,22 @@ add_action( 'init', function() {
 	load_plugin_textdomain( 'refitune', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }, 1 );
 
-// Titkosítási segédfüggvények betöltése.
+// Load encryption helpers.
 require_once REFITUNE_PATH . 'includes/encryption.php';
+
+/**
+ * Whether a RefiTune feature is available on the current WordPress version.
+ *
+ * @param array $feature Feature definition from refitune_get_features().
+ * @return bool
+ */
+function refitune_is_feature_available( array $feature ): bool {
+	if ( empty( $feature['max_wp_version'] ) ) {
+		return true;
+	}
+
+	return version_compare( get_bloginfo( 'version' ), (string) $feature['max_wp_version'], '<' );
+}
 
 $refitune_settings = get_option( 'refitune_settings', array() );
 
@@ -66,6 +80,16 @@ if ( ! empty( $refitune_settings['disable_emoji'] ) ) {
 // --- jQuery Migrate letiltás ---
 if ( ! empty( $refitune_settings['disable_jquery_migrate'] ) ) {
 	require_once REFITUNE_PATH . 'modules/disable-jquery-migrate.php';
+}
+
+// --- oEmbed letiltás ---
+if ( ! empty( $refitune_settings['disable_oembed'] ) ) {
+	require_once REFITUNE_PATH . 'modules/disable-oembed.php';
+}
+
+// --- CSS/JS ver query string eltávolítás ---
+if ( ! empty( $refitune_settings['remove_asset_versions'] ) ) {
+	require_once REFITUNE_PATH . 'modules/remove-asset-versions.php';
 }
 
 // --- XML-RPC letiltás ---
@@ -117,7 +141,7 @@ if ( ( $svg_enabled && ! empty( $svg_roles ) ) || ( $avif_enabled && ! empty( $a
 }
 
 // --- Blokk láthatóság ---
-if ( ! empty( $refitune_settings['block_visibility'] ) ) {
+if ( ! empty( $refitune_settings['block_visibility'] ) && version_compare( get_bloginfo( 'version' ), '7.0', '<' ) ) {
 	require_once REFITUNE_PATH . 'modules/block-visibility.php';
 }
 
@@ -223,6 +247,22 @@ if ( $rest_api_active ) {
 // --- Bejelentkezési limit ---
 if ( ! empty( $refitune_settings['login_limit_enabled'] ) ) {
 	require_once REFITUNE_PATH . 'modules/login-limit.php';
+}
+
+// --- Ellenőrzött feltöltés ---
+if ( ! empty( $refitune_settings['upload_security'] ) ) {
+	require_once REFITUNE_PATH . 'modules/upload-security.php';
+}
+
+// --- Fájlnév tisztítás feltöltéskor ---
+if ( ! empty( $refitune_settings['upload_filename_sanitize'] ) ) {
+	require_once REFITUNE_PATH . 'modules/upload-filename-sanitize.php';
+}
+
+// --- Automatic updates control ---
+if ( ! empty( $refitune_settings['auto_updates_control'] ) ) {
+	require_once REFITUNE_PATH . 'modules/auto-updates.php';
+	refitune_auto_updates_module_init();
 }
 
 // Fordítható plugin leírás a plugin listában.

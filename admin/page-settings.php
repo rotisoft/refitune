@@ -497,6 +497,117 @@ foreach ( $features as $key => $feature ) {
 				<p class="description"><?php echo esc_html( $feature['description'] ); ?></p>
 			</div>
 
+		<?php elseif ( 'auto_updates_control' === $type ) : ?>
+
+			<label class="refitune-collapsible-trigger">
+				<input
+					type="checkbox"
+					id="refitune_auto_updates_control"
+					class="refitune-collapsible-checkbox"
+					name="refitune_settings[auto_updates_control]"
+					value="1"
+					<?php checked( ! empty( $refitune_settings['auto_updates_control'] ) ); ?>
+				/>
+				<strong><?php echo esc_html( $feature['description'] ); ?></strong>
+			</label>
+
+			<div class="refitune-collapsible-content">
+				<div class="refitune-auto-updates-wrapper">
+
+					<p class="description" style="margin-bottom: 15px;">
+						<?php esc_html_e( 'Enable all applies to every plugin or theme and overrides per-item choices on the Updates screen. WordPress default leaves native behavior unchanged.', 'refitune' ); ?>
+					</p>
+
+					<div style="margin-bottom: 15px;">
+						<?php
+						$legacy_plugins_key    = refitune_legacy_plugins_auto_option_key();
+						$refitune_plugins_auto = $refitune_settings['refitune_plugins_auto'] ?? $refitune_settings[ $legacy_plugins_key ] ?? 'default';
+						?>
+						<label for="refitune_plugins_auto" style="display: inline-block; width: 200px; font-weight: 600;">
+							<?php esc_html_e( 'Plugins:', 'refitune' ); ?>
+						</label>
+						<select id="refitune_plugins_auto" name="refitune_settings[refitune_plugins_auto]" class="regular-text">
+							<option value="default" <?php selected( $refitune_plugins_auto, 'default' ); ?>><?php esc_html_e( 'WordPress default', 'refitune' ); ?></option>
+							<option value="enable" <?php selected( $refitune_plugins_auto, 'enable' ); ?>><?php esc_html_e( 'Enable all', 'refitune' ); ?></option>
+							<option value="disable" <?php selected( $refitune_plugins_auto, 'disable' ); ?>><?php esc_html_e( 'Disable all', 'refitune' ); ?></option>
+						</select>
+					</div>
+
+					<div style="margin-bottom: 15px;">
+						<label for="refitune_auto_update_themes" style="display: inline-block; width: 200px; font-weight: 600;">
+							<?php esc_html_e( 'Themes:', 'refitune' ); ?>
+						</label>
+						<select id="refitune_auto_update_themes" name="refitune_settings[auto_update_themes]" class="regular-text">
+							<option value="default" <?php selected( ( $refitune_settings['auto_update_themes'] ?? 'default' ), 'default' ); ?>><?php esc_html_e( 'WordPress default', 'refitune' ); ?></option>
+							<option value="enable" <?php selected( ( $refitune_settings['auto_update_themes'] ?? 'default' ), 'enable' ); ?>><?php esc_html_e( 'Enable all', 'refitune' ); ?></option>
+							<option value="disable" <?php selected( ( $refitune_settings['auto_update_themes'] ?? 'default' ), 'disable' ); ?>><?php esc_html_e( 'Disable all', 'refitune' ); ?></option>
+						</select>
+					</div>
+
+					<div style="margin-bottom: 15px;">
+						<label for="refitune_auto_update_translations" style="display: inline-block; width: 200px; font-weight: 600;">
+							<?php esc_html_e( 'Translations:', 'refitune' ); ?>
+						</label>
+						<select id="refitune_auto_update_translations" name="refitune_settings[auto_update_translations]" class="regular-text">
+							<option value="default" <?php selected( ( $refitune_settings['auto_update_translations'] ?? 'default' ), 'default' ); ?>><?php esc_html_e( 'WordPress default', 'refitune' ); ?></option>
+							<option value="enable" <?php selected( ( $refitune_settings['auto_update_translations'] ?? 'default' ), 'enable' ); ?>><?php esc_html_e( 'Enable', 'refitune' ); ?></option>
+							<option value="disable" <?php selected( ( $refitune_settings['auto_update_translations'] ?? 'default' ), 'disable' ); ?>><?php esc_html_e( 'Disable', 'refitune' ); ?></option>
+						</select>
+					</div>
+
+					<hr style="margin: 20px 0;" />
+
+					<div style="margin-bottom: 15px;">
+						<label for="refitune_auto_update_core_minor" style="display: inline-block; width: 200px; font-weight: 600;">
+							<?php esc_html_e( 'Core minor updates:', 'refitune' ); ?>
+						</label>
+						<select id="refitune_auto_update_core_minor" name="refitune_settings[auto_update_core_minor]" class="regular-text">
+							<option value="default" <?php selected( ( $refitune_settings['auto_update_core_minor'] ?? 'default' ), 'default' ); ?>><?php esc_html_e( 'WordPress default', 'refitune' ); ?></option>
+							<option value="enable" <?php selected( ( $refitune_settings['auto_update_core_minor'] ?? 'default' ), 'enable' ); ?>><?php esc_html_e( 'Enable', 'refitune' ); ?></option>
+							<option value="disable" <?php selected( ( $refitune_settings['auto_update_core_minor'] ?? 'default' ), 'disable' ); ?>><?php esc_html_e( 'Disable', 'refitune' ); ?></option>
+						</select>
+					</div>
+
+					<div style="margin-bottom: 15px;">
+						<label for="refitune_auto_update_core_major" style="display: inline-block; width: 200px; font-weight: 600;">
+							<?php esc_html_e( 'Core major updates:', 'refitune' ); ?>
+						</label>
+						<select id="refitune_auto_update_core_major" name="refitune_settings[auto_update_core_major]" class="regular-text">
+							<option value="default" <?php selected( ( $refitune_settings['auto_update_core_major'] ?? 'default' ), 'default' ); ?>><?php esc_html_e( 'WordPress default', 'refitune' ); ?></option>
+							<option value="enable" <?php selected( ( $refitune_settings['auto_update_core_major'] ?? 'default' ), 'enable' ); ?>><?php esc_html_e( 'Enable', 'refitune' ); ?></option>
+							<option value="disable" <?php selected( ( $refitune_settings['auto_update_core_major'] ?? 'default' ), 'disable' ); ?>><?php esc_html_e( 'Disable', 'refitune' ); ?></option>
+						</select>
+					</div>
+
+					<div style="margin-bottom: 15px;">
+						<label for="refitune_auto_update_core_dev" style="display: inline-block; width: 200px; font-weight: 600;">
+							<?php esc_html_e( 'Core development updates:', 'refitune' ); ?>
+						</label>
+						<select id="refitune_auto_update_core_dev" name="refitune_settings[auto_update_core_dev]" class="regular-text">
+							<option value="default" <?php selected( ( $refitune_settings['auto_update_core_dev'] ?? 'default' ), 'default' ); ?>><?php esc_html_e( 'WordPress default', 'refitune' ); ?></option>
+							<option value="enable" <?php selected( ( $refitune_settings['auto_update_core_dev'] ?? 'default' ), 'enable' ); ?>><?php esc_html_e( 'Enable', 'refitune' ); ?></option>
+							<option value="disable" <?php selected( ( $refitune_settings['auto_update_core_dev'] ?? 'default' ), 'disable' ); ?>><?php esc_html_e( 'Disable', 'refitune' ); ?></option>
+						</select>
+					</div>
+
+					<hr style="margin: 20px 0;" />
+
+					<div style="margin-bottom: 15px;">
+						<label for="refitune_update_check_interval" style="display: inline-block; width: 200px; font-weight: 600;">
+							<?php esc_html_e( 'Check for updates:', 'refitune' ); ?>
+						</label>
+						<select id="refitune_update_check_interval" name="refitune_settings[update_check_interval]" class="regular-text">
+							<option value="default" <?php selected( ( $refitune_settings['update_check_interval'] ?? 'default' ), 'default' ); ?>><?php esc_html_e( 'WordPress default (twice daily)', 'refitune' ); ?></option>
+							<option value="daily" <?php selected( ( $refitune_settings['update_check_interval'] ?? 'default' ), 'daily' ); ?>><?php esc_html_e( 'Once daily', 'refitune' ); ?></option>
+							<option value="3_days" <?php selected( ( $refitune_settings['update_check_interval'] ?? 'default' ), '3_days' ); ?>><?php esc_html_e( 'Every 3 days', 'refitune' ); ?></option>
+							<option value="7_days" <?php selected( ( $refitune_settings['update_check_interval'] ?? 'default' ), '7_days' ); ?>><?php esc_html_e( 'Every 7 days', 'refitune' ); ?></option>
+							<option value="14_days" <?php selected( ( $refitune_settings['update_check_interval'] ?? 'default' ), '14_days' ); ?>><?php esc_html_e( 'Every 14 days', 'refitune' ); ?></option>
+						</select>
+					</div>
+
+				</div>
+			</div>
+
 		<?php elseif ( 'heartbeat_control' === $type ) : ?>
 
 			<label class="refitune-collapsible-trigger">
@@ -956,15 +1067,22 @@ foreach ( $features as $key => $feature ) {
 
 					<?php else : ?>
 
+						<?php
+						$feature_available = refitune_is_feature_available( $feature );
+						?>
 						<label for="refitune_<?php echo esc_attr( $key ); ?>">
 							<input
 								type="checkbox"
 								id="refitune_<?php echo esc_attr( $key ); ?>"
 								name="refitune_settings[<?php echo esc_attr( $key ); ?>]"
 								value="1"
-								<?php checked( ! empty( $refitune_settings[ $key ] ) ); ?>
+								<?php checked( $feature_available && ! empty( $refitune_settings[ $key ] ) ); ?>
+								<?php disabled( ! $feature_available ); ?>
 							/>
 							<?php echo esc_html( $feature['description'] ); ?>
+							<?php if ( ! $feature_available && ! empty( $feature['unavailable_notice'] ) ) : ?>
+								<span class="refitune-feature-unavailable-notice"><?php echo esc_html( $feature['unavailable_notice'] ); ?></span>
+							<?php endif; ?>
 						</label>
 
 					<?php endif; ?>

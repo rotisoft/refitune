@@ -83,6 +83,10 @@ foreach ( $features as $key => $feature ) {
 				++$active_count;
 			}
 		}
+	} elseif ( 'auto_updates_control' === $type ) {
+		if ( refitune_auto_updates_is_configured( $refitune_settings ) ) {
+			++$active_count;
+		}
 	} elseif ( 'login_limit' === $type ) {
 		if ( ! empty( $refitune_settings['login_limit_enabled'] ) ) {
 			++$active_count;
@@ -98,7 +102,7 @@ foreach ( $features as $key => $feature ) {
 				break;
 			}
 		}
-	} elseif ( ! empty( $refitune_settings[ $key ] ) ) {
+	} elseif ( ! empty( $refitune_settings[ $key ] ) && refitune_is_feature_available( $feature ) ) {
 		++$active_count;
 	}
 }
@@ -115,8 +119,9 @@ foreach ( $features as $key => $feature ) {
 	<div class="refitune-feature-grid">
 		<?php foreach ( $features_by_category[ $cat_key ] as $key => $feature ) : ?>
 		<?php
-		$type        = isset( $feature['type'] ) ? $feature['type'] : '';
-		$active      = false;
+		$type              = isset( $feature['type'] ) ? $feature['type'] : '';
+		$feature_available = refitune_is_feature_available( $feature );
+		$active            = false;
 		$badge_class = 'refitune-badge-inactive';
 		$badge_text  = esc_html__( 'Inactive', 'refitune' );
 
@@ -222,6 +227,12 @@ foreach ( $features as $key => $feature ) {
 				);
 			}
 		}
+	} elseif ( 'auto_updates_control' === $type ) {
+		$active = refitune_auto_updates_is_configured( $refitune_settings );
+		if ( $active ) {
+			$badge_class = 'refitune-badge-active';
+			$badge_text  = esc_html__( 'Configured', 'refitune' );
+		}
 	} elseif ( 'login_limit' === $type ) {
 		$active = ! empty( $refitune_settings['login_limit_enabled'] );
 		if ( $active ) {
@@ -270,7 +281,7 @@ foreach ( $features as $key => $feature ) {
 			);
 			}
 		} else {
-			$active = ! empty( $refitune_settings[ $key ] );
+			$active = $feature_available && ! empty( $refitune_settings[ $key ] );
 		if ( $active ) {
 			$badge_class = 'refitune-badge-active';
 			$badge_text  = esc_html__( 'Active', 'refitune' );
@@ -295,6 +306,9 @@ foreach ( $features as $key => $feature ) {
 					<span class="refitune-badge <?php echo esc_attr( $badge_class ); ?>"><?php echo $badge_text; // Already escaped above. ?></span>
 				</div>
 				<p class="refitune-feature-card-desc"><?php echo esc_html( $feature['description'] ); ?></p>
+				<?php if ( ! $feature_available && ! empty( $feature['unavailable_notice'] ) ) : ?>
+					<p class="refitune-feature-unavailable-notice"><?php echo esc_html( $feature['unavailable_notice'] ); ?></p>
+				<?php endif; ?>
 			</div>
 		<?php endforeach; ?>
 	</div>

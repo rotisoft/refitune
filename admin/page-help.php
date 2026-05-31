@@ -45,6 +45,18 @@ $help_items = array(
 		'category' => 'performance',
 	),
 	array(
+		'id'       => 'disable-oembed',
+		'title'    => __( 'Disable oEmbed', 'refitune' ),
+		'content'  => __( 'Disables WordPress automatic oEmbed handling for external URLs such as YouTube, Vimeo, Twitter/X, and other sanctioned providers.<br><br><strong>How it works:</strong><ul><li>Clears the <code>oembed_providers</code> list so trusted providers cannot auto-embed content</li><li>Disables oEmbed discovery via the <code>embed_oembed_discover</code> filter</li><li>Removes oEmbed discovery links and the <code>wp-embed</code> host script from the page head</li></ul><strong>Important:</strong> pasted URLs in content will remain plain links instead of iframe embeds. Do not enable this if your site relies on automatic video or social embeds from pasted URLs.<br><br><strong>Note:</strong> the REST oEmbed endpoint is not removed in this version, because other plugins may depend on it.', 'refitune' ),
+		'category' => 'performance',
+	),
+	array(
+		'id'       => 'remove-asset-versions',
+		'title'    => __( 'Remove Asset Version Query Strings', 'refitune' ),
+		'content'  => __( 'WordPress appends a <code>?ver=</code> query parameter to CSS and JavaScript URLs so browsers fetch fresh files after updates. This module removes that parameter on frontend pages for cleaner URLs and better compatibility with CDNs and reverse proxies that cache assets by path.<br><br><strong>How it works:</strong><ul><li>Filters <code>style_loader_src</code> and <code>script_loader_src</code> on the frontend only</li><li>Strips the <code>ver</code> argument from same-site asset URLs</li><li>Leaves wp-admin and third-party (external host) assets unchanged</li></ul><strong>Important:</strong> after a theme or plugin update, visitors may briefly receive cached old CSS or JavaScript until browser or CDN cache expires. If stale assets become a problem, pair this feature with server-level cache invalidation or another versioning strategy.<br><br><strong>Note:</strong> only the <code>ver</code> query argument is removed from URLs handled by WordPress enqueue; other query parameters are preserved. Some CSS or JavaScript files may still show <code>?ver=</code> in the page source if they are not loaded through the standard enqueue system, if another plugin or theme outputs the URL directly with a version parameter, or if the version string is required for that asset to work correctly.', 'refitune' ),
+		'category' => 'performance',
+	),
+	array(
 		'id'       => 'post-revisions',
 		'title'    => __( 'Post Revisions Limit', 'refitune' ),
 		'content'  => __( 'WordPress stores an unlimited number of revisions for each post by default, which can unnecessarily increase database size. This setting overrides the maximum number of revisions using the <code>wp_revisions_to_keep</code> filter – without needing to modify <code>wp-config.php</code>. Setting <strong>0</strong> completely disables revisions; a positive integer keeps at most that many revisions per post (older ones are automatically deleted on save). An empty field leaves the WordPress default in effect.', 'refitune' ),
@@ -89,6 +101,12 @@ $help_items = array(
 		'category' => 'security',
 	),
 	array(
+		'id'       => 'auto-updates-control',
+		'title'    => __( 'Automatic Updates Control', 'refitune' ),
+		'content'  => __( 'Controls automatic background updates and how often WordPress checks for new versions.<br><br><strong>Update types (WordPress default / Enable / Disable):</strong><ul><li><strong>Plugins &amp; Themes:</strong> Enable all forces automatic updates for every item and overrides per-plugin choices on the Updates screen. Disable all blocks automatic plugin or theme updates.</li><li><strong>Translations:</strong> Enable or disable automatic language pack updates.</li><li><strong>Core:</strong> Separate controls for minor, major, and development core releases.</li></ul><strong>Check for updates:</strong> Reschedules the <code>wp_version_check</code>, <code>wp_update_plugins</code>, and <code>wp_update_themes</code> cron events. WordPress default is twice daily; you can choose daily or longer intervals (3, 7, or 14 days).<br><br><strong>wp-config.php:</strong> If <code>AUTOMATIC_UPDATER_DISABLED</code> or <code>WP_AUTO_UPDATE_CORE</code> is defined, those constants take precedence and an admin notice is shown.', 'refitune' ),
+		'category' => 'security',
+	),
+	array(
 		'id'       => 'login-tweaks',
 		'title'    => __( 'Login Error Messages', 'refitune' ),
 		'content'  => __( 'By default, WordPress provides separate error messages for when the username exists but the password is incorrect, and vice versa. This information can help with brute-force and username enumeration attacks. This feature displays a generic, neutral error message in both cases.', 'refitune' ),
@@ -110,6 +128,12 @@ $help_items = array(
 		'id'       => 'login-limit',
 		'title'    => __( 'Login Limit', 'refitune' ),
 		'content'  => __( 'Limits failed login attempts based on IP address and username, protecting the website against brute-force attacks.<br><br><strong>How it works:</strong><ul><li>Counts every failed login attempt both by <strong>IP address</strong> and by <strong>username</strong></li><li>If either reaches the limit, a timed lockout occurs</li><li>Username lockouts are checked before password verification</li><li>Successful login clears the counter</li></ul><strong>Settings:</strong><ul><li><strong>Block "admin" Username Instantly:</strong> When enabled, immediately blocks the IP address for 1 hour on the first login attempt with username "admin".</li><li><strong>Maximum attempts:</strong> How many failed attempts the system allows (default: 5). Counted separately per IP address and per username.</li><li><strong>Lockout duration:</strong> How long login is blocked after reaching the limit in minutes (default: 15 minutes).</li><li><strong>Whitelist IP addresses:</strong> IP addresses exempt from the limit (one IP per line).</li></ul><strong>Storage:</strong> Attempt counters use the WordPress Transients API with object-cache support when available.<br><br><strong>Note:</strong> This feature only works on the <code>wp-login.php</code> page.', 'refitune' ),
+		'category' => 'security',
+	),
+	array(
+		'id'       => 'upload-security',
+		'title'    => __( 'Verified Upload', 'refitune' ),
+		'content'  => __( 'Adds an extra upload security layer when files are sent to the WordPress media library or any flow that uses <code>wp_handle_upload()</code>.<br><br><strong>Checks performed:</strong><ul><li><strong>Filename rules:</strong> blocks dangerous extensions, double extensions, and disguised names such as <code>shell.php.jpg</code></li><li><strong>MIME and magic bytes:</strong> compares the declared extension with the detected file type using Fileinfo and file signatures</li><li><strong>Script markers:</strong> scans upload content for PHP or script signatures that indicate a disguised executable file</li></ul><strong>Performance:</strong> checks run only during upload, not on normal page views. Typical image uploads add only a few milliseconds of processing time.<br><br><strong>Note:</strong> this does not replace server-level protection. PHP execution in the uploads directory should still be blocked at the web server level. SVG script sanitization remains handled separately by the SVG Upload module when that feature is enabled.', 'refitune' ),
 		'category' => 'security',
 	),
 
@@ -164,6 +188,12 @@ $help_items = array(
 		'id'       => 'page-excerpt',
 		'title'    => __( 'Enable Page Excerpt', 'refitune' ),
 		'content'  => __( 'By default, WordPress pages (page post type) don\'t have the excerpt field available in the editor. This feature enables the excerpt field for pages in both Gutenberg and the Classic editor. The excerpt can then be used in templates with the <code>get_the_excerpt()</code> function, as well as in SEO plugins.', 'refitune' ),
+		'category' => 'misc',
+	),
+	array(
+		'id'       => 'upload-filename-sanitize',
+		'title'    => __( 'Clean Upload Filenames', 'refitune' ),
+		'content'  => __( 'Automatically cleans image and document filenames during upload. Accented characters are transliterated to ASCII, the name is lowercased, and spaces or special characters such as plus signs are replaced with hyphens.<br><br><strong>Example:</strong> <code>árvíz tűrő +33.jpg</code> becomes <code>arviz-turo-33.jpg</code>.<br><br><strong>Supported types:</strong> common image formats (JPG, PNG, GIF, WebP, AVIF, SVG, and others) and document formats (PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, ODT, ODS, ODP, RTF, TXT, CSV). Video, audio, and archive uploads are not renamed.<br><br><strong>Performance:</strong> runs only during upload and adds negligible processing time.<br><br><strong>Note:</strong> when Verified Upload is enabled, security checks run first on the original filename before this module renames safe files.', 'refitune' ),
 		'category' => 'misc',
 	),
 	array(

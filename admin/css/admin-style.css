@@ -301,6 +301,25 @@ html {
 	color: var(--refitune-muted);
 }
 
+.refitune-feature-unavailable-notice {
+	display: inline;
+	margin-left: 6px;
+	font-size: 12px;
+	color: var(--refitune-muted);
+	font-style: italic;
+}
+
+.refitune-feature-card .refitune-feature-unavailable-notice {
+	display: block;
+	margin: 8px 0 0;
+	font-style: normal;
+}
+
+label input[type="checkbox"][disabled] {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
 /* Settings: number_input. */
 .refitune-number-input-row {
 	display: flex;

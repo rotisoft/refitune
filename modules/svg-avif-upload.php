@@ -208,10 +208,10 @@ add_filter( 'wp_prepare_attachment_for_js', 'refitune_svg_fix_display' );
  *
  * @param array   $response   Attachment response data.
  * @param WP_Post $attachment Attachment object.
- * @param array   $meta       Attachment meta data.
+ * @param array|false $meta       Attachment meta data. WordPress may pass false when meta is missing.
  * @return array
  */
-function refitune_svg_media_thumbnails( array $response, WP_Post $attachment, array $meta ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Required by filter signature.
+function refitune_svg_media_thumbnails( array $response, WP_Post $attachment, $meta ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Required by filter signature.
 	if ( 'image/svg+xml' === $response['mime'] && empty( $response['sizes'] ) ) {
 		$svg_path = get_attached_file( $attachment->ID );
 		if ( $svg_path && file_exists( $svg_path ) ) {

@@ -4,7 +4,7 @@ Tags: performance, security, tweaks, optimization, toolkit
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://rotistudio.com/contact/
@@ -19,13 +19,15 @@ Hungarian: [Magyar nyelvű bővítmény leírás](https://rotistudio.hu/bovitmen
 
 Each feature can be enabled or disabled individually with just one click — no coding required. A clean, organized dashboard shows you exactly what's active and what's not.
 
-**What's Inside? (28 Modules)**
+**What's Inside? (33 Modules)**
 
 **Performance:**
 * **Header Cleanup** – Strip out unnecessary wp_head bloat for faster loading.
 * **Feed Management** – Take control of your RSS/Atom feeds.
 * **Disable Emoji** – Remove WordPress emoji scripts.
 * **Disable jQuery Migrate** – Drop legacy jquery-migrate for leaner pages.
+* **Disable oEmbed** – Stop automatic embedding of YouTube, Vimeo, Twitter, and other external URLs.
+* **Remove Asset Version Query Strings** – Strip ?ver= from frontend CSS and JS URLs.
 * **Post Revisions Limit** – Keep your database tidy by limiting stored revisions.
 * **Auto-save Interval** – Control how often WordPress auto-saves your work.
 * **Trash Auto-Delete** – Set how long items stay in trash before permanent deletion.
@@ -35,10 +37,12 @@ Each feature can be enabled or disabled individually with just one click — no 
 * **Disable XML-RPC** – Lock down the XML-RPC interface completely.
 * **Disable Trackback/Pingback** – Stop spam by disabling trackbacks and pingbacks.
 * **Disable File Editor** – Hide the built-in code editor for extra security.
+* **Automatic Updates Control** – Global tri-state control for automatic plugin, theme, translation, and core (minor, major, development) updates; reschedule update checks (WordPress default twice daily, daily, or every 3/7/14 days). Respects `AUTOMATIC_UPDATER_DISABLED` and `WP_AUTO_UPDATE_CORE` in wp-config.php when defined.
 * **Login Error Messages** – Make login errors generic to prevent username fishing.
 * **Restrict Admin Access** – Choose which roles can access wp-admin.
 * **REST API Restrictions** – Smart restrictions for sensitive REST API endpoints.
 * **Login Limit** – Block brute-force attacks by limiting failed login attempts.
+* **Verified Upload** – Block disguised uploads such as double extensions, MIME mismatches, and embedded script markers.
 
 **Visual:**
 * **Hide Admin Bar** – Selectively hide the admin bar for specific roles.
@@ -53,6 +57,7 @@ Each feature can be enabled or disabled individually with just one click — no 
 * **Disable Comments** – Turn off comments site-wide (with WooCommerce review support).
 * **External Links in New Window** – Auto-open external links in new tabs (with proper rel attributes).
 * **Enable Page Excerpt** – Enable excerpt fields for pages (not just posts).
+* **Clean Upload Filenames** – Sanitize image and document filenames on upload (accents, spaces, special characters).
 * **SVG Upload** – Allow SVG uploads with built-in security filtering.
 * **AVIF Upload** – Support modern AVIF image format uploads.
 * **Role Redirects** – Send users to custom pages after login or logout based on their role.
@@ -75,10 +80,10 @@ Plugin GitHub repository: [github.com/rotisoft/refitune](https://github.com/roti
 == Translations ==
 
 RefiTune - Site refiner toolkit speaks your language! Currently available in:
-* 🇬🇧 English (default)
-* 🇭🇺 Hungarian (Magyar)
+* 🇬🇧 English (default — source strings in code and `refitune.pot`)
+* 🇭🇺 Hungarian (Magyar) — `refitune-hu_HU.po`
 
-The plugin is fully translation-ready. Want to contribute a translation? Language files go in `/wp-content/plugins/refitune/languages/`.
+The plugin is fully translation-ready. Want to contribute a translation? Language files go in `/wp-content/plugins/refitune/languages/`. Compile `.po` to `.mo` (e.g. with Poedit, Loco Translate, or `wp i18n make-mo`) for WordPress to load translations.
 
 Text Domain: `refitune`
 
@@ -108,6 +113,14 @@ Absolutely. Use "Admin Access Restrictions" to choose which roles can access wp-
 
 Perfect for when you're making updates and don't want visitors seeing broken pages. You choose which roles can still access the site while everyone else sees a clean maintenance message. SEO-friendly too (returns 503 status).
 
+= Can wp-config.php override Automatic Updates Control? =
+
+Yes, for background updates. If `AUTOMATIC_UPDATER_DISABLED` is set to `true`, WordPress disables all automatic background updates site-wide; RefiTune cannot enable them until that constant is removed or set to `false`. If `WP_AUTO_UPDATE_CORE` is defined, it overrides RefiTune core minor/major/development settings. Update *check* frequency (how often WordPress looks for new versions) is controlled by RefiTune cron scheduling and is not overridden by those constants. An admin notice appears when conflicting constants are detected.
+
+= What does "Enable all" mean for plugins and themes? =
+
+It forces automatic updates for every plugin or theme and overrides per-item toggles on the Updates screen. Use with care on production sites. "Disable all" blocks automatic updates for that type. "WordPress default" leaves native behavior unchanged.
+
 == Screenshots ==
 
 1. Dashboard - Overview of all features with quick status indicators
@@ -115,6 +128,15 @@ Perfect for when you're making updates and don't want visitors seeing broken pag
 3. Help - Detailed documentation for each feature
 
 == Changelog ==
+
+= 1.2.0 =
+* New: Automatic Updates Control
+* New: Verified Upload
+* New: Clean Upload Filenames
+* New: Disable oEmbed
+* New: Automatic Updates Control
+* Fix: Plugin Check compatibility
+* Fix: Media Libary and SVG sanitization function conflict
 
 = 1.1.0 =
 * Security: Safer redirect validation, SVG sanitization, REST API restrictions, and SMTP credential handling.
@@ -126,6 +148,10 @@ Perfect for when you're making updates and don't want visitors seeing broken pag
 * PHP 8.5 compatibility check
 
 == Upgrade Notice ==
+
+= 1.2.0 =
+* Adds few new functions
+* Fixed Media Libary conflict
 
 = 1.1.0 =
 * Recommended security update: hardened redirects, SVG sanitization, REST API restrictions, and SMTP credential handling.

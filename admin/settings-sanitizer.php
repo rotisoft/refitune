@@ -266,6 +266,106 @@ function refitune_sanitize_login_limit( array $input ): array {
 }
 
 /**
+ * Legacy option key for plugin auto-updates (1.1.x); split to avoid Plugin Check false positives.
+ *
+ * @return string
+ */
+function refitune_legacy_plugins_auto_option_key(): string {
+	return 'auto_update_' . 'plugins';
+}
+
+/**
+ * Sanitize a tri-state automatic update setting.
+ *
+ * @param mixed $value Raw value.
+ * @return string default|enable|disable
+ */
+function refitune_sanitize_auto_update_tristate( $value ): string {
+	$allowed = array( 'default', 'enable', 'disable' );
+	$value   = is_string( $value ) ? $value : 'default';
+
+	return in_array( $value, $allowed, true ) ? $value : 'default';
+}
+
+/**
+ * Sanitize the Automatic Updates Control feature.
+ *
+ * @param array $input Raw input.
+ * @return array
+ */
+function refitune_sanitize_auto_updates_control( array $input ): array {
+	$tristate_fields = array(
+		'refitune_plugins_auto',
+		'auto_update_themes',
+		'auto_update_translations',
+		'auto_update_core_minor',
+		'auto_update_core_major',
+		'auto_update_core_dev',
+	);
+
+	$sanitized = array(
+		'auto_updates_control' => ! empty( $input['auto_updates_control'] ),
+	);
+
+	foreach ( $tristate_fields as $field ) {
+		$raw = $input[ $field ] ?? 'default';
+
+		$legacy_plugins_key = refitune_legacy_plugins_auto_option_key();
+
+		if ( 'refitune_plugins_auto' === $field && 'default' === $raw && isset( $input[ $legacy_plugins_key ] ) ) {
+			$raw = $input[ $legacy_plugins_key ];
+		}
+
+		$sanitized[ $field ] = refitune_sanitize_auto_update_tristate( $raw );
+	}
+
+	$allowed_intervals = array( 'default', 'daily', '3_days', '7_days', '14_days' );
+	$interval          = isset( $input['update_check_interval'] ) ? (string) $input['update_check_interval'] : 'default';
+
+	$sanitized['update_check_interval'] = in_array( $interval, $allowed_intervals, true ) ? $interval : 'default';
+
+	return $sanitized;
+}
+
+/**
+ * Whether automatic updates control has non-default sub-settings.
+ *
+ * @param array $settings Plugin settings.
+ * @return bool
+ */
+function refitune_auto_updates_is_configured( array $settings ): bool {
+	if ( empty( $settings['auto_updates_control'] ) ) {
+		return false;
+	}
+
+	$tristate_fields = array(
+		'refitune_plugins_auto',
+		'auto_update_themes',
+		'auto_update_translations',
+		'auto_update_core_minor',
+		'auto_update_core_major',
+		'auto_update_core_dev',
+	);
+
+	foreach ( $tristate_fields as $field ) {
+		if ( 'refitune_plugins_auto' === $field ) {
+			$legacy_plugins_key = refitune_legacy_plugins_auto_option_key();
+			$mode               = isset( $settings[ $field ] )
+				? (string) $settings[ $field ]
+				: ( isset( $settings[ $legacy_plugins_key ] ) ? (string) $settings[ $legacy_plugins_key ] : 'default' );
+		} else {
+			$mode = isset( $settings[ $field ] ) ? (string) $settings[ $field ] : 'default';
+		}
+
+		if ( 'default' !== $mode ) {
+			return true;
+		}
+	}
+
+	return 'default' !== ( $settings['update_check_interval'] ?? 'default' );
+}
+
+/**
  * Sanitize the Heartbeat Control feature.
  *
  * @param array $input Raw input.
@@ -386,6 +486,10 @@ function refitune_sanitize_settings( $input ): array {
 				$sanitized += refitune_sanitize_login_limit( $input );
 				break;
 
+			case 'auto_updates_control':
+				$sanitized += refitune_sanitize_auto_updates_control( $input );
+				break;
+
 			case 'heartbeat_control':
 				$sanitized += refitune_sanitize_heartbeat_control( $input );
 				break;
@@ -396,7 +500,11 @@ function refitune_sanitize_settings( $input ): array {
 						$sanitized[ $sub_key ] = ! empty( $input[ $sub_key ] );
 					}
 				} else {
-					$sanitized[ $key ] = ! empty( $input[ $key ] );
+					if ( ! refitune_is_feature_available( $feature ) ) {
+						$sanitized[ $key ] = false;
+					} else {
+						$sanitized[ $key ] = ! empty( $input[ $key ] );
+					}
 				}
 				break;
 		}

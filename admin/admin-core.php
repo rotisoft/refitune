@@ -69,6 +69,16 @@ function refitune_get_features() {
 		'description' => __( 'Removes the jquery-migrate script from frontend pages.', 'refitune' ),
 		'category'    => 'performance',
 	),
+	'disable_oembed'  => array(
+		'label'       => __( 'Disable oEmbed', 'refitune' ),
+		'description' => __( 'Disables automatic embedding of external content (YouTube, Vimeo, Twitter, etc.) from pasted URLs.', 'refitune' ),
+		'category'    => 'performance',
+	),
+	'remove_asset_versions' => array(
+		'label'       => __( 'Remove Asset Version Query Strings', 'refitune' ),
+		'description' => __( 'Removes the ?ver= query parameter from CSS and JavaScript URLs on frontend pages.', 'refitune' ),
+		'category'    => 'performance',
+	),
 	'post_revisions'  => array(
 		'label'       => __( 'Post Revisions Limit', 'refitune' ),
 		'description' => __( 'How many post revisions WordPress should store per post (Recommended: 5-10)', 'refitune' ),
@@ -114,6 +124,12 @@ function refitune_get_features() {
 		'description' => __( 'Disables the built-in plugin and theme editor in admin area (DISALLOW_FILE_EDIT).', 'refitune' ),
 		'category'    => 'security',
 	),
+	'auto_updates_control' => array(
+		'label'       => __( 'Automatic Updates Control', 'refitune' ),
+		'description' => __( 'Control which updates run automatically and how often WordPress checks for updates.', 'refitune' ),
+		'type'        => 'auto_updates_control',
+		'category'    => 'security',
+	),
 	'login_tweaks'    => array(
 		'label'       => __( 'Login Error Messages', 'refitune' ),
 		'description' => __( 'Generalizes login error messages so it doesn\'t reveal whether username or password was incorrect.', 'refitune' ),
@@ -147,6 +163,11 @@ function refitune_get_features() {
 		'enable_key'  => 'login_limit_enabled',
 		'category'    => 'security',
 	),
+	'upload_security'      => array(
+		'label'       => __( 'Verified Upload', 'refitune' ),
+		'description' => __( 'Blocks disguised uploads: double extensions, MIME mismatches, and script markers in media files.', 'refitune' ),
+		'category'    => 'security',
+	),
 	'hide_admin_bar'  => array(
 		'label'       => __( 'Hide Admin Bar', 'refitune' ),
 		'description' => __( 'Hides the admin bar for logged-in users with selected roles.', 'refitune' ),
@@ -156,9 +177,11 @@ function refitune_get_features() {
 		'category'    => 'visual',
 	),
 	'block_visibility' => array(
-		'label'       => __( 'Block Visibility (Mobile)', 'refitune' ),
-		'description' => __( 'Adds a visibility option to every Gutenberg block to control whether it appears on mobile, desktop, or both.', 'refitune' ),
-		'category'    => 'visual',
+		'label'               => __( 'Block Visibility (Mobile)', 'refitune' ),
+		'description'         => __( 'Adds a visibility option to every Gutenberg block to control whether it appears on mobile, desktop, or both.', 'refitune' ),
+		'category'            => 'visual',
+		'max_wp_version'      => '7.0',
+		'unavailable_notice'  => __( 'A dedicated core feature has been available for this since WordPress 7.0.', 'refitune' ),
 	),
 	'login_customizer' => array(
 		'label'       => __( 'Login Page Customization', 'refitune' ),
@@ -195,6 +218,11 @@ function refitune_get_features() {
 			'description' => __( 'Enables the excerpt field for pages in both Gutenberg and Classic editor.', 'refitune' ),
 			'category'    => 'misc',
 		),
+	'upload_filename_sanitize' => array(
+		'label'       => __( 'Clean Upload Filenames', 'refitune' ),
+		'description' => __( 'Sanitizes image and document filenames on upload: removes accents, lowercases, and replaces invalid characters with hyphens.', 'refitune' ),
+		'category'    => 'misc',
+	),
 	'svg_upload'      => array(
 		'label'       => __( 'SVG Upload', 'refitune' ),
 		'description' => __( 'Allows SVG file uploads with security filtering. Select which roles can upload SVG.', 'refitune' ),
@@ -348,6 +376,46 @@ function refitune_register_settings() {
 	);
 }
 add_action( 'admin_init', 'refitune_register_settings', 10 );
+
+/**
+ * Disable block visibility when WordPress core provides the feature natively.
+ *
+ * @return void
+ */
+function refitune_disable_block_visibility_on_unsupported_wp(): void {
+	$settings = get_option( 'refitune_settings', array() );
+
+	if ( empty( $settings['block_visibility'] ) ) {
+		return;
+	}
+
+	if ( version_compare( get_bloginfo( 'version' ), '7.0', '<' ) ) {
+		return;
+	}
+
+	$settings['block_visibility'] = false;
+	update_option( 'refitune_settings', $settings );
+}
+add_action( 'admin_init', 'refitune_disable_block_visibility_on_unsupported_wp', 20 );
+
+/**
+ * Restore default update check cron when automatic updates control is turned off.
+ *
+ * @param mixed $old_value Previous option value.
+ * @param mixed $value     New option value.
+ * @return void
+ */
+function refitune_restore_update_checks_when_auto_updates_disabled( $old_value, $value ): void {
+	if ( ! is_array( $old_value ) || ! is_array( $value ) ) {
+		return;
+	}
+
+	if ( ! empty( $old_value['auto_updates_control'] ) && empty( $value['auto_updates_control'] ) ) {
+		require_once REFITUNE_PATH . 'modules/auto-updates.php';
+		refitune_restore_default_update_check_schedules();
+	}
+}
+add_action( 'update_option_refitune_settings', 'refitune_restore_update_checks_when_auto_updates_disabled', 5, 2 );
 
 require_once REFITUNE_PATH . 'admin/settings-sanitizer.php';
 

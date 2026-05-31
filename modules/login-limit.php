@@ -2,6 +2,9 @@
 /**
  * Login limit - Rate limit failed login attempts by IP and username.
  *
+ * TODO: Extend full protection (including IP lockout on login) to WooCommerce
+ * My Account login, not only wp-login.php.
+ *
  * @package RefiTune
  */
 
