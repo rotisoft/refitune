@@ -3,7 +3,7 @@
  * Plugin Name: RefiTune - Site refiner toolkit
  * Plugin URI: https://rotistudio.com/plugins/refitune-site-refiner-toolkit-for-wordpress
  * Description: Take control of WordPress with smart performance tweaks, security enhancements, and usability improvements. RefiTune is all in one toolkit.
- * Version: 1.2.0
+ * Version: 1.2.1
  * Requires at least: 5.9
  * Requires PHP: 7.4
  * Author: RotiStudio - Tamas Rottenbacher
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'REFITUNE_VERSION', '1.2.0' );
+define( 'REFITUNE_VERSION', '1.2.1' );
 define( 'REFITUNE_PATH', plugin_dir_path( __FILE__ ) );
 define( 'REFITUNE_URL', plugin_dir_url( __FILE__ ) );
 

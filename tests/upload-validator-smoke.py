@@ -51,19 +51,31 @@ def detect_magic(header: bytes) -> str:
     return "binary"
 
 
+VERIFIED_IMAGE_MAGIC = {"jpeg", "png", "gif", "webp", "avif"}
+BINARY_IMAGE_MAGIC = {"jpeg", "png", "webp", "avif"}
+
+
 def validate_magic(filename: str, content: bytes):
     ext = os.path.splitext(filename)[1].lstrip(".").lower()
     magic = detect_magic(content[:512])
     expected = {"jpg": "jpeg", "jpeg": "jpeg", "png": "png", "gif": "gif", "webp": "webp", "pdf": "pdf"}.get(ext)
     if ext in IMAGE_EXT and magic == "text":
         return "text_disguised_as_image"
-    if expected and magic not in (expected, "binary") and not (ext == "avif" and magic == "binary"):
-        return "magic_mismatch"
+    if expected and magic != expected:
+        allowed = (
+            (ext == "avif" and magic == "binary")
+            or magic in VERIFIED_IMAGE_MAGIC
+        )
+        if not allowed:
+            return "magic_mismatch"
     return True
 
 
 def scan_scripts(filename: str, content: bytes):
     if os.path.splitext(filename)[1].lstrip(".").lower() == "svg":
+        return True
+    magic = detect_magic(content[:512])
+    if magic in BINARY_IMAGE_MAGIC:
         return True
     lowered = content.decode("latin-1", errors="ignore").lower()
     for sig in SIGNATURES:
@@ -97,7 +109,8 @@ def main():
         ("double_ext", "shell.php.jpg", b"test", "dangerous_extension"),
         ("php_ext", "image.jpg.php", b"test", "dangerous_extension"),
         ("polyglot_gif", "logo.gif", b"GIF89a<?php echo 1;", "script_marker"),
-        ("magic_mismatch", "fake.jpg", b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR", "magic_mismatch"),
+        ("jpeg_as_png_ext", "screenshot.png", b"\xff\xd8\xff\xe0\x00\x10JFIF", True),
+        ("magic_mismatch", "fake.jpg", b"\x00\x01\x02\x03\x04\x05\x06\x07\x08", "magic_mismatch"),
     ]
     passed = sum(run_case(*c) for c in cases)
     print(f"Summary: {passed}/{len(cases)} passed")

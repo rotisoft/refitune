@@ -148,11 +148,38 @@ foreach ( $features as $key => $feature ) {
 									<tr>
 										<th scope="row"><label for="refitune_email_smtp_encryption"><?php esc_html_e( 'Encryption', 'refitune' ); ?></label></th>
 										<td>
+											<?php
+											$smtp_encryption = $refitune_settings['email_smtp_encryption'] ?? 'tls';
+											if ( 'disable' === $smtp_encryption ) {
+												$smtp_encryption = 'none';
+											}
+											$smtp_test_mode = ! empty( $refitune_settings['email_smtp_disable_for_test'] )
+												|| ! empty( $refitune_settings['email_smtp_disable_ssl_verify'] )
+												|| 'disable' === ( $refitune_settings['email_smtp_encryption'] ?? '' );
+											?>
 											<select id="refitune_email_smtp_encryption" name="refitune_settings[email_smtp_encryption]">
-												<option value="none" <?php selected( ( $refitune_settings['email_smtp_encryption'] ?? 'tls' ), 'none' ); ?>><?php esc_html_e( 'None', 'refitune' ); ?></option>
-												<option value="ssl" <?php selected( ( $refitune_settings['email_smtp_encryption'] ?? 'tls' ), 'ssl' ); ?>>SSL</option>
-												<option value="tls" <?php selected( ( $refitune_settings['email_smtp_encryption'] ?? 'tls' ), 'tls' ); ?>>TLS</option>
+												<option value="tls" <?php selected( $smtp_encryption, 'tls' ); ?>>TLS</option>
+												<option value="ssl" <?php selected( $smtp_encryption, 'ssl' ); ?>>SSL</option>
+												<option value="none" <?php selected( $smtp_encryption, 'none' ); ?>><?php esc_html_e( 'None', 'refitune' ); ?></option>
 											</select>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row"><?php esc_html_e( 'Test environment', 'refitune' ); ?></th>
+										<td>
+											<label for="refitune_email_smtp_disable_for_test">
+												<input
+													type="checkbox"
+													id="refitune_email_smtp_disable_for_test"
+													name="refitune_settings[email_smtp_disable_for_test]"
+													value="1"
+													<?php checked( $smtp_test_mode ); ?>
+												/>
+												<?php esc_html_e( 'Disable (only for test)', 'refitune' ); ?>
+											</label>
+											<p class="description">
+												<?php esc_html_e( 'Disables SMTP encryption and SSL certificate verification. Use only in local or staging environments.', 'refitune' ); ?>
+											</p>
 										</td>
 									</tr>
 									<tr>

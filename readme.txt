@@ -4,7 +4,7 @@ Tags: performance, security, tweaks, optimization, toolkit
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://rotistudio.com/contact/
@@ -129,14 +129,17 @@ It forces automatic updates for every plugin or theme and overrides per-item tog
 
 == Changelog ==
 
+= 1.2.1 =
+* Fix: Verified Upload no longer blocks legitimate JPEG and PNG uploads (e.g. JPEG saved with a .png extension); script-marker scanning is skipped for verified binary raster images to avoid false positives
+
 = 1.2.0 =
 * New: Automatic Updates Control
+* New: Remove Asset Version Query Strings
 * New: Verified Upload
 * New: Clean Upload Filenames
 * New: Disable oEmbed
-* New: Automatic Updates Control
 * Fix: Plugin Check compatibility
-* Fix: Media Libary and SVG sanitization function conflict
+* Fix: Media Library and SVG sanitization function conflict
 
 = 1.1.0 =
 * Security: Safer redirect validation, SVG sanitization, REST API restrictions, and SMTP credential handling.
@@ -149,9 +152,12 @@ It forces automatic updates for every plugin or theme and overrides per-item tog
 
 == Upgrade Notice ==
 
+= 1.2.1 =
+* Fixed Verified Upload rejecting safe image uploads
+
 = 1.2.0 =
 * Adds few new functions
-* Fixed Media Libary conflict
+* Fixed Media Library conflict
 
 = 1.1.0 =
 * Recommended security update: hardened redirects, SVG sanitization, REST API restrictions, and SMTP credential handling.

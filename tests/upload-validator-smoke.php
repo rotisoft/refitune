@@ -76,10 +76,15 @@ $tests  = array(
 		'expect' => 'script_marker',
 		'write'  => "GIF89a<?php echo 1;",
 	),
+	'jpeg_as_png_ext' => array(
+		'file'   => 'screenshot.png',
+		'expect' => true,
+		'write'  => "\xFF\xD8\xFF\xE0\x00\x10JFIF",
+	),
 	'magic_mismatch' => array(
 		'file'   => 'fake.jpg',
 		'expect' => 'magic_mismatch',
-		'write'  => "\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR",
+		'write'  => "\x00\x01\x02\x03\x04\x05\x06\x07\x08",
 	),
 );
 

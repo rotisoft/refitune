@@ -199,15 +199,27 @@ function refitune_sanitize_email_smtp( array $input ): array {
 		}
 	}
 
+	$encryption = isset( $input['email_smtp_encryption'] ) ? (string) $input['email_smtp_encryption'] : 'tls';
+	if ( ! in_array( $encryption, array( 'none', 'ssl', 'tls', 'disable' ), true ) ) {
+		$encryption = 'tls';
+	}
+	if ( 'disable' === $encryption ) {
+		$encryption = 'none';
+	}
+
+	$disable_for_test = ! empty( $input['email_smtp_disable_for_test'] )
+		|| ! empty( $input['email_smtp_disable_ssl_verify'] );
+
 	return array(
-		'email_mode'           => $email_mode,
-		'email_smtp_host'      => isset( $input['email_smtp_host'] ) ? sanitize_text_field( $input['email_smtp_host'] ) : '',
-		'email_smtp_port'      => refitune_sanitize_positive_int( $input['email_smtp_port'] ?? '', 587 ),
-		'email_smtp_username'  => isset( $input['email_smtp_username'] ) ? sanitize_text_field( $input['email_smtp_username'] ) : '',
-		'email_smtp_password'  => $password_to_save,
-		'email_smtp_encryption' => ( isset( $input['email_smtp_encryption'] ) && in_array( $input['email_smtp_encryption'], array( 'none', 'ssl', 'tls' ), true ) ) ? $input['email_smtp_encryption'] : 'tls',
-		'email_smtp_from_email' => isset( $input['email_smtp_from_email'] ) ? sanitize_email( $input['email_smtp_from_email'] ) : '',
-		'email_smtp_from_name'  => isset( $input['email_smtp_from_name'] ) ? sanitize_text_field( $input['email_smtp_from_name'] ) : '',
+		'email_mode'                  => $email_mode,
+		'email_smtp_host'             => isset( $input['email_smtp_host'] ) ? sanitize_text_field( $input['email_smtp_host'] ) : '',
+		'email_smtp_port'             => refitune_sanitize_positive_int( $input['email_smtp_port'] ?? '', 587 ),
+		'email_smtp_username'         => isset( $input['email_smtp_username'] ) ? sanitize_text_field( $input['email_smtp_username'] ) : '',
+		'email_smtp_password'         => $password_to_save,
+		'email_smtp_encryption'       => $encryption,
+		'email_smtp_disable_for_test' => $disable_for_test,
+		'email_smtp_from_email'       => isset( $input['email_smtp_from_email'] ) ? sanitize_email( $input['email_smtp_from_email'] ) : '',
+		'email_smtp_from_name'        => isset( $input['email_smtp_from_name'] ) ? sanitize_text_field( $input['email_smtp_from_name'] ) : '',
 	);
 }
 

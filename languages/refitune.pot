@@ -1,7 +1,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: RefiTune - Site refiner toolkit 1.2.0\n"
+"Project-Id-Version: RefiTune - Site refiner toolkit 1.2.1\n"
 "Report-Msgid-Bugs-To: https://rotistudio.com\n"
 "POT-Creation-Date: 2026-05-31 18:00+0000\n"
 "MIME-Version: 1.0\n"
@@ -554,6 +554,18 @@ msgstr ""
 
 #: admin/page-settings.php
 msgid "Encryption"
+msgstr ""
+
+#: admin/page-settings.php
+msgid "Disable (only for test)"
+msgstr ""
+
+#: admin/page-settings.php
+msgid "Test environment"
+msgstr ""
+
+#: admin/page-settings.php
+msgid "Disables SMTP encryption and SSL certificate verification. Use only in local or staging environments."
 msgstr ""
 
 #: admin/admin-core.php admin/page-help.php

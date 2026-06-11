@@ -41,6 +41,35 @@ function refitune_upload_dangerous_extensions(): array {
 }
 
 /**
+ * Magic-byte types that confirm real image file content.
+ *
+ * @return array
+ */
+function refitune_upload_verified_image_magic_types(): array {
+	return array(
+		'jpeg',
+		'png',
+		'gif',
+		'webp',
+		'avif',
+	);
+}
+
+/**
+ * Binary image magic types safe to skip script-marker scanning (no text polyglots).
+ *
+ * @return array
+ */
+function refitune_upload_binary_image_magic_types(): array {
+	return array(
+		'jpeg',
+		'png',
+		'webp',
+		'avif',
+	);
+}
+
+/**
  * Image file extensions checked against MIME and magic bytes.
  *
  * @return array
@@ -294,9 +323,11 @@ function refitune_upload_validate_mime_and_magic( string $file_path, string $fil
 		}
 
 		if ( '' !== $expected && '' !== $magic_type && $expected !== $magic_type ) {
-			// Allow svg extension with xml header and avif variants detected as binary/zip-like containers.
-			$allowed_mismatch = ( 'svg' === $expected && 'svg' === $magic_type )
-				|| ( 'avif' === $expected && in_array( $magic_type, array( 'avif', 'binary' ), true ) );
+			// Allow svg extension with xml header, avif variants, and any verified image signature.
+			$verified_image_magic = refitune_upload_verified_image_magic_types();
+			$allowed_mismatch     = ( 'svg' === $expected && 'svg' === $magic_type )
+				|| ( 'avif' === $expected && in_array( $magic_type, array( 'avif', 'binary' ), true ) )
+				|| in_array( $magic_type, $verified_image_magic, true );
 
 			if ( ! $allowed_mismatch ) {
 				return refitune_upload_reject(
@@ -381,6 +412,14 @@ function refitune_upload_scan_for_scripts( string $file_path, string $filename )
 
 	// SVG script handling is delegated to the SVG sanitizer module.
 	if ( 'svg' === $extension ) {
+		return true;
+	}
+
+	$header     = refitune_upload_read_file_header( $file_path, 512 );
+	$magic_type = refitune_upload_detect_magic_type( $header );
+
+	// Binary raster images cannot host readable PHP/HTML polyglots; skip to avoid false positives.
+	if ( in_array( $magic_type, refitune_upload_binary_image_magic_types(), true ) ) {
 		return true;
 	}
 

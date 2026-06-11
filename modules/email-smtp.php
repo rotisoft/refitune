@@ -77,6 +77,41 @@ if ( ! empty( $refitune_smtp_settings['email_smtp_password'] ) && ! refitune_enc
 	return;
 }
 
+/**
+ * Disable SSL certificate verification on PHPMailer (development / test only).
+ *
+ * @param PHPMailer\PHPMailer\PHPMailer $phpmailer PHPMailer instance.
+ * @return void
+ */
+function refitune_smtp_disable_ssl_verify( $phpmailer ): void {
+	$phpmailer->SMTPOptions = array(
+		'ssl' => array(
+			'verify_peer'       => false,
+			'verify_peer_name'  => false,
+			'allow_self_signed' => true,
+		),
+	);
+}
+
+/**
+ * Whether SMTP test mode is enabled (no encryption + no cert verify).
+ *
+ * @param array $settings Plugin settings.
+ * @return bool
+ */
+function refitune_smtp_is_test_mode( array $settings ): bool {
+	if ( ! empty( $settings['email_smtp_disable_for_test'] ) ) {
+		return true;
+	}
+
+	// Legacy option keys from older RefiTune / WPRefi builds.
+	if ( ! empty( $settings['email_smtp_disable_ssl_verify'] ) ) {
+		return true;
+	}
+
+	return 'disable' === ( $settings['email_smtp_encryption'] ?? '' );
+}
+
 add_action(
 	'phpmailer_init',
 	static function ( $phpmailer ) use ( $refitune_smtp_settings ): void {
@@ -85,20 +120,22 @@ add_action(
 	$phpmailer->Host = sanitize_text_field( $refitune_smtp_settings['email_smtp_host'] ?? '' );
 	$phpmailer->Port = isset( $refitune_smtp_settings['email_smtp_port'] ) ? (int) $refitune_smtp_settings['email_smtp_port'] : 587;
 
-	$encryption = isset( $refitune_smtp_settings['email_smtp_encryption'] ) ? $refitune_smtp_settings['email_smtp_encryption'] : 'tls';
-	if ( 'none' !== $encryption ) {
+	$encryption = isset( $refitune_smtp_settings['email_smtp_encryption'] ) ? (string) $refitune_smtp_settings['email_smtp_encryption'] : 'tls';
+	if ( 'disable' === $encryption ) {
+		$encryption = 'none';
+	}
+
+	$test_mode = refitune_smtp_is_test_mode( $refitune_smtp_settings );
+
+	if ( $test_mode || 'none' === $encryption ) {
+		$phpmailer->SMTPSecure  = '';
+		$phpmailer->SMTPAutoTLS = false;
+	} else {
 		$phpmailer->SMTPSecure = $encryption;
 	}
 
-	// SSL/TLS options: only when explicitly enabled in wp-config.php (development).
-	if ( defined( 'REFITUNE_SMTP_DISABLE_SSL_VERIFY' ) && REFITUNE_SMTP_DISABLE_SSL_VERIFY ) {
-		$phpmailer->SMTPOptions = array(
-			'ssl' => array(
-				'verify_peer'       => false,
-				'verify_peer_name'  => false,
-				'allow_self_signed' => true,
-			),
-		);
+	if ( $test_mode || ( defined( 'REFITUNE_SMTP_DISABLE_SSL_VERIFY' ) && REFITUNE_SMTP_DISABLE_SSL_VERIFY ) ) {
+		refitune_smtp_disable_ssl_verify( $phpmailer );
 	}
 
 	$username        = isset( $refitune_smtp_settings['email_smtp_username'] ) ? trim( $refitune_smtp_settings['email_smtp_username'] ) : '';
