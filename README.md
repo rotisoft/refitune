@@ -207,53 +207,7 @@ It forces automatic updates for every plugin or theme and overrides per-item tog
 
 ## Changelog
 
-### 1.2.0
-
-#### New
-
-- Automatic Updates Control
-- Verified Upload
-- Clean Upload Filenames
-- Disable oEmbed
-- Remove Asset Version Query Strings
-
-#### Fixes
-
-- Plugin Check compatibility
-- Media Library and SVG sanitization function conflict
-
-### 1.1.0
-
-#### Security
-
-- Improved redirect validation
-- Enhanced SVG sanitization
-- Strengthened REST API restrictions
-- Improved SMTP credential handling
-
-#### Refactoring
-
-- Modular settings sanitization
-
-### 1.0.0
-
-- Initial public release
-- WordPress 7.0 compatibility verification
-- PHP 8.5 compatibility verification
-
-## Upgrade Notice
-
-### 1.2.0
-
-Adds new modules (automatic updates, verified upload, clean filenames, oEmbed disable). Fixes Media Library conflict with SVG sanitization. Existing sites keep plugin auto-update preferences via legacy setting key migration.
-
-### 1.1.0
-
-Recommended security update including redirect hardening, SVG sanitization improvements, REST API restrictions, and SMTP credential handling improvements.
-
-### 1.0.0
-
-Initial release.
+Check the readme.txt for details.
 
 ## Links
 
