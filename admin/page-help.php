@@ -1,6 +1,6 @@
 <?php
 /**
- * Help oldal tartalma – funkciók részletes leírása.
+ * Help page content - detailed description of the features.
  *
  * @package RefiTune
  */
@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Category definitions.
-$help_categories = array(
+$refitune_help_categories = array(
 	'performance' => __( 'Performance', 'refitune' ),
 	'security'    => __( 'Security', 'refitune' ),
 	'visual'      => __( 'Visual', 'refitune' ),
@@ -18,18 +18,18 @@ $help_categories = array(
 	'misc'        => __( 'Miscellaneous', 'refitune' ),
 );
 
-$help_items = array(
+$refitune_help_items = array(
 	// Performance category.
 	array(
 		'id'       => 'cleanup-head',
 		'title'    => __( 'Header Cleanup', 'refitune' ),
-		'content'  => __( 'WordPress adds several links and meta tags to the <code>&lt;head&gt;</code> section by default, most of which are unnecessary for most websites. This feature removes: the generator tag showing WordPress version (also recommended for security reasons), the RSD (Really Simple Discovery) link, the Windows Live Writer manifest link, the shortlink, and the adjacent posts rel links.', 'refitune' ),
+		'content'  => __( 'WordPress adds several links and meta tags to the <code>&lt;head&gt;</code> section by default, most of which are unnecessary for most websites. This feature removes: the RSD (Really Simple Discovery) link, the Windows Live Writer manifest link, the shortlink, and the adjacent posts rel links.', 'refitune' ),
 		'category' => 'performance',
 	),
 	array(
 		'id'       => 'disable-feeds',
 		'title'    => __( 'Feed Management', 'refitune' ),
-		'content'  => __( 'WordPress adds three types of feed <code>&lt;link&gt;</code> elements to the <code>&lt;head&gt;</code>: the main posts feed (domain.com/feed/), the comments feed, and additional feeds (categories, authors, tags, etc.). These elements can be disabled individually. Important: this only removes the <code>&lt;head&gt;</code> reference – the feed URLs remain directly accessible via browser.', 'refitune' ),
+		'content'  => __( 'WordPress adds three types of feed <code>&lt;link&gt;</code> elements to the <code>&lt;head&gt;</code>: the main posts feed (domain.com/feed/), the comments feed, and additional feeds (categories, authors, tags, etc.). These elements can be disabled individually. Important: this only removes the <code>&lt;head&gt;</code> reference - the feed URLs remain directly accessible via browser.', 'refitune' ),
 		'category' => 'performance',
 	),
 	array(
@@ -53,13 +53,13 @@ $help_items = array(
 	array(
 		'id'       => 'remove-asset-versions',
 		'title'    => __( 'Remove Asset Version Query Strings', 'refitune' ),
-		'content'  => __( 'WordPress appends a <code>?ver=</code> query parameter to CSS and JavaScript URLs so browsers fetch fresh files after updates. This module removes that parameter on frontend pages for cleaner URLs and better compatibility with CDNs and reverse proxies that cache assets by path.<br><br><strong>How it works:</strong><ul><li>Filters <code>style_loader_src</code> and <code>script_loader_src</code> on the frontend only</li><li>Strips the <code>ver</code> argument from same-site asset URLs</li><li>Leaves wp-admin and third-party (external host) assets unchanged</li></ul><strong>Important:</strong> after a theme or plugin update, visitors may briefly receive cached old CSS or JavaScript until browser or CDN cache expires. If stale assets become a problem, pair this feature with server-level cache invalidation or another versioning strategy.<br><br><strong>Note:</strong> only the <code>ver</code> query argument is removed from URLs handled by WordPress enqueue; other query parameters are preserved. Some CSS or JavaScript files may still show <code>?ver=</code> in the page source if they are not loaded through the standard enqueue system, if another plugin or theme outputs the URL directly with a version parameter, or if the version string is required for that asset to work correctly.', 'refitune' ),
+		'content'  => __( 'WordPress appends a <code>?ver=</code> query parameter to CSS and JavaScript URLs so browsers and CDNs can fetch fresh files after updates. This module removes that parameter on frontend pages.<br><br><strong>How it works:</strong><ul><li>Filters <code>style_loader_src</code> and <code>script_loader_src</code> on the frontend only</li><li>Strips the <code>ver</code> argument from same-site asset URLs</li><li>Leaves wp-admin and third-party (external host) assets unchanged</li></ul><strong>Important:</strong> removing <code>?ver=</code> breaks WordPress cache-busting. After a theme or plugin update, browsers, reverse proxies, or CDNs may keep serving old CSS/JS until their cache expires or you purge by path. Prefer content-hashed filenames or a CDN purge workflow instead of this module when long cache TTLs are in use.<br><br><strong>Note:</strong> only the <code>ver</code> query argument is removed from URLs handled by WordPress enqueue; other query parameters are preserved.', 'refitune' ),
 		'category' => 'performance',
 	),
 	array(
 		'id'       => 'post-revisions',
 		'title'    => __( 'Post Revisions Limit', 'refitune' ),
-		'content'  => __( 'WordPress stores an unlimited number of revisions for each post by default, which can unnecessarily increase database size. This setting overrides the maximum number of revisions using the <code>wp_revisions_to_keep</code> filter – without needing to modify <code>wp-config.php</code>. Setting <strong>0</strong> completely disables revisions; a positive integer keeps at most that many revisions per post (older ones are automatically deleted on save). An empty field leaves the WordPress default in effect.', 'refitune' ),
+		'content'  => __( 'WordPress stores an unlimited number of revisions for each post by default, which can unnecessarily increase database size. This setting overrides the maximum number of revisions using the <code>wp_revisions_to_keep</code> filter - without needing to modify <code>wp-config.php</code>. Setting <strong>0</strong> completely disables revisions; a positive integer keeps at most that many revisions per post (older ones are automatically deleted on save). An empty field leaves the WordPress default in effect.', 'refitune' ),
 		'category' => 'performance',
 	),
 	array(
@@ -71,7 +71,13 @@ $help_items = array(
 	array(
 		'id'       => 'trash-auto-delete',
 		'title'    => __( 'Trash Auto-Delete', 'refitune' ),
-		'content'  => __( 'WordPress keeps deleted posts, pages, and media files in the trash for 30 days by default before permanently deleting them. You can change this period to automatically clean up your database more frequently or keep items longer for recovery purposes. The value is specified in days. Setting a lower value (e.g., 7 days) reduces database size but gives you less time to recover accidentally deleted items.', 'refitune' ),
+		'content'  => __( 'WordPress keeps deleted posts, pages, and media files in the trash for 30 days by default before permanently deleting them. You can change this period to automatically clean up your database more frequently or keep items longer for recovery purposes. The value is specified in days. Setting a lower value (e.g., 7 days) reduces database size but gives you less time to recover accidentally deleted items.<br><br><strong>Performance:</strong> cleanup runs in batches (default 100 items per cron pass) and reschedules itself when more expired trash remains, so large queues do not exhaust memory in a single run.', 'refitune' ),
+		'category' => 'performance',
+	),
+	array(
+		'id'       => 'upload-webp-convert',
+		'title'    => __( 'Convert Uploads to WebP', 'refitune' ),
+		'content'  => __( 'Converts new JPEG and PNG uploads to WebP after WordPress saves the file, then deletes the original. GIF (including animated), SVG, WebP, and AVIF uploads are left unchanged.<br><br><strong>Server requirements:</strong> PHP GD or Imagick with WebP write support. WordPress checks this with <code>wp_image_editor_supports()</code>; you can also review Tools → Site Health → Info → Server (GD or Imagick section).<br><br><strong>Optional resize:</strong> set a maximum width and/or height in pixels. Use <code>0</code> for no limit on that dimension. Images are scaled proportionally without cropping; smaller images are never upscaled. Example: a 4000×3000 JPEG with limits 1920×1920 becomes 1920×1440 WebP.<br><br><strong>Thumbnails:</strong> when the main file is WebP, WordPress generates attachment sizes from the WebP source.<br><br><strong>Quality:</strong> default WebP quality is 82. Developers can override with <code>refitune_upload_webp_quality</code>.', 'refitune' ),
 		'category' => 'performance',
 	),
 	array(
@@ -101,6 +107,12 @@ $help_items = array(
 		'category' => 'security',
 	),
 	array(
+		'id'       => 'hide-generator-tags',
+		'title'    => __( 'Hide Generator Tags', 'refitune' ),
+		'content'  => __( 'WordPress and WooCommerce add <code>&lt;meta name="generator"&gt;</code> tags to the HTML source that reveal the installed software version. Attackers can use this information to target known vulnerabilities. This feature removes those tags from the page output.<br><br><strong>Options:</strong><ul><li><strong>WordPress:</strong> removes the default <code>wp_generator</code> output from <code>wp_head</code></li><li><strong>WooCommerce:</strong> available only when WooCommerce is active; disables the WooCommerce generator tag via the <code>woocommerce_generator_tag</code> filter</li></ul><strong>Note:</strong> hiding version numbers is a useful hardening step, but it does not replace keeping WordPress, themes, and plugins up to date.', 'refitune' ),
+		'category' => 'security',
+	),
+	array(
 		'id'       => 'auto-updates-control',
 		'title'    => __( 'Automatic Updates Control', 'refitune' ),
 		'content'  => __( 'Controls automatic background updates and how often WordPress checks for new versions.<br><br><strong>Update types (WordPress default / Enable / Disable):</strong><ul><li><strong>Plugins &amp; Themes:</strong> Enable all forces automatic updates for every item and overrides per-plugin choices on the Updates screen. Disable all blocks automatic plugin or theme updates.</li><li><strong>Translations:</strong> Enable or disable automatic language pack updates.</li><li><strong>Core:</strong> Separate controls for minor, major, and development core releases.</li></ul><strong>Check for updates:</strong> Reschedules the <code>wp_version_check</code>, <code>wp_update_plugins</code>, and <code>wp_update_themes</code> cron events. WordPress default is twice daily; you can choose daily or longer intervals (3, 7, or 14 days).<br><br><strong>wp-config.php:</strong> If <code>AUTOMATIC_UPDATER_DISABLED</code> or <code>WP_AUTO_UPDATE_CORE</code> is defined, those constants take precedence and an admin notice is shown.', 'refitune' ),
@@ -115,19 +127,19 @@ $help_items = array(
 	array(
 		'id'       => 'admin-access',
 		'title'    => __( 'Restrict Admin Access', 'refitune' ),
-		'content'  => __( 'Determines which WordPress user roles can access the wp-admin area. Users without permission will be redirected to the website homepage when attempting to access admin. The <strong>administrator</strong> role always has access and cannot be removed from the list. AJAX requests are not affected by this restriction. Important: make sure the administrator role is checked before activating.', 'refitune' ),
+		'content'  => __( 'Determines which WordPress user roles can access the wp-admin area. Users without permission will be redirected to the website homepage when attempting to access admin. Users with the <strong>manage_options</strong> capability (typically administrators) always have access, and the administrator role cannot be removed from the allowed list. <strong>AJAX is intentionally not blocked:</strong> logged-in users still need <code>admin-ajax.php</code> on the front end (cart, forms, widgets). This module only hides the wp-admin UI; each AJAX handler must enforce its own capabilities. Important: keep at least one manage_options user before activating.', 'refitune' ),
 		'category' => 'security',
 	),
 	array(
 		'id'       => 'rest-api-restrictions',
 		'title'    => __( 'REST API Restrictions', 'refitune' ),
-		'content'  => __( 'Intelligent restriction of certain WordPress REST API endpoints for security reasons. The REST API provides publicly accessible data by default (e.g., usernames, media files), which can pose a security risk in some cases.<br><br><strong>How it works:</strong><ul><li><strong>Logged-in users:</strong> always have access (any role)</li><li><strong>Anonymous requests:</strong> receive a 401 Unauthorized error on restricted routes</li></ul>Access is based on an authenticated WordPress session, not on cookies or HTTP headers that can be spoofed by external clients.<br><br><strong>Restrictable endpoints:</strong><ul><li><strong>Users endpoint:</strong> Restricts the <code>/wp-json/wp/v2/users</code> endpoint, which exposes user data (names, slugs, email addresses). This makes it harder for attackers collecting usernames for brute-force attacks.</li><li><strong>REST index:</strong> The <code>/wp-json/</code> root index requires authentication. This endpoint lists all available REST API routes, which is valuable information for attackers.</li><li><strong>Media endpoint:</strong> Restricts the <code>/wp-json/wp/v2/media</code> endpoint, which allows listing and querying uploaded media files.</li><li><strong>Comments endpoint:</strong> Restricts the <code>/wp-json/wp/v2/comments</code> endpoint.</li><li><strong>Search endpoint:</strong> Restricts the <code>/wp-json/wp/v2/search</code> endpoint, which allows searching within page content.</li></ul><strong>Important:</strong> WooCommerce\'s own REST API endpoints (<code>/wp-json/wc/v3/</code>, <code>/wp-json/wc-store/v1/</code>) are NOT affected.', 'refitune' ),
+		'content'  => __( 'Intelligent restriction of certain WordPress REST API endpoints for security reasons. The REST API provides publicly accessible data by default (e.g., usernames, media files), which can pose a security risk in some cases.<br><br><strong>How it works:</strong><ul><li><strong>Administrators:</strong> always have access</li><li><strong>Logged-in users without administrator capability:</strong> receive a 403 Forbidden error on restricted routes</li><li><strong>Anonymous requests:</strong> receive a 401 Unauthorized error on restricted routes</li></ul>Access is based on an authenticated WordPress session with administrator capability, not on cookies or HTTP headers that can be spoofed by external clients.<br><br><strong>Restrictable endpoints:</strong><ul><li><strong>Users endpoint:</strong> Restricts the <code>/wp-json/wp/v2/users</code> endpoint, which exposes user data (names, slugs, email addresses). This makes it harder for attackers collecting usernames for brute-force attacks.</li><li><strong>REST index:</strong> The <code>/wp-json/</code> root index requires administrator access. This endpoint lists all available REST API routes, which is valuable information for attackers.</li><li><strong>Media endpoint:</strong> Restricts the <code>/wp-json/wp/v2/media</code> endpoint, which allows listing and querying uploaded media files.</li><li><strong>Comments endpoint:</strong> Restricts the <code>/wp-json/wp/v2/comments</code> endpoint.</li><li><strong>Search endpoint:</strong> Restricts the <code>/wp-json/wp/v2/search</code> endpoint, which allows searching within page content.</li></ul><strong>Important:</strong> WooCommerce\'s own REST API endpoints (<code>/wp-json/wc/v3/</code>, <code>/wp-json/wc-store/v1/</code>) are NOT affected.', 'refitune' ),
 		'category' => 'security',
 	),
 	array(
 		'id'       => 'login-limit',
 		'title'    => __( 'Login Limit', 'refitune' ),
-		'content'  => __( 'Limits failed login attempts based on IP address and username, protecting the website against brute-force attacks.<br><br><strong>How it works:</strong><ul><li>Counts every failed login attempt both by <strong>IP address</strong> and by <strong>username</strong></li><li>If either reaches the limit, a timed lockout occurs</li><li>Username lockouts are checked before password verification</li><li>Successful login clears the counter</li></ul><strong>Settings:</strong><ul><li><strong>Block "admin" Username Instantly:</strong> When enabled, immediately blocks the IP address for 1 hour on the first login attempt with username "admin".</li><li><strong>Maximum attempts:</strong> How many failed attempts the system allows (default: 5). Counted separately per IP address and per username.</li><li><strong>Lockout duration:</strong> How long login is blocked after reaching the limit in minutes (default: 15 minutes).</li><li><strong>Whitelist IP addresses:</strong> IP addresses exempt from the limit (one IP per line).</li></ul><strong>Storage:</strong> Attempt counters use the WordPress Transients API with object-cache support when available.<br><br><strong>Note:</strong> This feature only works on the <code>wp-login.php</code> page.', 'refitune' ),
+		'content'  => __( 'Limits failed login attempts based on IP address and IP+username pairs, protecting the website against brute-force attacks without locking an account globally for every client.<br><br><strong>How it works:</strong><ul><li>Counts every failed login attempt by <strong>IP address</strong> and by <strong>IP + username pair</strong></li><li>If either reaches the limit, a timed lockout applies to that IP or that IP+username pair only</li><li>Failed attempts from one IP do not lock successful logins from another IP</li><li>Lockouts are checked before password verification on <code>wp-login.php</code> and on other <code>wp_signon()</code> paths (including WooCommerce login)</li><li>Successful login clears the counters for that IP and pair</li><li>Client IP comes from <code>REMOTE_ADDR</code> only (not spoofable <code>X-Forwarded-For</code> headers)</li></ul><strong>Settings:</strong><ul><li><strong>Block "admin" Username Instantly:</strong> When enabled, immediately blocks the IP address for the configured lockout duration on the first login attempt with username "admin".</li><li><strong>Maximum attempts:</strong> How many failed attempts the system allows (default: 5). Counted separately per IP address and per IP+username pair.</li><li><strong>Lockout duration:</strong> How long login is blocked after reaching the limit in minutes (default: 15 minutes).</li><li><strong>Whitelist IP addresses:</strong> One IPv4/IPv6 per line. Those clients skip counters and lockouts. Use for a static office IP or trusted egress. Behind a CDN or shared NAT many visitors share one address, so whitelist only IPs you control.</li></ul><strong>Storage:</strong> Attempt counters use the WordPress Transients API with object-cache support when available.', 'refitune' ),
 		'category' => 'security',
 	),
 	array(
@@ -147,7 +159,7 @@ $help_items = array(
 	array(
 		'id'       => 'block-visibility',
 		'title'    => __( 'Block Visibility (Mobile)', 'refitune' ),
-		'content'  => __( 'Adds a "Visibility" panel to every Gutenberg block in the block editor (Inspector Controls). You can set whether the block is always visible, appears only on mobile, or only on desktop. The mobile/desktop decision happens server-side using WordPress core\'s <code>wp_is_mobile()</code> function, so the block\'s HTML code is completely omitted from the source on the wrong device – not just hidden with CSS. This ensures better performance and cleaner HTML output.', 'refitune' ),
+		'content'  => __( 'Adds a "Visibility" panel to every Gutenberg block in the block editor (Inspector Controls). You can set whether the block is always visible, appears only on mobile, or only on desktop. The mobile/desktop decision happens server-side using WordPress core\'s <code>wp_is_mobile()</code> function, so the block\'s HTML is omitted on the wrong device - not only hidden with CSS.<br><br><strong>Cache warning:</strong> <code>wp_is_mobile()</code> is User-Agent based, not viewport based. Full-page caches that do not vary on User-Agent can serve the wrong variant (for example a desktop-cached page to a phone). RefiTune sends a <code>Vary: User-Agent</code> header while this module is active; your CDN or page cache must honour it. For layout-only hiding, CSS media queries are usually safer.<br><br><strong>Note:</strong> do not use this feature as an access-control or secrecy boundary.', 'refitune' ),
 		'category' => 'visual',
 	),
 	array(
@@ -161,13 +173,13 @@ $help_items = array(
 	array(
 		'id'       => 'email-controls',
 		'title'    => __( 'Email Notifications', 'refitune' ),
-		'content'  => __( 'Individual WordPress system emails can be disabled or redirected to a custom email address:<ul><li><strong>Update notifications</strong> – emails sent to admin about automatic core/plugin/theme updates; can be redirected to a custom email address instead of disabled.</li><li><strong>New user registration</strong> – only disables the admin notification (the newly registered user\'s welcome email remains).</li><li><strong>Password reset</strong> – the notification sent to admin can be disabled (not the password reset link email).</li><li><strong>Comment notifications</strong> – all comment moderation and author notifications.</li><li><strong>Privacy (GDPR) notifications</strong> – data export, data deletion, consent confirmation emails.</li><li><strong>Critical error email</strong> – error notification sent in WordPress recovery mode; can also be redirected to a custom email address.</li></ul>', 'refitune' ),
+		'content'  => __( 'Individual WordPress system emails can be disabled or redirected to a custom email address:<ul><li><strong>Update notifications</strong> - emails sent to admin about automatic core/plugin/theme updates; can be redirected to a custom email address instead of disabled.</li><li><strong>New user registration</strong> - only disables the admin notification (the newly registered user\'s welcome email remains).</li><li><strong>Password reset</strong> - the notification sent to admin can be disabled (not the password reset link email).</li><li><strong>Comment notifications</strong> - all comment moderation and author notifications.</li><li><strong>Privacy (GDPR) notifications</strong> - data export, data deletion, consent confirmation emails.</li><li><strong>Critical error email</strong> - error notification sent in WordPress recovery mode; can also be redirected to a custom email address.</li></ul>', 'refitune' ),
 		'category' => 'email',
 	),
 	array(
 		'id'       => 'email-smtp',
 		'title'    => __( 'Email SMTP / Complete Disable', 'refitune' ),
-		'content'  => __( '<strong>Complete email sending disable:</strong> Uses the <code>pre_wp_mail</code> filter to block all <code>wp_mail()</code> calls – no emails are sent from the system. This is useful in development, test, or staging environments. <strong>SMTP settings:</strong> If complete disable is not enabled and SMTP host is specified, it configures the use of an external SMTP server instead of WordPress\'s native mail() function via the <code>phpmailer_init</code> action. Configurable options include: SMTP host, port, encryption (SSL/TLS/none), username and password (SMTP Auth), and sender email address and name (<code>setFrom()</code>). The password is stored encrypted with Sodium in the database, with the encryption key derived from a SHA-256 hash of the WordPress <code>AUTH_KEY</code>, <code>SECURE_AUTH_KEY</code>, and <code>NONCE_KEY</code> constants.', 'refitune' ),
+		'content'  => __( '<strong>Complete email sending disable:</strong> Uses the <code>pre_wp_mail</code> filter to block all <code>wp_mail()</code> calls - no emails are sent from the system. This is useful in development, test, or staging environments. <strong>SMTP settings:</strong> If complete disable is not enabled and SMTP host is specified, it configures the use of an external SMTP server instead of WordPress\'s native mail() function via the <code>phpmailer_init</code> action. Configurable options include: SMTP host, port, encryption (SSL/TLS/none), username and password (SMTP Auth), and sender email address and name (<code>setFrom()</code>). The password is stored encrypted with Sodium in the database, with the encryption key derived from a SHA-256 hash of the WordPress <code>AUTH_KEY</code>, <code>SECURE_AUTH_KEY</code>, and <code>NONCE_KEY</code> constants.', 'refitune' ),
 		'category' => 'email',
 	),
 
@@ -205,13 +217,13 @@ $help_items = array(
 	array(
 		'id'       => 'avif-upload',
 		'title'    => __( 'AVIF Upload', 'refitune' ),
-		'content'  => __( 'Allows AVIF image files to be uploaded to the media library for selected WordPress roles. AVIF is a modern, highly efficient image format that is not supported by default in WordPress versions prior to WP 6.1. The plugin ensures proper MIME type handling on older WP versions as well.', 'refitune' ),
+		'content'  => __( 'Allows AVIF image files to be uploaded to the media library for selected WordPress roles.<br><br><strong>WordPress support:</strong> native AVIF handling (metadata, editor, generated sizes) arrived in WordPress 6.5. On WordPress 6.2-6.4 this module mainly enables the MIME type for upload; full image processing depends on your PHP GD/Imagick build and may be incomplete. Prefer WordPress 6.5+ for production AVIF workflows.', 'refitune' ),
 		'category' => 'misc',
 	),
 	array(
 		'id'       => 'role-redirects',
 		'title'    => __( 'Role Redirects', 'refitune' ),
-		'content'  => __( 'Set custom redirect URLs per role after login and logout. In the settings, two fields are available for each WordPress role (administrator, editor, author, contributor, subscriber, etc.): <strong>Redirect after login</strong> – using the <code>login_redirect</code> filter, the user with that role is redirected to the specified path after successful login. <strong>Redirect after logout</strong> – using the <code>logout_redirect</code> filter, the user with that role is redirected to the specified path after logout. If a user has multiple roles, the first matching role\'s redirect applies. The website URL is automatically pre-filled, you only need to enter the <strong>relative path</strong> (e.g., <code>/dashboard/</code>, <code>/my-account/</code>, <code>/</code>). This simplifies configuration and ensures only on-site redirects occur. In case of domain change or staging → production migration, redirects automatically adapt to the new domain.<br><br><strong>Tested and working reliably:</strong><ul><li>Standard WordPress login/logout (<code>wp-login.php</code>)</li><li>WooCommerce My Account page shortcode-based login/logout</li><li>Admin toolbar logout</li></ul>', 'refitune' ),
+		'content'  => __( 'Set custom redirect URLs per role after login and logout. In the settings, two fields are available for each WordPress role (administrator, editor, author, contributor, subscriber, etc.): <strong>Redirect after login</strong> - using the <code>login_redirect</code> filter, the user with that role is redirected to the specified path after successful login. <strong>Redirect after logout</strong> - using the <code>logout_redirect</code> filter, the user with that role is redirected to the specified path after logout. If a user has multiple roles, the first matching role\'s redirect applies. The website URL is automatically pre-filled, you only need to enter the <strong>relative path</strong> (e.g., <code>/dashboard/</code>, <code>/my-account/</code>, <code>/</code>). This simplifies configuration and ensures only on-site redirects occur. In case of domain change or staging → production migration, redirects automatically adapt to the new domain.<br><br><strong>Tested and working reliably:</strong><ul><li>Standard WordPress login/logout (<code>wp-login.php</code>)</li><li>WooCommerce My Account page shortcode-based login/logout</li><li>Admin toolbar logout</li></ul>', 'refitune' ),
 		'category' => 'misc',
 	),
 	array(
@@ -228,31 +240,31 @@ $help_items = array(
 	),
 );
 
-// Csoportosítás kategóriánként.
-$help_by_category = array();
-foreach ( $help_items as $item ) {
-	$cat = isset( $item['category'] ) ? $item['category'] : 'misc';
-	if ( ! isset( $help_by_category[ $cat ] ) ) {
-		$help_by_category[ $cat ] = array();
+// Group by category.
+$refitune_help_by_category = array();
+foreach ( $refitune_help_items as $refitune_item ) {
+	$refitune_cat = isset( $refitune_item['category'] ) ? $refitune_item['category'] : 'misc';
+	if ( ! isset( $refitune_help_by_category[ $refitune_cat ] ) ) {
+		$refitune_help_by_category[ $refitune_cat ] = array();
 	}
-	$help_by_category[ $cat ][] = $item;
+	$refitune_help_by_category[ $refitune_cat ][] = $refitune_item;
 }
 ?>
 
-<?php foreach ( $help_categories as $cat_key => $cat_label ) : ?>
-	<?php if ( ! isset( $help_by_category[ $cat_key ] ) ) {
+<?php foreach ( $refitune_help_categories as $refitune_cat_key => $refitune_cat_label ) : ?>
+	<?php if ( ! isset( $refitune_help_by_category[ $refitune_cat_key ] ) ) {
 		continue;
 	} ?>
 
-	<h2 id="refitune-help-category-<?php echo esc_attr( $cat_key ); ?>" class="refitune-category-title">
-		<?php echo esc_html( $cat_label ); ?>
+	<h2 id="refitune-help-category-<?php echo esc_attr( $refitune_cat_key ); ?>" class="refitune-category-title">
+		<?php echo esc_html( $refitune_cat_label ); ?>
 	</h2>
 
 	<div class="refitune-help-list">
-		<?php foreach ( $help_by_category[ $cat_key ] as $item ) : ?>
-			<div class="refitune-help-item" id="help-<?php echo esc_attr( $item['id'] ); ?>">
-				<h3 class="refitune-help-item-title"><?php echo esc_html( $item['title'] ); ?></h3>
-				<div class="refitune-help-item-content"><?php echo wp_kses( $item['content'], array( 'code' => array(), 'strong' => array(), 'em' => array(), 'br' => array(), 'ul' => array(), 'li' => array() ) ); ?></div>
+		<?php foreach ( $refitune_help_by_category[ $refitune_cat_key ] as $refitune_item ) : ?>
+			<div class="refitune-help-item" id="help-<?php echo esc_attr( $refitune_item['id'] ); ?>">
+				<h3 class="refitune-help-item-title"><?php echo esc_html( $refitune_item['title'] ); ?></h3>
+				<div class="refitune-help-item-content"><?php echo wp_kses( $refitune_item['content'], array( 'code' => array(), 'strong' => array(), 'em' => array(), 'br' => array(), 'ul' => array(), 'li' => array() ) ); ?></div>
 			</div>
 		<?php endforeach; ?>
 	</div>

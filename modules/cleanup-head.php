@@ -1,8 +1,8 @@
 <?php
 /**
- * Fejléc tisztítás – felesleges wp_head elemek eltávolítása.
+ * Header cleanup - remove unnecessary wp_head elements.
  *
- * Csak azokat az elemeket távolítja el, amelyek a beállításokban be vannak kapcsolva.
+ * Only removes the elements that are enabled in the settings.
  *
  * @package RefiTune
  */
@@ -11,14 +11,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$refitune_settings = get_option( 'refitune_settings', array() );
+$refitune_settings = refitune_get_settings();
 
 if ( ! empty( $refitune_settings['cleanup_head_generator'] ) ) {
 	remove_action( 'wp_head', 'wp_generator' );
 }
 
-if ( ! empty( $refitune_settings['cleanup_head_wc_generator'] ) && class_exists( 'WooCommerce' ) ) {
-	add_filter( 'woocommerce_generator_tag', '__return_false' );
+// Defer WooCommerce detection until plugins_loaded so load order does not matter.
+if ( ! empty( $refitune_settings['cleanup_head_wc_generator'] ) ) {
+	add_action(
+		'plugins_loaded',
+		static function (): void {
+			if ( class_exists( 'WooCommerce' ) ) {
+				add_filter( 'woocommerce_generator_tag', '__return_false', 10 );
+			}
+		},
+		20
+	);
 }
 
 if ( ! empty( $refitune_settings['cleanup_head_rsd'] ) ) {

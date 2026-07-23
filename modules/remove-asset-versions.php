@@ -21,14 +21,14 @@ function refitune_remove_asset_version_query( $src ) {
 	}
 
 	// Skip external hosts; only strip ver on same-site assets.
-	$src_host  = wp_parse_url( $src, PHP_URL_HOST );
-	$home_host = wp_parse_url( home_url(), PHP_URL_HOST );
-	if ( $src_host && $home_host && $src_host !== $home_host ) {
+	$refitune_src_host  = wp_parse_url( $src, PHP_URL_HOST );
+	$refitune_home_host = wp_parse_url( home_url(), PHP_URL_HOST );
+	if ( $refitune_src_host && $refitune_home_host && $refitune_src_host !== $refitune_home_host ) {
 		return $src;
 	}
 
 	if ( false !== strpos( $src, 'ver=' ) ) {
-		$src = remove_query_arg( 'ver', $src );
+		return remove_query_arg( 'ver', $src );
 	}
 
 	return $src;

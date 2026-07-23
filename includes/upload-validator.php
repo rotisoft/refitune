@@ -96,11 +96,11 @@ define( 'REFITUNE_UPLOAD_SCAN_MAX_BYTES', 262144 );
 /**
  * Validate an upload filename for dangerous or double extensions.
  *
- * @param string $filename Original upload filename.
+ * @param string $refitune_filename Original upload filename.
  * @return true|WP_Error
  */
-function refitune_upload_validate_filename( string $filename ) {
-	if ( '' === trim( $filename ) ) {
+function refitune_upload_validate_filename( string $refitune_filename ) {
+	if ( '' === trim( $refitune_filename ) ) {
 		return refitune_upload_reject(
 			'empty_filename',
 			__( 'This file cannot be uploaded for security reasons.', 'refitune' ),
@@ -108,7 +108,7 @@ function refitune_upload_validate_filename( string $filename ) {
 		);
 	}
 
-	if ( preg_match( '/[\x00-\x1f\x7f]/', $filename ) ) {
+	if ( preg_match( '/[\x00-\x1f\x7f]/', $refitune_filename ) ) {
 		return refitune_upload_reject(
 			'invalid_filename_chars',
 			__( 'This file cannot be uploaded for security reasons.', 'refitune' ),
@@ -116,21 +116,21 @@ function refitune_upload_validate_filename( string $filename ) {
 		);
 	}
 
-	$basename = wp_basename( $filename );
-	$parts    = explode( '.', strtolower( $basename ) );
+	$refitune_basename = wp_basename( $refitune_filename );
+	$refitune_parts    = explode( '.', strtolower( $refitune_basename ) );
 
-	if ( count( $parts ) < 2 ) {
+	if ( count( $refitune_parts ) < 2 ) {
 		return true;
 	}
 
-	$dangerous = refitune_upload_dangerous_extensions();
+	$refitune_dangerous = refitune_upload_dangerous_extensions();
 
-	foreach ( $parts as $index => $part ) {
-		if ( 0 === $index ) {
+	foreach ( $refitune_parts as $refitune_index => $refitune_part ) {
+		if ( 0 === $refitune_index ) {
 			continue;
 		}
 
-		if ( in_array( $part, $dangerous, true ) ) {
+		if ( in_array( $refitune_part, $refitune_dangerous, true ) ) {
 			return refitune_upload_reject(
 				'dangerous_extension',
 				__( 'This file cannot be uploaded for security reasons.', 'refitune' ),
@@ -140,7 +140,7 @@ function refitune_upload_validate_filename( string $filename ) {
 	}
 
 	// Catch disguised patterns such as "shell.php.jpg" embedded in the name.
-	if ( preg_match( '/\.(' . implode( '|', array_map( 'preg_quote', $dangerous ) ) . ')(\.|$)/i', $basename ) ) {
+	if ( preg_match( '/\.(' . implode( '|', array_map( 'preg_quote', $refitune_dangerous ) ) . ')(\.|$)/i', $refitune_basename ) ) {
 		return refitune_upload_reject(
 			'double_extension',
 			__( 'This file cannot be uploaded for security reasons.', 'refitune' ),
@@ -154,79 +154,79 @@ function refitune_upload_validate_filename( string $filename ) {
 /**
  * Read the beginning of a file for magic-byte inspection.
  *
- * @param string $file_path Absolute path to temp file.
- * @param int    $length    Bytes to read.
+ * @param string $refitune_file_path Absolute path to temp file.
+ * @param int    $refitune_length    Bytes to read.
  * @return string
  */
-function refitune_upload_read_file_header( string $file_path, int $length = 512 ): string {
-	if ( ! is_readable( $file_path ) ) {
+function refitune_upload_read_file_header( string $refitune_file_path, int $refitune_length = 512 ): string {
+	if ( ! is_readable( $refitune_file_path ) ) {
 		return '';
 	}
 
-	$handle = fopen( $file_path, 'rb' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Local temp upload file.
+	$refitune_handle = fopen( $refitune_file_path, 'rb' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Local temp upload file.
 
-	if ( false === $handle ) {
+	if ( false === $refitune_handle ) {
 		return '';
 	}
 
-	$header = fread( $handle, $length ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread -- Local temp upload file.
-	fclose( $handle ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Local temp upload file.
+	$refitune_header = fread( $refitune_handle, $refitune_length ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread -- Local temp upload file.
+	fclose( $refitune_handle ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Local temp upload file.
 
-	return false === $header ? '' : $header;
+	return false === $refitune_header ? '' : $refitune_header;
 }
 
 /**
  * Detect a coarse file type from magic bytes.
  *
- * @param string $header File header bytes.
+ * @param string $refitune_header File header bytes.
  * @return string One of: jpeg, png, gif, webp, pdf, svg, avif, zip, text, binary.
  */
-function refitune_upload_detect_magic_type( string $header ): string {
-	if ( '' === $header ) {
+function refitune_upload_detect_magic_type( string $refitune_header ): string {
+	if ( '' === $refitune_header ) {
 		return 'binary';
 	}
 
-	if ( 0 === strpos( $header, "\xFF\xD8\xFF" ) ) {
+	if ( 0 === strpos( $refitune_header, "\xFF\xD8\xFF" ) ) {
 		return 'jpeg';
 	}
 
-	if ( 0 === strpos( $header, "\x89PNG\r\n\x1a\n" ) ) {
+	if ( 0 === strpos( $refitune_header, "\x89PNG\r\n\x1a\n" ) ) {
 		return 'png';
 	}
 
-	if ( 0 === strncmp( $header, 'GIF87a', 6 ) || 0 === strncmp( $header, 'GIF89a', 6 ) ) {
+	if ( 0 === strncmp( $refitune_header, 'GIF87a', 6 ) || 0 === strncmp( $refitune_header, 'GIF89a', 6 ) ) {
 		return 'gif';
 	}
 
-	if ( 0 === strncmp( $header, '%PDF', 4 ) ) {
+	if ( 0 === strncmp( $refitune_header, '%PDF', 4 ) ) {
 		return 'pdf';
 	}
 
-	if ( 0 === strncmp( $header, 'RIFF', 4 ) && false !== strpos( substr( $header, 0, 16 ), 'WEBP' ) ) {
+	if ( 0 === strncmp( $refitune_header, 'RIFF', 4 ) && false !== strpos( substr( $refitune_header, 0, 16 ), 'WEBP' ) ) {
 		return 'webp';
 	}
 
-	if ( false !== strpos( substr( $header, 0, 4096 ), 'ftypavif' ) || false !== strpos( substr( $header, 0, 64 ), 'ftypavis' ) ) {
+	if ( false !== strpos( substr( $refitune_header, 0, 4096 ), 'ftypavif' ) || false !== strpos( substr( $refitune_header, 0, 64 ), 'ftypavis' ) ) {
 		return 'avif';
 	}
 
-	$trimmed = ltrim( $header );
+	$refitune_trimmed = ltrim( $refitune_header );
 
-	if ( 0 === strncmp( $trimmed, '<svg', 4 ) || 0 === strncmp( $trimmed, '<?xml', 5 ) ) {
+	if ( 0 === strncmp( $refitune_trimmed, '<svg', 4 ) || 0 === strncmp( $refitune_trimmed, '<?xml', 5 ) ) {
 		return 'svg';
 	}
 
-	if ( 0 === strncmp( $header, 'PK', 2 ) ) {
+	if ( 0 === strncmp( $refitune_header, 'PK', 2 ) ) {
 		return 'zip';
 	}
 
-	$sample = substr( $header, 0, 512 );
+	$refitune_sample = substr( $refitune_header, 0, 512 );
 
-	if ( false !== strpbrk( $sample, "\0" ) ) {
+	if ( false !== strpbrk( $refitune_sample, "\0" ) ) {
 		return 'binary';
 	}
 
-	if ( preg_match( '/[\x09\x0a\x0d\x20-\x7e]{8,}/', $sample ) ) {
+	if ( preg_match( '/[\x09\x0a\x0d\x20-\x7e]{8,}/', $refitune_sample ) ) {
 		return 'text';
 	}
 
@@ -236,11 +236,11 @@ function refitune_upload_detect_magic_type( string $header ): string {
 /**
  * Map a file extension to an expected magic type.
  *
- * @param string $extension Lowercase extension without dot.
+ * @param string $refitune_extension Lowercase extension without dot.
  * @return string Expected magic type or empty string when not mapped.
  */
-function refitune_upload_expected_magic_for_extension( string $extension ): string {
-	$map = array(
+function refitune_upload_expected_magic_for_extension( string $refitune_extension ): string {
+	$refitune_map = array(
 		'jpg'  => 'jpeg',
 		'jpeg' => 'jpeg',
 		'png'  => 'png',
@@ -251,7 +251,7 @@ function refitune_upload_expected_magic_for_extension( string $extension ): stri
 		'pdf'  => 'pdf',
 	);
 
-	return $map[ $extension ] ?? '';
+	return $refitune_map[ $refitune_extension ] ?? '';
 }
 
 /**
@@ -260,61 +260,61 @@ function refitune_upload_expected_magic_for_extension( string $extension ): stri
  * Compatible with PHP 7.4 through 8.5+: finfo_close() is only called below PHP 8.5,
  * where manual cleanup is still expected.
  *
- * @param string $file_path Absolute path to temp file.
+ * @param string $refitune_file_path Absolute path to temp file.
  * @return string Detected MIME type, or empty string when unavailable.
  */
-function refitune_upload_detect_mime_type( string $file_path ): string {
+function refitune_upload_detect_mime_type( string $refitune_file_path ): string {
 	if ( ! function_exists( 'finfo_open' ) || ! function_exists( 'finfo_file' ) ) {
 		return '';
 	}
 
-	$finfo = finfo_open( FILEINFO_MIME_TYPE ); // phpcs:ignore PHPCompatibility.FunctionUse.NewFunctionParameters.finfo_open_optionsFound -- Standard MIME detection.
+	$refitune_finfo = finfo_open( FILEINFO_MIME_TYPE ); // phpcs:ignore PHPCompatibility.FunctionUse.NewFunctionParameters.finfo_open_optionsFound -- Standard MIME detection.
 
-	if ( false === $finfo ) {
+	if ( false === $refitune_finfo ) {
 		return '';
 	}
 
-	$detected = (string) finfo_file( $finfo, $file_path ); // phpcs:ignore PHPCompatibility.FunctionUse.NewFunctionParameters.finfo_file_optionsFound -- Standard MIME detection.
+	$refitune_detected = (string) finfo_file( $refitune_finfo, $refitune_file_path ); // phpcs:ignore PHPCompatibility.FunctionUse.NewFunctionParameters.finfo_file_optionsFound -- Standard MIME detection.
 
 	if ( PHP_VERSION_ID < 80500 ) {
-		finfo_close( $finfo ); // phpcs:ignore PHPCompatibility.FunctionUse.NewFunctionParameters.finfo_close_optionsFound -- Required on PHP 7.4-8.4.
+		finfo_close( $refitune_finfo ); // phpcs:ignore PHPCompatibility.FunctionUse.NewFunctionParameters.finfo_close_optionsFound -- Required on PHP 7.4-8.4.
 	}
 
-	return $detected;
+	return $refitune_detected;
 }
 
 /**
  * Whether a finfo MIME type looks like an image.
  *
- * @param string $mime Detected MIME type.
+ * @param string $refitune_mime Detected MIME type.
  * @return bool
  */
-function refitune_upload_mime_is_image( string $mime ): bool {
-	return 0 === strpos( $mime, 'image/' );
+function refitune_upload_mime_is_image( string $refitune_mime ): bool {
+	return 0 === strpos( $refitune_mime, 'image/' );
 }
 
 /**
  * Validate MIME type and magic bytes against the declared extension.
  *
- * @param string $file_path Absolute path to temp file.
- * @param string $filename  Original filename.
+ * @param string $refitune_file_path Absolute path to temp file.
+ * @param string $refitune_filename  Original filename.
  * @return true|WP_Error
  */
-function refitune_upload_validate_mime_and_magic( string $file_path, string $filename ) {
-	$extension = strtolower( pathinfo( $filename, PATHINFO_EXTENSION ) );
+function refitune_upload_validate_mime_and_magic( string $refitune_file_path, string $refitune_filename ) {
+	$refitune_extension = strtolower( pathinfo( $refitune_filename, PATHINFO_EXTENSION ) );
 
-	if ( '' === $extension ) {
+	if ( '' === $refitune_extension ) {
 		return true;
 	}
 
-	$header      = refitune_upload_read_file_header( $file_path, 512 );
-	$magic_type  = refitune_upload_detect_magic_type( $header );
-	$expected    = refitune_upload_expected_magic_for_extension( $extension );
-	$detected    = refitune_upload_detect_mime_type( $file_path );
-	$image_types = refitune_upload_image_extensions();
+	$refitune_header      = refitune_upload_read_file_header( $refitune_file_path, 512 );
+	$refitune_magic_type  = refitune_upload_detect_magic_type( $refitune_header );
+	$refitune_expected    = refitune_upload_expected_magic_for_extension( $refitune_extension );
+	$refitune_detected    = refitune_upload_detect_mime_type( $refitune_file_path );
+	$refitune_image_types = refitune_upload_image_extensions();
 
-	if ( in_array( $extension, $image_types, true ) ) {
-		if ( '' !== $detected && ! refitune_upload_mime_is_image( $detected ) && 'image/svg+xml' !== $detected ) {
+	if ( in_array( $refitune_extension, $refitune_image_types, true ) ) {
+		if ( '' !== $refitune_detected && ! refitune_upload_mime_is_image( $refitune_detected ) && 'image/svg+xml' !== $refitune_detected ) {
 			return refitune_upload_reject(
 				'mime_mismatch',
 				__( 'This file cannot be uploaded for security reasons.', 'refitune' ),
@@ -322,14 +322,14 @@ function refitune_upload_validate_mime_and_magic( string $file_path, string $fil
 			);
 		}
 
-		if ( '' !== $expected && '' !== $magic_type && $expected !== $magic_type ) {
+		if ( '' !== $refitune_expected && '' !== $refitune_magic_type && $refitune_expected !== $refitune_magic_type ) {
 			// Allow svg extension with xml header, avif variants, and any verified image signature.
-			$verified_image_magic = refitune_upload_verified_image_magic_types();
-			$allowed_mismatch     = ( 'svg' === $expected && 'svg' === $magic_type )
-				|| ( 'avif' === $expected && in_array( $magic_type, array( 'avif', 'binary' ), true ) )
-				|| in_array( $magic_type, $verified_image_magic, true );
+			$refitune_verified_image_magic = refitune_upload_verified_image_magic_types();
+			$refitune_allowed_mismatch     = ( 'svg' === $refitune_expected && 'svg' === $refitune_magic_type )
+				|| ( 'avif' === $refitune_expected && in_array( $refitune_magic_type, array( 'avif', 'binary' ), true ) )
+				|| in_array( $refitune_magic_type, $refitune_verified_image_magic, true );
 
-			if ( ! $allowed_mismatch ) {
+			if ( ! $refitune_allowed_mismatch ) {
 				return refitune_upload_reject(
 					'magic_mismatch',
 					__( 'This file cannot be uploaded for security reasons.', 'refitune' ),
@@ -338,7 +338,7 @@ function refitune_upload_validate_mime_and_magic( string $file_path, string $fil
 			}
 		}
 
-		if ( 'text' === $magic_type ) {
+		if ( 'text' === $refitune_magic_type ) {
 			return refitune_upload_reject(
 				'text_disguised_as_image',
 				__( 'This file cannot be uploaded for security reasons.', 'refitune' ),
@@ -347,7 +347,7 @@ function refitune_upload_validate_mime_and_magic( string $file_path, string $fil
 		}
 	}
 
-	if ( 'pdf' === $extension && 'pdf' !== $magic_type ) {
+	if ( 'pdf' === $refitune_extension && 'pdf' !== $refitune_magic_type ) {
 		return refitune_upload_reject(
 			'pdf_magic_mismatch',
 			__( 'This file cannot be uploaded for security reasons.', 'refitune' ),
@@ -355,8 +355,8 @@ function refitune_upload_validate_mime_and_magic( string $file_path, string $fil
 		);
 	}
 
-	if ( '' !== $detected ) {
-		$executable_mimes = array(
+	if ( '' !== $refitune_detected ) {
+		$refitune_executable_mimes = array(
 			'application/x-httpd-php',
 			'application/x-php',
 			'application/x-phps',
@@ -366,8 +366,8 @@ function refitune_upload_validate_mime_and_magic( string $file_path, string $fil
 			'application/x-msdownload',
 		);
 
-		foreach ( $executable_mimes as $executable_mime ) {
-			if ( 0 === strpos( $detected, $executable_mime ) ) {
+		foreach ( $refitune_executable_mimes as $refitune_executable_mime ) {
+			if ( 0 === strpos( $refitune_detected, $refitune_executable_mime ) ) {
 				return refitune_upload_reject(
 					'executable_mime',
 					__( 'This file cannot be uploaded for security reasons.', 'refitune' ),
@@ -403,27 +403,35 @@ function refitune_upload_script_signatures(): array {
 /**
  * Scan upload content for embedded script markers.
  *
- * @param string $file_path Absolute path to temp file.
- * @param string $filename  Original filename.
+ * @param string $refitune_file_path Absolute path to temp file.
+ * @param string $refitune_filename  Original filename.
  * @return true|WP_Error
  */
-function refitune_upload_scan_for_scripts( string $file_path, string $filename ) {
-	$extension = strtolower( pathinfo( $filename, PATHINFO_EXTENSION ) );
+function refitune_upload_scan_for_scripts( string $refitune_file_path, string $refitune_filename ) {
+	$refitune_extension = strtolower( pathinfo( $refitune_filename, PATHINFO_EXTENSION ) );
 
 	// SVG script handling is delegated to the SVG sanitizer module.
-	if ( 'svg' === $extension ) {
+	if ( 'svg' === $refitune_extension ) {
 		return true;
 	}
 
-	$header     = refitune_upload_read_file_header( $file_path, 512 );
-	$magic_type = refitune_upload_detect_magic_type( $header );
+	$refitune_header     = refitune_upload_read_file_header( $refitune_file_path, 512 );
+	$refitune_magic_type = refitune_upload_detect_magic_type( $refitune_header );
 
 	// Binary raster images cannot host readable PHP/HTML polyglots; skip to avoid false positives.
-	if ( in_array( $magic_type, refitune_upload_binary_image_magic_types(), true ) ) {
+	if ( in_array( $refitune_magic_type, refitune_upload_binary_image_magic_types(), true ) ) {
 		return true;
 	}
 
-	if ( ! is_readable( $file_path ) ) {
+	// Compressed formats (plugin/theme .zip packages, PDFs with compressed
+	// streams) and generic binary data cannot execute as text scripts, and
+	// short signatures such as "<?" match random compressed bytes almost
+	// always; scan text-like content only.
+	if ( in_array( $refitune_magic_type, array( 'zip', 'pdf', 'binary' ), true ) ) {
+		return true;
+	}
+
+	if ( ! is_readable( $refitune_file_path ) ) {
 		return refitune_upload_reject(
 			'unreadable_file',
 			__( 'This file cannot be uploaded for security reasons.', 'refitune' ),
@@ -431,41 +439,41 @@ function refitune_upload_scan_for_scripts( string $file_path, string $filename )
 		);
 	}
 
-	$file_size = filesize( $file_path );
+	$refitune_file_size = filesize( $refitune_file_path );
 
-	if ( false === $file_size ) {
+	if ( false === $refitune_file_size ) {
 		return true;
 	}
 
-	$chunks = array();
+	$refitune_chunks = array();
 
-	if ( $file_size <= REFITUNE_UPLOAD_SCAN_MAX_BYTES ) {
+	if ( $refitune_file_size <= REFITUNE_UPLOAD_SCAN_MAX_BYTES ) {
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local temp upload file.
-		$content = file_get_contents( $file_path );
-		if ( false !== $content && '' !== $content ) {
-			$chunks[] = $content;
+		$refitune_content = file_get_contents( $refitune_file_path );
+		if ( false !== $refitune_content && '' !== $refitune_content ) {
+			$refitune_chunks[] = $refitune_content;
 		}
 	} else {
-		$chunks[] = refitune_upload_read_file_header( $file_path, (int) ( REFITUNE_UPLOAD_SCAN_MAX_BYTES / 2 ) );
+		$refitune_chunks[] = refitune_upload_read_file_header( $refitune_file_path, (int) ( REFITUNE_UPLOAD_SCAN_MAX_BYTES / 2 ) );
 
-		$handle = fopen( $file_path, 'rb' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Local temp upload file.
-		if ( false !== $handle ) {
-			$tail_length = (int) ( REFITUNE_UPLOAD_SCAN_MAX_BYTES / 2 );
-			if ( fseek( $handle, -1 * $tail_length, SEEK_END ) === 0 ) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fseek -- Local temp upload file.
-				$tail = fread( $handle, $tail_length ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread -- Local temp upload file.
-				if ( false !== $tail && '' !== $tail ) {
-					$chunks[] = $tail;
+		$refitune_handle = fopen( $refitune_file_path, 'rb' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Local temp upload file.
+		if ( false !== $refitune_handle ) {
+			$refitune_tail_length = (int) ( REFITUNE_UPLOAD_SCAN_MAX_BYTES / 2 );
+			if ( fseek( $refitune_handle, -1 * $refitune_tail_length, SEEK_END ) === 0 ) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fseek -- Local temp upload file.
+				$refitune_tail = fread( $refitune_handle, $refitune_tail_length ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread -- Local temp upload file.
+				if ( false !== $refitune_tail && '' !== $refitune_tail ) {
+					$refitune_chunks[] = $refitune_tail;
 				}
 			}
-			fclose( $handle ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Local temp upload file.
+			fclose( $refitune_handle ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Local temp upload file.
 		}
 	}
 
-	foreach ( $chunks as $chunk ) {
-		$normalized = strtolower( $chunk );
+	foreach ( $refitune_chunks as $refitune_chunk ) {
+		$refitune_normalized = strtolower( $refitune_chunk );
 
-		foreach ( refitune_upload_script_signatures() as $signature ) {
-			if ( false !== strpos( $normalized, strtolower( $signature ) ) ) {
+		foreach ( refitune_upload_script_signatures() as $refitune_signature ) {
+			if ( false !== strpos( $refitune_normalized, strtolower( $refitune_signature ) ) ) {
 				return refitune_upload_reject(
 					'script_marker',
 					__( 'This file cannot be uploaded for security reasons.', 'refitune' ),
@@ -481,12 +489,12 @@ function refitune_upload_scan_for_scripts( string $file_path, string $filename )
 /**
  * Run all Standard upload security checks.
  *
- * @param string $file_path Absolute path to temp upload file.
- * @param string $filename  Original upload filename.
+ * @param string $refitune_file_path Absolute path to temp upload file.
+ * @param string $refitune_filename  Original upload filename.
  * @return true|WP_Error
  */
-function refitune_upload_validate_file( string $file_path, string $filename ) {
-	if ( ! is_uploaded_file( $file_path ) && ! is_readable( $file_path ) ) {
+function refitune_upload_validate_file( string $refitune_file_path, string $refitune_filename ) {
+	if ( ! is_uploaded_file( $refitune_file_path ) && ! is_readable( $refitune_file_path ) ) {
 		return refitune_upload_reject(
 			'invalid_path',
 			__( 'This file cannot be uploaded for security reasons.', 'refitune' ),
@@ -494,19 +502,19 @@ function refitune_upload_validate_file( string $file_path, string $filename ) {
 		);
 	}
 
-	$filename_result = refitune_upload_validate_filename( $filename );
-	if ( is_wp_error( $filename_result ) ) {
-		return $filename_result;
+	$refitune_filename_result = refitune_upload_validate_filename( $refitune_filename );
+	if ( is_wp_error( $refitune_filename_result ) ) {
+		return $refitune_filename_result;
 	}
 
-	$mime_result = refitune_upload_validate_mime_and_magic( $file_path, $filename );
-	if ( is_wp_error( $mime_result ) ) {
-		return $mime_result;
+	$refitune_mime_result = refitune_upload_validate_mime_and_magic( $refitune_file_path, $refitune_filename );
+	if ( is_wp_error( $refitune_mime_result ) ) {
+		return $refitune_mime_result;
 	}
 
-	$script_result = refitune_upload_scan_for_scripts( $file_path, $filename );
-	if ( is_wp_error( $script_result ) ) {
-		return $script_result;
+	$refitune_script_result = refitune_upload_scan_for_scripts( $refitune_file_path, $refitune_filename );
+	if ( is_wp_error( $refitune_script_result ) ) {
+		return $refitune_script_result;
 	}
 
 	return true;
@@ -515,16 +523,16 @@ function refitune_upload_validate_file( string $file_path, string $filename ) {
 /**
  * Build a user-facing upload rejection error.
  *
- * @param string $code           Error code.
- * @param string $public_message Message shown to the user.
- * @param string $debug_message  Detailed message for logs when WP_DEBUG is enabled.
+ * @param string $refitune_code           Error code.
+ * @param string $refitune_public_message Message shown to the user.
+ * @param string $refitune_debug_message  Detailed message for logs when WP_DEBUG is enabled.
  * @return WP_Error
  */
-function refitune_upload_reject( string $code, string $public_message, string $debug_message ): WP_Error {
+function refitune_upload_reject( string $refitune_code, string $refitune_public_message, string $refitune_debug_message ): WP_Error {
 	if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug-only rejection detail.
-		error_log( 'RefiTune Verified Upload: ' . $debug_message );
+		error_log( 'RefiTune Verified Upload: ' . $refitune_debug_message );
 	}
 
-	return new WP_Error( $code, $public_message );
+	return new WP_Error( $refitune_code, $refitune_public_message );
 }

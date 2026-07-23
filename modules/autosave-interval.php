@@ -17,15 +17,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return int Seconds, or 0 when not configured.
  */
 function refitune_get_autosave_interval(): int {
-	$settings = get_option( 'refitune_settings', array() );
+	$refitune_settings = refitune_get_settings();
 
-	if ( ! isset( $settings['autosave_interval'] ) || '' === $settings['autosave_interval'] ) {
+	if ( ! isset( $refitune_settings['autosave_interval'] ) || '' === $refitune_settings['autosave_interval'] ) {
 		return 0;
 	}
 
-	$seconds = (int) $settings['autosave_interval'];
+	$refitune_seconds = (int) $refitune_settings['autosave_interval'];
 
-	return max( 10, $seconds );
+	return max( 10, $refitune_seconds );
 }
 
 /**
@@ -36,10 +36,10 @@ function refitune_get_autosave_interval(): int {
  * @return array
  */
 function refitune_filter_block_editor_autosave_interval( $editor_settings, $editor_context ) {
-	$interval = refitune_get_autosave_interval();
+	$refitune_interval = refitune_get_autosave_interval();
 
-	if ( $interval > 0 ) {
-		$editor_settings['autosaveInterval'] = $interval;
+	if ( $refitune_interval > 0 ) {
+		$editor_settings['autosaveInterval'] = $refitune_interval;
 	}
 
 	return $editor_settings;
@@ -54,9 +54,9 @@ add_filter( 'block_editor_settings_all', 'refitune_filter_block_editor_autosave_
  * @return void
  */
 function refitune_localize_classic_autosave_interval(): void {
-	$interval = refitune_get_autosave_interval();
+	$refitune_interval = refitune_get_autosave_interval();
 
-	if ( $interval <= 0 || ! wp_script_is( 'autosave', 'registered' ) ) {
+	if ( $refitune_interval <= 0 || ! wp_script_is( 'autosave', 'registered' ) ) {
 		return;
 	}
 
@@ -64,7 +64,7 @@ function refitune_localize_classic_autosave_interval(): void {
 		'autosave',
 		'autosaveL10n',
 		array(
-			'autosaveInterval' => $interval,
+			'autosaveInterval' => $refitune_interval,
 			'blog_id'          => get_current_blog_id(),
 		)
 	);

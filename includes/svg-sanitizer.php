@@ -58,200 +58,283 @@ function refitune_svg_blocked_attributes(): array {
 /**
  * Sanitize raw SVG markup.
  *
- * @param string $svg Raw SVG file content.
+ * @param string $refitune_svg Raw SVG file content.
  * @return string|false Sanitized SVG markup, or false when it cannot be made safe.
  */
-function refitune_sanitize_svg_markup( string $svg ) {
-	if ( '' === trim( $svg ) || ! refitune_svg_sanitizer_available() ) {
+function refitune_sanitize_svg_markup( string $refitune_svg ) {
+	if ( '' === trim( $refitune_svg ) || ! refitune_svg_sanitizer_available() ) {
+		return false;
+	}
+
+	$refitune_max_bytes = (int) apply_filters( 'refitune_svg_max_bytes', 512 * 1024 );
+
+	if ( $refitune_max_bytes > 0 && strlen( $refitune_svg ) > $refitune_max_bytes ) {
 		return false;
 	}
 
 	// Strip UTF-8 BOM.
-	$svg = preg_replace( '/^\xEF\xBB\xBF/', '', $svg );
+	$refitune_svg = preg_replace( '/^\xEF\xBB\xBF/', '', $refitune_svg );
 
 	// Reject binary/compressed payloads (e.g. gzipped svgz served as svg).
-	if ( false !== strpos( $svg, "\x00" ) || 0 === strpos( $svg, "\x1f\x8b" ) ) {
+	if ( false !== strpos( $refitune_svg, "\x00" ) || 0 === strpos( $refitune_svg, "\x1f\x8b" ) ) {
 		return false;
 	}
 
 	// Reject DOCTYPE/ENTITY declarations outright (XXE / billion laughs).
-	if ( preg_match( '/<!(?:DOCTYPE|ENTITY)/i', $svg ) ) {
+	if ( preg_match( '/<!(?:DOCTYPE|ENTITY)/i', $refitune_svg ) ) {
 		return false;
 	}
 
-	$libxml_previous = libxml_use_internal_errors( true );
+	$refitune_libxml_previous = libxml_use_internal_errors( true );
 
 	if ( function_exists( 'libxml_disable_entity_loader' ) && PHP_VERSION_ID < 80000 ) {
 		// phpcs:ignore Generic.PHP.DeprecatedFunctions.Deprecated -- Needed for XXE protection on PHP < 8.
-		$entity_loader_previous = libxml_disable_entity_loader( true );
+		$refitune_entity_loader_previous = libxml_disable_entity_loader( true );
 	}
 
-	$dom = new DOMDocument();
-	$dom->preserveWhiteSpace = false;
-	$dom->strictErrorChecking = false;
+	$refitune_dom = new DOMDocument();
+	$refitune_dom->preserveWhiteSpace = false;
+	$refitune_dom->strictErrorChecking = false;
 
-	$load_options = 0;
+	$refitune_load_options = 0;
 	if ( defined( 'LIBXML_NONET' ) ) {
-		$load_options |= LIBXML_NONET;
+		$refitune_load_options |= LIBXML_NONET;
 	}
 	if ( defined( 'LIBXML_NOENT' ) ) {
 		// Do NOT expand entities; we already rejected ENTITY above.
-		$load_options |= 0;
+		$refitune_load_options |= 0;
 	}
 
-	$loaded = $dom->loadXML( $svg, $load_options );
+	$refitune_loaded = $refitune_dom->loadXML( $refitune_svg, $refitune_load_options );
 
-	if ( isset( $entity_loader_previous ) ) {
+	if ( isset( $refitune_entity_loader_previous ) ) {
 		// phpcs:ignore Generic.PHP.DeprecatedFunctions.Deprecated -- Restore previous state on PHP < 8.
-		libxml_disable_entity_loader( $entity_loader_previous );
+		libxml_disable_entity_loader( $refitune_entity_loader_previous );
 	}
 	libxml_clear_errors();
-	libxml_use_internal_errors( $libxml_previous );
+	libxml_use_internal_errors( $refitune_libxml_previous );
 
-	if ( ! $loaded || ! $dom->documentElement ) {
+	if ( ! $refitune_loaded || ! $refitune_dom->documentElement ) {
 		return false;
 	}
 
-	if ( 'svg' !== strtolower( $dom->documentElement->localName ) ) {
+	if ( 'svg' !== strtolower( $refitune_dom->documentElement->localName ) ) {
 		return false;
 	}
 
-	$allowed_elements   = refitune_svg_allowed_elements();
-	$blocked_attributes = refitune_svg_blocked_attributes();
+	$refitune_allowed_elements   = refitune_svg_allowed_elements();
+	$refitune_blocked_attributes = refitune_svg_blocked_attributes();
+	$refitune_limits             = array(
+		'nodes'   => 0,
+		'max_nodes' => (int) apply_filters( 'refitune_svg_max_nodes', 2000 ),
+		'max_depth' => (int) apply_filters( 'refitune_svg_max_depth', 32 ),
+	);
 
-	refitune_svg_clean_node( $dom->documentElement, $allowed_elements, $blocked_attributes );
-
-	$output = $dom->saveXML( $dom->documentElement );
-
-	if ( false === $output || '' === trim( (string) $output ) ) {
+	if ( ! refitune_svg_clean_node( $refitune_dom->documentElement, $refitune_allowed_elements, $refitune_blocked_attributes, $refitune_limits, 0 ) ) {
 		return false;
 	}
 
-	return $output;
+	$refitune_output = $refitune_dom->saveXML( $refitune_dom->documentElement );
+
+	if ( false === $refitune_output || '' === trim( (string) $refitune_output ) ) {
+		return false;
+	}
+
+	return $refitune_output;
 }
 
 /**
  * Recursively strip disallowed elements and attributes from a node.
  *
- * @param DOMNode $node               Current node.
- * @param array   $allowed_elements   Allowed lowercase local element names.
- * @param array   $blocked_attributes Explicitly blocked attribute names.
- * @return void
+ * @param DOMNode $refitune_node               Current node.
+ * @param array   $refitune_allowed_elements   Allowed lowercase local element names.
+ * @param array   $refitune_blocked_attributes Explicitly blocked attribute names.
+ * @param array   $refitune_limits             Mutable node/depth budget.
+ * @param int     $refitune_depth              Current nesting depth.
+ * @return bool False when complexity limits are exceeded.
  */
-function refitune_svg_clean_node( DOMNode $node, array $allowed_elements, array $blocked_attributes ): void {
-	// Process children first (collect into a static array because the live
-	// NodeList mutates as nodes are removed).
-	$children = array();
-	foreach ( $node->childNodes as $child ) {
-		$children[] = $child;
+function refitune_svg_clean_node( DOMNode $refitune_node, array $refitune_allowed_elements, array $refitune_blocked_attributes, array &$refitune_limits, int $refitune_depth ): bool {
+	++$refitune_limits['nodes'];
+
+	if ( $refitune_limits['max_nodes'] > 0 && $refitune_limits['nodes'] > $refitune_limits['max_nodes'] ) {
+		return false;
 	}
 
-	foreach ( $children as $child ) {
-		if ( XML_ELEMENT_NODE === $child->nodeType ) {
-			$local = strtolower( $child->localName );
+	if ( $refitune_limits['max_depth'] > 0 && $refitune_depth > $refitune_limits['max_depth'] ) {
+		return false;
+	}
+
+	// Process children first (collect into a static array because the live
+	// NodeList mutates as nodes are removed).
+	$refitune_children = array();
+	foreach ( $refitune_node->childNodes as $refitune_child ) {
+		$refitune_children[] = $refitune_child;
+	}
+
+	foreach ( $refitune_children as $refitune_child ) {
+		if ( XML_ELEMENT_NODE === $refitune_child->nodeType ) {
+			$refitune_local = strtolower( $refitune_child->localName );
 
 			// Remove foreign namespaces (e.g. inkscape, sodipodi) and disallowed tags.
-			$namespace      = $child->namespaceURI;
-			$is_svg_ns      = ( null === $namespace || 'http://www.w3.org/2000/svg' === $namespace );
-			$is_xlink_image = ( 'image' === $local );
+			$refitune_namespace = $refitune_child->namespaceURI;
+			$refitune_is_svg_ns = ( null === $refitune_namespace || 'http://www.w3.org/2000/svg' === $refitune_namespace );
 
-			if ( ! $is_svg_ns || ! in_array( $local, $allowed_elements, true ) ) {
-				$node->removeChild( $child );
+			if ( ! $refitune_is_svg_ns || ! in_array( $refitune_local, $refitune_allowed_elements, true ) ) {
+				$refitune_node->removeChild( $refitune_child );
 				continue;
 			}
 
-			refitune_svg_clean_attributes( $child, $blocked_attributes );
+			refitune_svg_clean_attributes( $refitune_child, $refitune_blocked_attributes );
 
-			if ( $is_xlink_image || $child->hasChildNodes() ) {
-				refitune_svg_clean_node( $child, $allowed_elements, $blocked_attributes );
+			if ( $refitune_child->hasChildNodes() ) {
+				if ( ! refitune_svg_clean_node( $refitune_child, $refitune_allowed_elements, $refitune_blocked_attributes, $refitune_limits, $refitune_depth + 1 ) ) {
+					return false;
+				}
 			}
-		} elseif ( XML_PI_NODE === $child->nodeType || XML_COMMENT_NODE === $child->nodeType ) {
+		} elseif ( XML_PI_NODE === $refitune_child->nodeType || XML_COMMENT_NODE === $refitune_child->nodeType ) {
 			// Drop processing instructions and comments.
-			$node->removeChild( $child );
+			$refitune_node->removeChild( $refitune_child );
 		}
 	}
+
+	return true;
 }
 
 /**
  * Remove dangerous attributes from an element.
  *
- * @param DOMElement $element            Element node.
- * @param array      $blocked_attributes Explicitly blocked attribute names.
+ * @param DOMElement $refitune_element            Element node.
+ * @param array      $refitune_blocked_attributes Explicitly blocked attribute names.
  * @return void
  */
-function refitune_svg_clean_attributes( DOMElement $element, array $blocked_attributes ): void {
-	$to_remove = array();
+function refitune_svg_clean_attributes( DOMElement $refitune_element, array $refitune_blocked_attributes ): void {
+	$refitune_to_remove = array();
 
-	foreach ( iterator_to_array( $element->attributes ) as $attribute ) {
-		$name  = strtolower( $attribute->nodeName );
-		$value = (string) $attribute->nodeValue;
+	foreach ( iterator_to_array( $refitune_element->attributes ) as $refitune_attribute ) {
+		$refitune_name  = strtolower( $refitune_attribute->nodeName );
+		$refitune_value = (string) $refitune_attribute->nodeValue;
 
 		// Event handlers (onload, onclick, ...).
-		if ( 0 === strpos( $name, 'on' ) ) {
-			$to_remove[] = $attribute;
+		if ( 0 === strpos( $refitune_name, 'on' ) ) {
+			$refitune_to_remove[] = $refitune_attribute;
 			continue;
 		}
 
-		if ( in_array( $name, $blocked_attributes, true ) ) {
-			$to_remove[] = $attribute;
+		if ( in_array( $refitune_name, $refitune_blocked_attributes, true ) ) {
+			$refitune_to_remove[] = $refitune_attribute;
 			continue;
 		}
 
-		// href / xlink:href: allow only safe schemes and anchors.
-		if ( 'href' === $name || 'xlink:href' === $name ) {
-			if ( ! refitune_svg_is_safe_href( $value ) ) {
-				$to_remove[] = $attribute;
+		// href / xlink:href: allow only fragment refs and small raster data URIs.
+		if ( 'href' === $refitune_name || 'xlink:href' === $refitune_name ) {
+			if ( ! refitune_svg_is_safe_href( $refitune_value ) ) {
+				$refitune_to_remove[] = $refitune_attribute;
 				continue;
 			}
 		}
 
+		// style attributes: drop external/protocol-relative CSS url() references.
+		if ( 'style' === $refitune_name && refitune_svg_style_has_external_url( $refitune_value ) ) {
+			$refitune_to_remove[] = $refitune_attribute;
+			continue;
+		}
+
 		// Reject any value containing a script-like scheme or expression.
-		$normalized = preg_replace( '/\s+/', '', strtolower( html_entity_decode( $value, ENT_QUOTES, 'UTF-8' ) ) );
-		if ( false !== strpos( $normalized, 'javascript:' )
-			|| false !== strpos( $normalized, 'vbscript:' )
-			|| false !== strpos( $normalized, 'data:text/html' )
-			|| false !== strpos( $normalized, '@import' )
-			|| preg_match( '/expression\(|url\(\s*["\']?javascript:/', $normalized )
+		$refitune_normalized = preg_replace( '/\s+/', '', strtolower( html_entity_decode( $refitune_value, ENT_QUOTES, 'UTF-8' ) ) );
+		if ( false !== strpos( $refitune_normalized, 'javascript:' )
+			|| false !== strpos( $refitune_normalized, 'vbscript:' )
+			|| false !== strpos( $refitune_normalized, 'data:text/html' )
+			|| false !== strpos( $refitune_normalized, '@import' )
+			|| preg_match( '/expression\(|url\(\s*["\']?javascript:/', $refitune_normalized )
 		) {
-			$to_remove[] = $attribute;
+			$refitune_to_remove[] = $refitune_attribute;
 		}
 	}
 
-	foreach ( $to_remove as $attribute ) {
-		$element->removeAttributeNode( $attribute );
+	foreach ( $refitune_to_remove as $refitune_attribute ) {
+		$refitune_element->removeAttributeNode( $refitune_attribute );
 	}
 }
 
 /**
- * Whether an href value is a safe internal reference or image data URI.
+ * Whether a CSS style value contains an external or unsafe url() reference.
  *
- * @param string $value Attribute value.
+ * @param string $refitune_value Style attribute value.
  * @return bool
  */
-function refitune_svg_is_safe_href( string $value ): bool {
-	$value = trim( html_entity_decode( $value, ENT_QUOTES, 'UTF-8' ) );
+function refitune_svg_style_has_external_url( string $refitune_value ): bool {
+	if ( ! preg_match_all( '/url\s*\(\s*([\'"]?)([^\'")]+)\1\s*\)/i', $refitune_value, $refitune_matches ) ) {
+		return false;
+	}
 
-	if ( '' === $value ) {
+	foreach ( $refitune_matches[2] as $refitune_url ) {
+		$refitune_url = trim( html_entity_decode( (string) $refitune_url, ENT_QUOTES, 'UTF-8' ) );
+
+		if ( '' === $refitune_url ) {
+			continue;
+		}
+
+		// Fragment-only references inside the same document are fine.
+		if ( 0 === strpos( $refitune_url, '#' ) ) {
+			continue;
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * Whether an href value is a safe internal fragment or small raster data URI.
+ *
+ * External http(s), protocol-relative, and relative file paths are rejected so
+ * sanitized SVGs stay self-contained.
+ *
+ * @param string $refitune_value Attribute value.
+ * @return bool
+ */
+function refitune_svg_is_safe_href( string $refitune_value ): bool {
+	$refitune_value = trim( html_entity_decode( $refitune_value, ENT_QUOTES, 'UTF-8' ) );
+
+	if ( '' === $refitune_value ) {
+		return false;
+	}
+
+	// Reject script-like schemes hidden behind URL encoding (e.g. %6aavascript:).
+	$refitune_decoded = strtolower( preg_replace( '/\s+/', '', rawurldecode( $refitune_value ) ) );
+	if ( false !== strpos( $refitune_decoded, 'javascript:' )
+		|| false !== strpos( $refitune_decoded, 'vbscript:' )
+		|| false !== strpos( $refitune_decoded, 'data:text' )
+	) {
 		return false;
 	}
 
 	// In-document fragment reference (e.g. #gradient).
-	if ( 0 === strpos( $value, '#' ) ) {
+	if ( 0 === strpos( $refitune_value, '#' ) ) {
 		return true;
 	}
 
-	// Allow safe raster image data URIs only.
-	if ( preg_match( '#^data:image/(png|jpe?g|gif|webp);base64,#i', $value ) ) {
-		return true;
-	}
+	// Allow size-limited safe raster image data URIs only (no GIF to reduce attack surface).
+	if ( preg_match( '#^data:image/(png|jpe?g|webp);base64,(.+)$#i', $refitune_value, $refitune_matches ) ) {
+		$refitune_max_data_uri = (int) apply_filters( 'refitune_svg_max_data_uri_bytes', 100 * 1024 );
+		$refitune_payload      = (string) $refitune_matches[2];
 
-	// Allow same-scheme http(s) references.
-	if ( preg_match( '#^https?://#i', $value ) ) {
-		return true;
-	}
+		// Base64 expands ~4/3; reject oversized payloads before decode.
+		if ( $refitune_max_data_uri > 0 && strlen( $refitune_payload ) > (int) ceil( $refitune_max_data_uri * 4 / 3 ) ) {
+			return false;
+		}
 
-	// Relative path without a scheme.
-	if ( ! preg_match( '#^[a-z][a-z0-9+.-]*:#i', $value ) ) {
+		$refitune_decoded_bytes = base64_decode( $refitune_payload, true );
+
+		if ( false === $refitune_decoded_bytes ) {
+			return false;
+		}
+
+		if ( $refitune_max_data_uri > 0 && strlen( $refitune_decoded_bytes ) > $refitune_max_data_uri ) {
+			return false;
+		}
+
 		return true;
 	}
 

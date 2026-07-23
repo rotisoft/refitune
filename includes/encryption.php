@@ -1,6 +1,6 @@
 <?php
 /**
- * Titkosítási segédfüggvények Sodium könyvtárral.
+ * Encryption helpers using the Sodium library.
  *
  * @package RefiTune
  */
@@ -21,28 +21,27 @@ function refitune_encryption_available(): bool {
 }
 
 /**
- * Titkosítási kulcs generálása WordPress konstansokból.
+ * Derive the encryption key from WordPress constants.
  *
- * A kulcs a WordPress AUTH_KEY, SECURE_AUTH_KEY és NONCE_KEY
- * kombinációjából származik, így minden WordPress telepítés
- * egyedi kulcsot kap. A sodium_crypto_secretbox() 32 byte-os
- * kulcsot igényel.
+ * The key is derived from the combination of the WordPress AUTH_KEY,
+ * SECURE_AUTH_KEY, and NONCE_KEY constants, so every WordPress install
+ * gets a unique key. sodium_crypto_secretbox() requires a 32-byte key.
  *
- * @return string 32 byte-os bináris kulcs.
+ * @return string 32-byte binary key.
  */
 function refitune_get_encryption_key(): string {
-	$key_material = AUTH_KEY . SECURE_AUTH_KEY . NONCE_KEY;
-	return hash( 'sha256', $key_material, true );
+	$refitune_key_material = AUTH_KEY . SECURE_AUTH_KEY . NONCE_KEY;
+	return hash( 'sha256', $refitune_key_material, true );
 }
 
 /**
- * Szöveg titkosítása Sodium segítségével.
+ * Encrypt a string with Sodium.
  *
- * @param string $plaintext A titkosítandó szöveg.
- * @return string Base64-kódolt titkosított szöveg (nonce + ciphertext).
+ * @param string $refitune_plaintext Text to encrypt.
+ * @return string Base64-encoded encrypted text (nonce + ciphertext).
  */
-function refitune_encrypt( string $plaintext ): string {
-	if ( '' === $plaintext ) {
+function refitune_encrypt( string $refitune_plaintext ): string {
+	if ( '' === $refitune_plaintext ) {
 		return '';
 	}
 
@@ -50,23 +49,23 @@ function refitune_encrypt( string $plaintext ): string {
 		return '';
 	}
 
-	$key   = refitune_get_encryption_key();
-	$nonce = random_bytes( SODIUM_CRYPTO_SECRETBOX_NONCEBYTES );
+	$refitune_key   = refitune_get_encryption_key();
+	$refitune_nonce = random_bytes( SODIUM_CRYPTO_SECRETBOX_NONCEBYTES );
 
-	$ciphertext = sodium_crypto_secretbox( $plaintext, $nonce, $key );
+	$refitune_ciphertext = sodium_crypto_secretbox( $refitune_plaintext, $refitune_nonce, $refitune_key );
 
-	// Nonce + ciphertext kombinálása és base64 kódolás.
-	return base64_encode( $nonce . $ciphertext );
+	// Combine nonce + ciphertext and base64 encode.
+	return base64_encode( $refitune_nonce . $refitune_ciphertext );
 }
 
 /**
- * Titkosított szöveg dekódolása.
+ * Decrypt an encrypted string.
  *
- * @param string $encrypted Base64-kódolt titkosított szöveg.
- * @return string Eredeti szöveg, vagy üres string hiba esetén.
+ * @param string $refitune_encrypted Base64-encoded encrypted text.
+ * @return string Original text, or empty string on failure.
  */
-function refitune_decrypt( string $encrypted ): string {
-	if ( '' === $encrypted ) {
+function refitune_decrypt( string $refitune_encrypted ): string {
+	if ( '' === $refitune_encrypted ) {
 		return '';
 	}
 
@@ -74,27 +73,27 @@ function refitune_decrypt( string $encrypted ): string {
 		return '';
 	}
 
-	$decoded = base64_decode( $encrypted, true );
-	if ( false === $decoded ) {
+	$refitune_decoded = base64_decode( $refitune_encrypted, true );
+	if ( false === $refitune_decoded ) {
 		return '';
 	}
 
-	$key        = refitune_get_encryption_key();
-	$nonce_size = SODIUM_CRYPTO_SECRETBOX_NONCEBYTES;
+	$refitune_key        = refitune_get_encryption_key();
+	$refitune_nonce_size = SODIUM_CRYPTO_SECRETBOX_NONCEBYTES;
 
-	if ( strlen( $decoded ) < $nonce_size ) {
+	if ( strlen( $refitune_decoded ) < $refitune_nonce_size ) {
 		return '';
 	}
 
-	$nonce      = substr( $decoded, 0, $nonce_size );
-	$ciphertext = substr( $decoded, $nonce_size );
+	$refitune_nonce      = substr( $refitune_decoded, 0, $refitune_nonce_size );
+	$refitune_ciphertext = substr( $refitune_decoded, $refitune_nonce_size );
 
-	$plaintext = sodium_crypto_secretbox_open( $ciphertext, $nonce, $key );
+	$refitune_plaintext = sodium_crypto_secretbox_open( $refitune_ciphertext, $refitune_nonce, $refitune_key );
 
-	if ( false === $plaintext ) {
-		// Dekódolás sikertelen (rossz kulcs, vagy korrupt adat).
+	if ( false === $refitune_plaintext ) {
+		// Decryption failed (wrong key or corrupted data).
 		return '';
 	}
 
-	return $plaintext;
+	return $refitune_plaintext;
 }

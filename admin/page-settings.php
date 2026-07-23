@@ -1,6 +1,6 @@
 <?php
 /**
- * Beállítások oldal tartalma.
+ * Settings page content.
  *
  * @package RefiTune
  */
@@ -9,12 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$refitune_settings = get_option( 'refitune_settings', array() );
-$features     = refitune_get_features();
-$all_roles    = wp_roles()->get_names();
+$refitune_settings = refitune_get_settings();
+$refitune_features     = refitune_get_features();
+$refitune_all_roles    = wp_roles()->get_names();
 
 // Category definitions.
-$categories = array(
+$refitune_categories = array(
 	'performance' => __( 'Performance', 'refitune' ),
 	'security'    => __( 'Security', 'refitune' ),
 	'visual'      => __( 'Visual', 'refitune' ),
@@ -22,22 +22,22 @@ $categories = array(
 	'misc'        => __( 'Miscellaneous', 'refitune' ),
 );
 
-// Features csoportosítása kategóriák szerint.
-$features_by_category = array();
-foreach ( $features as $key => $feature ) {
-	$cat = isset( $feature['category'] ) ? $feature['category'] : 'misc';
-	if ( ! isset( $features_by_category[ $cat ] ) ) {
-		$features_by_category[ $cat ] = array();
+// Group features by category.
+$refitune_features_by_category = array();
+foreach ( $refitune_features as $refitune_key => $refitune_feature ) {
+	$refitune_cat = isset( $refitune_feature['category'] ) ? $refitune_feature['category'] : 'misc';
+	if ( ! isset( $refitune_features_by_category[ $refitune_cat ] ) ) {
+		$refitune_features_by_category[ $refitune_cat ] = array();
 	}
-	$features_by_category[ $cat ][ $key ] = $feature;
+	$refitune_features_by_category[ $refitune_cat ][ $refitune_key ] = $refitune_feature;
 }
 ?>
 
 <div class="refitune-settings-nav">
-	<?php foreach ( $categories as $cat_key => $cat_label ) : ?>
-		<?php if ( isset( $features_by_category[ $cat_key ] ) ) : ?>
-			<a href="#refitune-category-<?php echo esc_attr( $cat_key ); ?>" class="refitune-nav-button">
-				<?php echo esc_html( $cat_label ); ?>
+	<?php foreach ( $refitune_categories as $refitune_cat_key => $refitune_cat_label ) : ?>
+		<?php if ( isset( $refitune_features_by_category[ $refitune_cat_key ] ) ) : ?>
+			<a href="#refitune-category-<?php echo esc_attr( $refitune_cat_key ); ?>" class="refitune-nav-button">
+				<?php echo esc_html( $refitune_cat_label ); ?>
 			</a>
 		<?php endif; ?>
 	<?php endforeach; ?>
@@ -47,34 +47,34 @@ foreach ( $features as $key => $feature ) {
 	<?php settings_fields( 'refitune_settings_group' ); ?>
 	<?php settings_errors( 'refitune_settings' ); ?>
 
-	<?php foreach ( $categories as $cat_key => $cat_label ) : ?>
-		<?php if ( ! isset( $features_by_category[ $cat_key ] ) ) {
+	<?php foreach ( $refitune_categories as $refitune_cat_key => $refitune_cat_label ) : ?>
+		<?php if ( ! isset( $refitune_features_by_category[ $refitune_cat_key ] ) ) {
 			continue;
 		} ?>
 
-		<h2 id="refitune-category-<?php echo esc_attr( $cat_key ); ?>" class="refitune-category-title">
-			<?php echo esc_html( $cat_label ); ?>
+		<h2 id="refitune-category-<?php echo esc_attr( $refitune_cat_key ); ?>" class="refitune-category-title">
+			<?php echo esc_html( $refitune_cat_label ); ?>
 		</h2>
 
 		<table class="form-table" role="presentation">
-			<?php foreach ( $features_by_category[ $cat_key ] as $key => $feature ) : ?>
+			<?php foreach ( $refitune_features_by_category[ $refitune_cat_key ] as $refitune_key => $refitune_feature ) : ?>
 			<?php
-			$type     = isset( $feature['type'] ) ? $feature['type'] : '';
-			$help_id  = str_replace( '_', '-', $key );
-			$help_url = admin_url( 'tools.php?page=refitune-help#help-' . $help_id );
+			$refitune_type     = isset( $refitune_feature['type'] ) ? $refitune_feature['type'] : '';
+			$refitune_help_id  = str_replace( '_', '-', $refitune_key );
+			$refitune_help_url = admin_url( 'tools.php?page=refitune-help#help-' . $refitune_help_id );
 			?>
 			<tr>
 				<th scope="row">
-					<?php echo esc_html( $feature['label'] ); ?>
-					<a href="<?php echo esc_url( $help_url ); ?>" class="refitune-help-icon" target="_blank" title="<?php esc_attr_e( 'Open Help', 'refitune' ); ?>">
+					<?php echo esc_html( $refitune_feature['label'] ); ?>
+					<a href="<?php echo esc_url( $refitune_help_url ); ?>" class="refitune-help-icon" target="_blank" title="<?php esc_attr_e( 'Open Help', 'refitune' ); ?>">
 						<span class="dashicons dashicons-info"></span>
 					</a>
 				</th>
 				<td>
 
-				<?php if ( 'email_smtp' === $type ) : ?>
+				<?php if ( 'email_smtp' === $refitune_type ) : ?>
 					<?php
-					$email_mode = isset( $refitune_settings['email_mode'] ) ? $refitune_settings['email_mode'] : 'default';
+					$refitune_email_mode = isset( $refitune_settings['email_mode'] ) ? $refitune_settings['email_mode'] : 'default';
 					?>
 
 			<div class="refitune-email-smtp-wrapper">
@@ -85,7 +85,7 @@ foreach ( $features as $key => $feature ) {
 							type="radio"
 							name="refitune_settings[email_mode]"
 							value="default"
-							<?php checked( $email_mode, 'default' ); ?>
+							<?php checked( $refitune_email_mode, 'default' ); ?>
 						/>
 						<strong><?php esc_html_e( 'WordPress default email sending (or other SMTP plugin)', 'refitune' ); ?></strong>
 					</label>
@@ -95,7 +95,7 @@ foreach ( $features as $key => $feature ) {
 							type="radio"
 							name="refitune_settings[email_mode]"
 							value="disable_all"
-							<?php checked( $email_mode, 'disable_all' ); ?>
+							<?php checked( $refitune_email_mode, 'disable_all' ); ?>
 						/>
 						<strong><?php esc_html_e( 'Completely disable email sending', 'refitune' ); ?></strong>
 					</label>
@@ -107,7 +107,7 @@ foreach ( $features as $key => $feature ) {
 							class="refitune-collapsible-checkbox"
 							name="refitune_settings[email_mode]"
 							value="smtp"
-							<?php checked( $email_mode, 'smtp' ); ?>
+							<?php checked( $refitune_email_mode, 'smtp' ); ?>
 						/>
 						<strong><?php esc_html_e( 'SMTP email sending', 'refitune' ); ?></strong>
 					</label>
@@ -149,36 +149,46 @@ foreach ( $features as $key => $feature ) {
 										<th scope="row"><label for="refitune_email_smtp_encryption"><?php esc_html_e( 'Encryption', 'refitune' ); ?></label></th>
 										<td>
 											<?php
-											$smtp_encryption = $refitune_settings['email_smtp_encryption'] ?? 'tls';
-											if ( 'disable' === $smtp_encryption ) {
-												$smtp_encryption = 'none';
+											$refitune_smtp_encryption = $refitune_settings['email_smtp_encryption'] ?? 'tls';
+											if ( 'disable' === $refitune_smtp_encryption ) {
+												$refitune_smtp_encryption = 'none';
 											}
-											$smtp_test_mode = ! empty( $refitune_settings['email_smtp_disable_for_test'] )
+											$refitune_smtp_test_mode = ! empty( $refitune_settings['email_smtp_disable_for_test'] )
 												|| ! empty( $refitune_settings['email_smtp_disable_ssl_verify'] )
 												|| 'disable' === ( $refitune_settings['email_smtp_encryption'] ?? '' );
 											?>
 											<select id="refitune_email_smtp_encryption" name="refitune_settings[email_smtp_encryption]">
-												<option value="tls" <?php selected( $smtp_encryption, 'tls' ); ?>>TLS</option>
-												<option value="ssl" <?php selected( $smtp_encryption, 'ssl' ); ?>>SSL</option>
-												<option value="none" <?php selected( $smtp_encryption, 'none' ); ?>><?php esc_html_e( 'None', 'refitune' ); ?></option>
+												<option value="tls" <?php selected( $refitune_smtp_encryption, 'tls' ); ?>>TLS</option>
+												<option value="ssl" <?php selected( $refitune_smtp_encryption, 'ssl' ); ?>>SSL</option>
+												<option value="none" <?php selected( $refitune_smtp_encryption, 'none' ); ?>><?php esc_html_e( 'None', 'refitune' ); ?></option>
 											</select>
 										</td>
 									</tr>
 									<tr>
 										<th scope="row"><?php esc_html_e( 'Test environment', 'refitune' ); ?></th>
 										<td>
+											<?php
+											$refitune_smtp_is_production = ( 'production' === wp_get_environment_type() );
+											?>
 											<label for="refitune_email_smtp_disable_for_test">
 												<input
 													type="checkbox"
 													id="refitune_email_smtp_disable_for_test"
 													name="refitune_settings[email_smtp_disable_for_test]"
 													value="1"
-													<?php checked( $smtp_test_mode ); ?>
+													<?php checked( $refitune_smtp_test_mode && ! $refitune_smtp_is_production ); ?>
+													<?php disabled( $refitune_smtp_is_production ); ?>
 												/>
 												<?php esc_html_e( 'Disable (only for test)', 'refitune' ); ?>
 											</label>
 											<p class="description">
-												<?php esc_html_e( 'Disables SMTP encryption and SSL certificate verification. Use only in local or staging environments.', 'refitune' ); ?>
+												<?php
+												if ( $refitune_smtp_is_production ) {
+													esc_html_e( 'Blocked in production: SMTP encryption and certificate verification cannot be disabled while WP_ENVIRONMENT_TYPE is production.', 'refitune' );
+												} else {
+													esc_html_e( 'Disables SMTP encryption and SSL certificate verification. Use only in local or staging environments.', 'refitune' );
+												}
+												?>
 											</p>
 										</td>
 									</tr>
@@ -252,7 +262,7 @@ foreach ( $features as $key => $feature ) {
 
 			</div>
 
-				<?php elseif ( 'login_customizer' === $type ) : ?>
+				<?php elseif ( 'login_customizer' === $refitune_type ) : ?>
 
 					<label class="refitune-collapsible-trigger">
 						<input
@@ -263,7 +273,7 @@ foreach ( $features as $key => $feature ) {
 							value="1"
 							<?php checked( ! empty( $refitune_settings['login_customizer_enabled'] ) ); ?>
 						/>
-						<strong><?php echo esc_html( $feature['description'] ); ?></strong>
+						<strong><?php echo esc_html( $refitune_feature['description'] ); ?></strong>
 					</label>
 
 					<div class="refitune-collapsible-content">
@@ -387,7 +397,7 @@ foreach ( $features as $key => $feature ) {
 					</div>
 				</div>
 
-		<?php elseif ( 'role_redirects' === $type ) : ?>
+		<?php elseif ( 'role_redirects' === $refitune_type ) : ?>
 
 			<label class="refitune-collapsible-trigger">
 				<input
@@ -398,7 +408,7 @@ foreach ( $features as $key => $feature ) {
 					value="1"
 					<?php checked( ! empty( $refitune_settings['role_redirects_enabled'] ) ); ?>
 				/>
-				<strong><?php echo esc_html( $feature['description'] ); ?></strong>
+				<strong><?php echo esc_html( $refitune_feature['description'] ); ?></strong>
 			</label>
 
 			<div class="refitune-collapsible-content">
@@ -413,35 +423,35 @@ foreach ( $features as $key => $feature ) {
 						</thead>
 						<tbody>
 							<?php
-							$login_redirects  = isset( $refitune_settings['role_redirects_login'] ) && is_array( $refitune_settings['role_redirects_login'] ) ? $refitune_settings['role_redirects_login'] : array();
-							$logout_redirects = isset( $refitune_settings['role_redirects_logout'] ) && is_array( $refitune_settings['role_redirects_logout'] ) ? $refitune_settings['role_redirects_logout'] : array();
+							$refitune_login_redirects  = isset( $refitune_settings['role_redirects_login'] ) && is_array( $refitune_settings['role_redirects_login'] ) ? $refitune_settings['role_redirects_login'] : array();
+							$refitune_logout_redirects = isset( $refitune_settings['role_redirects_logout'] ) && is_array( $refitune_settings['role_redirects_logout'] ) ? $refitune_settings['role_redirects_logout'] : array();
 
-							$site_url = home_url();
+							$refitune_site_url = home_url();
 
-							foreach ( $all_roles as $role_slug => $role_name ) :
-								// WooCommerce szerepkörök kiszűrése, ha a WooCommerce nem aktív.
-								if ( ! class_exists( 'WooCommerce' ) && in_array( $role_slug, array( 'customer', 'shop_manager' ), true ) ) {
+							foreach ( $refitune_all_roles as $refitune_role_slug => $refitune_role_name ) :
+								// Filter out WooCommerce roles when WooCommerce is not active.
+								if ( ! class_exists( 'WooCommerce' ) && in_array( $refitune_role_slug, array( 'customer', 'shop_manager' ), true ) ) {
 									continue;
 								}
 
-								$login_url_full  = isset( $login_redirects[ $role_slug ] ) ? $login_redirects[ $role_slug ] : '';
-								$logout_url_full = isset( $logout_redirects[ $role_slug ] ) ? $logout_redirects[ $role_slug ] : '';
+								$refitune_login_url_full  = isset( $refitune_login_redirects[ $refitune_role_slug ] ) ? $refitune_login_redirects[ $refitune_role_slug ] : '';
+								$refitune_logout_url_full = isset( $refitune_logout_redirects[ $refitune_role_slug ] ) ? $refitune_logout_redirects[ $refitune_role_slug ] : '';
 
-								// Teljes URL-ből relatív útvonal kinyerése (ha site_url-lel kezdődik).
-								$login_relative  = '' !== $login_url_full ? str_replace( $site_url, '', $login_url_full ) : '';
-								$logout_relative = '' !== $logout_url_full ? str_replace( $site_url, '', $logout_url_full ) : '';
+								// Extract the relative path from the full URL (when it starts with site_url).
+								$refitune_login_relative  = '' !== $refitune_login_url_full ? str_replace( $refitune_site_url, '', $refitune_login_url_full ) : '';
+								$refitune_logout_relative = '' !== $refitune_logout_url_full ? str_replace( $refitune_site_url, '', $refitune_logout_url_full ) : '';
 								?>
 								<tr>
 									<td class="refitune-role-name">
-										<strong><?php echo esc_html( translate_user_role( $role_name ) ); ?></strong>
+										<strong><?php echo esc_html( translate_user_role( $refitune_role_name ) ); ?></strong>
 									</td>
 									<td>
 										<div class="refitune-url-input-wrapper">
-											<span class="refitune-url-prefix"><?php echo esc_html( $site_url ); ?></span>
+											<span class="refitune-url-prefix"><?php echo esc_html( $refitune_site_url ); ?></span>
 											<input
 												type="text"
-												name="refitune_settings[role_redirects_login][<?php echo esc_attr( $role_slug ); ?>]"
-												value="<?php echo esc_attr( $login_relative ); ?>"
+												name="refitune_settings[role_redirects_login][<?php echo esc_attr( $refitune_role_slug ); ?>]"
+												value="<?php echo esc_attr( $refitune_login_relative ); ?>"
 												placeholder="/afterlogin/"
 												class="refitune-url-relative-input"
 											/>
@@ -449,11 +459,11 @@ foreach ( $features as $key => $feature ) {
 									</td>
 									<td>
 										<div class="refitune-url-input-wrapper">
-											<span class="refitune-url-prefix"><?php echo esc_html( $site_url ); ?></span>
+											<span class="refitune-url-prefix"><?php echo esc_html( $refitune_site_url ); ?></span>
 											<input
 												type="text"
-												name="refitune_settings[role_redirects_logout][<?php echo esc_attr( $role_slug ); ?>]"
-												value="<?php echo esc_attr( $logout_relative ); ?>"
+												name="refitune_settings[role_redirects_logout][<?php echo esc_attr( $refitune_role_slug ); ?>]"
+												value="<?php echo esc_attr( $refitune_logout_relative ); ?>"
 												placeholder="/afterlogout/"
 												class="refitune-url-relative-input"
 											/>
@@ -468,7 +478,7 @@ foreach ( $features as $key => $feature ) {
 				</div>
 			</div>
 
-				<?php elseif ( 'comments_control' === $type ) : ?>
+				<?php elseif ( 'comments_control' === $refitune_type ) : ?>
 
 					<div class="refitune-comments-control">
 						<label class="refitune-comments-main-label">
@@ -497,34 +507,34 @@ foreach ( $features as $key => $feature ) {
 						<?php endif; ?>
 					</div>
 
-			<?php elseif ( 'number_input' === $type ) : ?>
+			<?php elseif ( 'number_input' === $refitune_type ) : ?>
 				<?php
-				$ni_key         = $feature['option_key'];
-				$ni_val         = isset( $refitune_settings[ $ni_key ] ) ? $refitune_settings[ $ni_key ] : '';
-				$ni_min         = isset( $feature['min'] ) ? (int) $feature['min'] : 0;
+				$refitune_ni_key         = $refitune_feature['option_key'];
+				$refitune_ni_val         = isset( $refitune_settings[ $refitune_ni_key ] ) ? $refitune_settings[ $refitune_ni_key ] : '';
+				$refitune_ni_min         = isset( $refitune_feature['min'] ) ? (int) $refitune_feature['min'] : 0;
 				// Set placeholder based on field type.
-				if ( 'autosave_interval' === $ni_key ) {
-					$ni_placeholder = '120';
-				} elseif ( 'trash_auto_delete_days' === $ni_key ) {
-					$ni_placeholder = '30';
+				if ( 'autosave_interval' === $refitune_ni_key ) {
+					$refitune_ni_placeholder = '120';
+				} elseif ( 'trash_auto_delete_days' === $refitune_ni_key ) {
+					$refitune_ni_placeholder = '30';
 				} else {
-					$ni_placeholder = '5';
+					$refitune_ni_placeholder = '5';
 				}
 				?>
 				<div class="refitune-number-input-row">
 					<input
 						type="number"
-						id="refitune_<?php echo esc_attr( $key ); ?>"
-						name="refitune_settings[<?php echo esc_attr( $ni_key ); ?>]"
-						value="<?php echo esc_attr( $ni_val ); ?>"
-						min="<?php echo esc_attr( $ni_min ); ?>"
-						placeholder="<?php echo esc_attr( $ni_placeholder ); ?>"
+						id="refitune_<?php echo esc_attr( $refitune_key ); ?>"
+						name="refitune_settings[<?php echo esc_attr( $refitune_ni_key ); ?>]"
+						value="<?php echo esc_attr( $refitune_ni_val ); ?>"
+						min="<?php echo esc_attr( $refitune_ni_min ); ?>"
+						placeholder="<?php echo esc_attr( $refitune_ni_placeholder ); ?>"
 						class="small-text"
 					/>
-				<p class="description"><?php echo esc_html( $feature['description'] ); ?></p>
+				<p class="description"><?php echo esc_html( $refitune_feature['description'] ); ?></p>
 			</div>
 
-		<?php elseif ( 'auto_updates_control' === $type ) : ?>
+		<?php elseif ( 'auto_updates_control' === $refitune_type ) : ?>
 
 			<label class="refitune-collapsible-trigger">
 				<input
@@ -535,7 +545,7 @@ foreach ( $features as $key => $feature ) {
 					value="1"
 					<?php checked( ! empty( $refitune_settings['auto_updates_control'] ) ); ?>
 				/>
-				<strong><?php echo esc_html( $feature['description'] ); ?></strong>
+				<strong><?php echo esc_html( $refitune_feature['description'] ); ?></strong>
 			</label>
 
 			<div class="refitune-collapsible-content">
@@ -547,8 +557,8 @@ foreach ( $features as $key => $feature ) {
 
 					<div style="margin-bottom: 15px;">
 						<?php
-						$legacy_plugins_key    = refitune_legacy_plugins_auto_option_key();
-						$refitune_plugins_auto = $refitune_settings['refitune_plugins_auto'] ?? $refitune_settings[ $legacy_plugins_key ] ?? 'default';
+						$refitune_legacy_plugins_key    = refitune_legacy_plugins_auto_option_key();
+						$refitune_plugins_auto = $refitune_settings['refitune_plugins_auto'] ?? $refitune_settings[ $refitune_legacy_plugins_key ] ?? 'default';
 						?>
 						<label for="refitune_plugins_auto" style="display: inline-block; width: 200px; font-weight: 600;">
 							<?php esc_html_e( 'Plugins:', 'refitune' ); ?>
@@ -635,7 +645,7 @@ foreach ( $features as $key => $feature ) {
 				</div>
 			</div>
 
-		<?php elseif ( 'heartbeat_control' === $type ) : ?>
+		<?php elseif ( 'heartbeat_control' === $refitune_type ) : ?>
 
 			<label class="refitune-collapsible-trigger">
 				<input
@@ -646,7 +656,7 @@ foreach ( $features as $key => $feature ) {
 					value="1"
 					<?php checked( ! empty( $refitune_settings['heartbeat_control'] ) ); ?>
 				/>
-				<strong><?php echo esc_html( $feature['description'] ); ?></strong>
+				<strong><?php echo esc_html( $refitune_feature['description'] ); ?></strong>
 			</label>
 
 			<div class="refitune-collapsible-content">
@@ -697,7 +707,75 @@ foreach ( $features as $key => $feature ) {
 				</div>
 			</div>
 
-		<?php elseif ( 'email_controls' === $type ) : ?>
+		<?php elseif ( 'upload_webp_convert' === $refitune_type ) : ?>
+
+			<?php $refitune_feature_available = refitune_is_feature_available( $refitune_feature ); ?>
+
+			<label class="refitune-collapsible-trigger">
+				<input
+					type="checkbox"
+					id="refitune_upload_webp_convert"
+					class="refitune-collapsible-checkbox"
+					name="refitune_settings[upload_webp_convert]"
+					value="1"
+					<?php checked( $refitune_feature_available && ! empty( $refitune_settings['upload_webp_convert'] ) ); ?>
+					<?php disabled( ! $refitune_feature_available ); ?>
+				/>
+				<strong><?php echo esc_html( $refitune_feature['description'] ); ?></strong>
+				<?php if ( ! $refitune_feature_available && ! empty( $refitune_feature['unavailable_notice'] ) ) : ?>
+					<span class="refitune-feature-unavailable-notice"><?php echo esc_html( $refitune_feature['unavailable_notice'] ); ?></span>
+				<?php endif; ?>
+			</label>
+
+			<div class="refitune-collapsible-content">
+				<div class="refitune-upload-webp-wrapper">
+
+					<p class="description" style="margin-bottom: 15px;">
+						<?php esc_html_e( 'GIF, SVG, WebP, and AVIF uploads are not converted. Proportional scaling without cropping; smaller images are never upscaled.', 'refitune' ); ?>
+					</p>
+
+					<div style="margin-bottom: 15px;">
+						<label for="refitune_upload_webp_max_width" style="display: inline-block; width: 200px; font-weight: 600;">
+							<?php esc_html_e( 'Maximum width (px):', 'refitune' ); ?>
+						</label>
+						<input
+							type="number"
+							id="refitune_upload_webp_max_width"
+							name="refitune_settings[upload_webp_max_width]"
+							value="<?php echo esc_attr( (string) ( $refitune_settings['upload_webp_max_width'] ?? 0 ) ); ?>"
+							min="0"
+							max="10000"
+							step="1"
+							placeholder="1920"
+							class="small-text"
+							<?php disabled( ! $refitune_feature_available ); ?>
+						/>
+						<span class="description"><?php esc_html_e( '0 = no limit', 'refitune' ); ?></span>
+					</div>
+
+					<div style="margin-bottom: 15px;">
+						<label for="refitune_upload_webp_max_height" style="display: inline-block; width: 200px; font-weight: 600;">
+							<?php esc_html_e( 'Maximum height (px):', 'refitune' ); ?>
+						</label>
+						<input
+							type="number"
+							id="refitune_upload_webp_max_height"
+							name="refitune_settings[upload_webp_max_height]"
+							value="<?php echo esc_attr( (string) ( $refitune_settings['upload_webp_max_height'] ?? 0 ) ); ?>"
+							min="0"
+							max="10000"
+							step="1"
+							placeholder="1920"
+							class="small-text"
+							<?php disabled( ! $refitune_feature_available ); ?>
+						/>
+						<span class="description"><?php esc_html_e( '0 = no limit', 'refitune' ); ?></span>
+					</div>
+
+				</div>
+			</div>
+
+		<?php elseif ( 'email_controls' === $refitune_type ) : ?>
 
 			<div class="refitune-email-options">
 
@@ -755,7 +833,7 @@ foreach ( $features as $key => $feature ) {
 							value="1"
 							<?php checked( ! empty( $refitune_settings['email_disable_new_user'] ) ); ?>
 						/>
-						<?php esc_html_e( 'Disable new user registration – admin notification', 'refitune' ); ?>
+						<?php esc_html_e( 'Disable new user registration - admin notification', 'refitune' ); ?>
 					</label>
 
 					<label class="refitune-email-label">
@@ -767,7 +845,7 @@ foreach ( $features as $key => $feature ) {
 							value="1"
 							<?php checked( ! empty( $refitune_settings['email_disable_password_reset'] ) ); ?>
 						/>
-						<?php esc_html_e( 'Disable password reset – admin notification', 'refitune' ); ?>
+						<?php esc_html_e( 'Disable password reset - admin notification', 'refitune' ); ?>
 					</label>
 
 					<label class="refitune-email-label">
@@ -828,43 +906,43 @@ foreach ( $features as $key => $feature ) {
 
 			</div>
 
-				<?php elseif ( 'role_select' === $type ) : ?>
+				<?php elseif ( 'role_select' === $refitune_type ) : ?>
 						<?php
-						$option_key     = $feature['option_key'];
-						$selected_roles = isset( $refitune_settings[ $option_key ] ) ? (array) $refitune_settings[ $option_key ] : array();
-						$required_roles = isset( $feature['required_roles'] ) ? $feature['required_roles'] : array();
-						$enable_key     = isset( $feature['enable_key'] ) ? $feature['enable_key'] : null;
+						$refitune_option_key     = $refitune_feature['option_key'];
+						$refitune_selected_roles = isset( $refitune_settings[ $refitune_option_key ] ) ? (array) $refitune_settings[ $refitune_option_key ] : array();
+						$refitune_required_roles = isset( $refitune_feature['required_roles'] ) ? $refitune_feature['required_roles'] : array();
+						$refitune_enable_key     = isset( $refitune_feature['enable_key'] ) ? $refitune_feature['enable_key'] : null;
 						?>
 
-						<?php if ( $enable_key ) : ?>
+						<?php if ( $refitune_enable_key ) : ?>
 							<label class="refitune-collapsible-trigger">
 								<input
 									type="checkbox"
-									id="refitune_<?php echo esc_attr( $enable_key ); ?>"
+									id="refitune_<?php echo esc_attr( $refitune_enable_key ); ?>"
 									class="refitune-collapsible-checkbox"
-									name="refitune_settings[<?php echo esc_attr( $enable_key ); ?>]"
+									name="refitune_settings[<?php echo esc_attr( $refitune_enable_key ); ?>]"
 									value="1"
-									<?php checked( ! empty( $refitune_settings[ $enable_key ] ) ); ?>
+									<?php checked( ! empty( $refitune_settings[ $refitune_enable_key ] ) ); ?>
 								/>
-								<strong><?php echo esc_html( $feature['description'] ); ?></strong>
+								<strong><?php echo esc_html( $refitune_feature['description'] ); ?></strong>
 							</label>
 							<div class="refitune-collapsible-content">
 								<div class="refitune-role-list">
-									<?php foreach ( $all_roles as $role_slug => $role_name ) : ?>
+									<?php foreach ( $refitune_all_roles as $refitune_role_slug => $refitune_role_name ) : ?>
 										<?php
-										$is_required = in_array( $role_slug, $required_roles, true );
-										$is_checked  = $is_required || in_array( $role_slug, $selected_roles, true );
+										$refitune_is_required = in_array( $refitune_role_slug, $refitune_required_roles, true );
+										$refitune_is_checked  = $refitune_is_required || in_array( $refitune_role_slug, $refitune_selected_roles, true );
 										?>
 										<label class="refitune-role-label">
 											<input
 												type="checkbox"
-												name="refitune_settings[<?php echo esc_attr( $option_key ); ?>][]"
-												value="<?php echo esc_attr( $role_slug ); ?>"
-												<?php checked( $is_checked ); ?>
-												<?php disabled( $is_required ); ?>
+												name="refitune_settings[<?php echo esc_attr( $refitune_option_key ); ?>][]"
+												value="<?php echo esc_attr( $refitune_role_slug ); ?>"
+												<?php checked( $refitune_is_checked ); ?>
+												<?php disabled( $refitune_is_required ); ?>
 											/>
-											<?php echo esc_html( translate_user_role( $role_name ) ); ?>
-											<?php if ( $is_required ) : ?>
+											<?php echo esc_html( translate_user_role( $refitune_role_name ) ); ?>
+											<?php if ( $refitune_is_required ) : ?>
 												<span class="refitune-role-required"><?php esc_html_e( '(required)', 'refitune' ); ?></span>
 											<?php endif; ?>
 										</label>
@@ -872,23 +950,23 @@ foreach ( $features as $key => $feature ) {
 								</div>
 							</div>
 						<?php else : ?>
-							<p class="description" style="margin: 0 0 8px;"><?php echo esc_html( $feature['description'] ); ?></p>
+							<p class="description" style="margin: 0 0 8px;"><?php echo esc_html( $refitune_feature['description'] ); ?></p>
 							<div class="refitune-role-list">
-								<?php foreach ( $all_roles as $role_slug => $role_name ) : ?>
+								<?php foreach ( $refitune_all_roles as $refitune_role_slug => $refitune_role_name ) : ?>
 									<?php
-									$is_required = in_array( $role_slug, $required_roles, true );
-									$is_checked  = $is_required || in_array( $role_slug, $selected_roles, true );
+									$refitune_is_required = in_array( $refitune_role_slug, $refitune_required_roles, true );
+									$refitune_is_checked  = $refitune_is_required || in_array( $refitune_role_slug, $refitune_selected_roles, true );
 									?>
 									<label class="refitune-role-label">
 										<input
 											type="checkbox"
-											name="refitune_settings[<?php echo esc_attr( $option_key ); ?>][]"
-											value="<?php echo esc_attr( $role_slug ); ?>"
-											<?php checked( $is_checked ); ?>
-											<?php disabled( $is_required ); ?>
+											name="refitune_settings[<?php echo esc_attr( $refitune_option_key ); ?>][]"
+											value="<?php echo esc_attr( $refitune_role_slug ); ?>"
+											<?php checked( $refitune_is_checked ); ?>
+											<?php disabled( $refitune_is_required ); ?>
 										/>
-										<?php echo esc_html( translate_user_role( $role_name ) ); ?>
-										<?php if ( $is_required ) : ?>
+										<?php echo esc_html( translate_user_role( $refitune_role_name ) ); ?>
+										<?php if ( $refitune_is_required ) : ?>
 											<span class="refitune-role-required"><?php esc_html_e( '(required)', 'refitune' ); ?></span>
 										<?php endif; ?>
 									</label>
@@ -896,26 +974,26 @@ foreach ( $features as $key => $feature ) {
 					</div>
 				<?php endif; ?>
 
-		<?php elseif ( 'maintenance_mode' === $type ) : ?>
+		<?php elseif ( 'maintenance_mode' === $refitune_type ) : ?>
 			<?php
-			$option_key     = $feature['option_key'];
-			$selected_roles = isset( $refitune_settings[ $option_key ] ) ? (array) $refitune_settings[ $option_key ] : array();
-			$required_roles = isset( $feature['required_roles'] ) ? $feature['required_roles'] : array();
-			$enable_key     = $feature['enable_key'];
-			$message_key    = $feature['message_key'];
-			$message_value  = isset( $refitune_settings[ $message_key ] ) ? $refitune_settings[ $message_key ] : '';
+			$refitune_option_key     = $refitune_feature['option_key'];
+			$refitune_selected_roles = isset( $refitune_settings[ $refitune_option_key ] ) ? (array) $refitune_settings[ $refitune_option_key ] : array();
+			$refitune_required_roles = isset( $refitune_feature['required_roles'] ) ? $refitune_feature['required_roles'] : array();
+			$refitune_enable_key     = $refitune_feature['enable_key'];
+			$refitune_message_key    = $refitune_feature['message_key'];
+			$refitune_message_value  = isset( $refitune_settings[ $refitune_message_key ] ) ? $refitune_settings[ $refitune_message_key ] : '';
 			?>
 
 			<label class="refitune-collapsible-trigger">
 				<input
 					type="checkbox"
-					id="refitune_<?php echo esc_attr( $enable_key ); ?>"
+					id="refitune_<?php echo esc_attr( $refitune_enable_key ); ?>"
 					class="refitune-collapsible-checkbox"
-					name="refitune_settings[<?php echo esc_attr( $enable_key ); ?>]"
+					name="refitune_settings[<?php echo esc_attr( $refitune_enable_key ); ?>]"
 					value="1"
-					<?php checked( ! empty( $refitune_settings[ $enable_key ] ) ); ?>
+					<?php checked( ! empty( $refitune_settings[ $refitune_enable_key ] ) ); ?>
 				/>
-				<strong><?php echo esc_html( $feature['description'] ); ?></strong>
+				<strong><?php echo esc_html( $refitune_feature['description'] ); ?></strong>
 			</label>
 
 			<div class="refitune-collapsible-content">
@@ -923,21 +1001,21 @@ foreach ( $features as $key => $feature ) {
 					
 					<!-- Szerepkör lista -->
 					<div class="refitune-role-list">
-						<?php foreach ( $all_roles as $role_slug => $role_name ) : ?>
+						<?php foreach ( $refitune_all_roles as $refitune_role_slug => $refitune_role_name ) : ?>
 							<?php
-							$is_required = in_array( $role_slug, $required_roles, true );
-							$is_checked  = $is_required || in_array( $role_slug, $selected_roles, true );
+							$refitune_is_required = in_array( $refitune_role_slug, $refitune_required_roles, true );
+							$refitune_is_checked  = $refitune_is_required || in_array( $refitune_role_slug, $refitune_selected_roles, true );
 							?>
 							<label class="refitune-role-label">
 								<input
 									type="checkbox"
-									name="refitune_settings[<?php echo esc_attr( $option_key ); ?>][]"
-									value="<?php echo esc_attr( $role_slug ); ?>"
-									<?php checked( $is_checked ); ?>
-									<?php disabled( $is_required ); ?>
+									name="refitune_settings[<?php echo esc_attr( $refitune_option_key ); ?>][]"
+									value="<?php echo esc_attr( $refitune_role_slug ); ?>"
+									<?php checked( $refitune_is_checked ); ?>
+									<?php disabled( $refitune_is_required ); ?>
 								/>
-								<?php echo esc_html( translate_user_role( $role_name ) ); ?>
-								<?php if ( $is_required ) : ?>
+								<?php echo esc_html( translate_user_role( $refitune_role_name ) ); ?>
+								<?php if ( $refitune_is_required ) : ?>
 									<span class="refitune-role-required"><?php esc_html_e( '(required)', 'refitune' ); ?></span>
 								<?php endif; ?>
 							</label>
@@ -946,16 +1024,16 @@ foreach ( $features as $key => $feature ) {
 
 					<!-- Üzenet mező -->
 					<div class="refitune-maintenance-message">
-						<label for="refitune_<?php echo esc_attr( $message_key ); ?>">
+						<label for="refitune_<?php echo esc_attr( $refitune_message_key ); ?>">
 							<strong><?php esc_html_e( 'Visitor Message:', 'refitune' ); ?></strong>
 						</label>
 						<textarea
-							id="refitune_<?php echo esc_attr( $message_key ); ?>"
-							name="refitune_settings[<?php echo esc_attr( $message_key ); ?>]"
+							id="refitune_<?php echo esc_attr( $refitune_message_key ); ?>"
+							name="refitune_settings[<?php echo esc_attr( $refitune_message_key ); ?>]"
 							rows="4"
 							class="large-text refitune-maintenance-textarea"
 							placeholder="<?php esc_attr_e( 'This site is temporarily under maintenance. Please check back soon!', 'refitune' ); ?>"
-						><?php echo esc_textarea( $message_value ); ?></textarea>
+						><?php echo esc_textarea( $refitune_message_value ); ?></textarea>
 						<p class="description">
 							<?php esc_html_e( 'This message will be displayed to visitors when maintenance mode is active. Leave empty for default message.', 'refitune' ); ?>
 						</p>
@@ -964,7 +1042,7 @@ foreach ( $features as $key => $feature ) {
 				</div>
 			</div>
 
-		<?php elseif ( 'login_limit' === $type ) : ?>
+		<?php elseif ( 'login_limit' === $refitune_type ) : ?>
 
 				<label class="refitune-collapsible-trigger">
 					<input
@@ -975,7 +1053,7 @@ foreach ( $features as $key => $feature ) {
 						value="1"
 						<?php checked( ! empty( $refitune_settings['login_limit_enabled'] ) ); ?>
 					/>
-					<strong><?php echo esc_html( $feature['description'] ); ?></strong>
+					<strong><?php echo esc_html( $refitune_feature['description'] ); ?></strong>
 				</label>
 
 				<div class="refitune-collapsible-content">
@@ -993,7 +1071,7 @@ foreach ( $features as $key => $feature ) {
 										<span><?php esc_html_e( 'Block "admin" Username Instantly', 'refitune' ); ?></span>
 									</label>
 									<p class="description" style="margin: 8px 0 0 28px;">
-										<?php esc_html_e( 'Immediately blocks the IP address for 1 hour on the first login attempt with username "admin". Recommended for extra security.', 'refitune' ); ?>
+										<?php esc_html_e( 'Immediately blocks the IP address for the configured lockout duration on the first login attempt with username "admin". Recommended for extra security.', 'refitune' ); ?>
 									</p>
 								</th>
 							</tr>
@@ -1049,12 +1127,12 @@ foreach ( $features as $key => $feature ) {
 									<textarea
 										id="refitune_login_limit_whitelist_ips"
 										name="refitune_settings[login_limit_whitelist_ips]"
-										rows="5"
+										rows="6"
 										class="large-text code"
-										placeholder="<?php esc_attr_e( '192.168.1.1', 'refitune' ); ?>"
+										placeholder="<?php echo esc_attr( "203.0.113.10\n198.51.100.25" ); ?>"
 									><?php echo esc_textarea( $refitune_settings['login_limit_whitelist_ips'] ?? '' ); ?></textarea>
 									<p class="description">
-										<?php esc_html_e( 'IP addresses exempt from the limit (one IP per line). For example, if you have a static IP.', 'refitune' ); ?>
+										<?php esc_html_e( 'One IPv4 or IPv6 address per line. Whitelisted clients skip attempt counters and lockouts. Use this for a static office IP or trusted egress. Behind a CDN or shared NAT, many visitors share one IP: whitelist only addresses you control, and never paste untrusted proxy headers here.', 'refitune' ); ?>
 									</p>
 								</td>
 							</tr>
@@ -1062,31 +1140,31 @@ foreach ( $features as $key => $feature ) {
 					</div>
 				</div>
 
-				<?php elseif ( isset( $feature['sub_options'] ) ) : ?>
+				<?php elseif ( isset( $refitune_feature['sub_options'] ) ) : ?>
 
 						<div class="refitune-feature-group">
 							<label class="refitune-feature-group-all">
 								<input
 									type="checkbox"
-									id="refitune_<?php echo esc_attr( $key ); ?>_all"
+									id="refitune_<?php echo esc_attr( $refitune_key ); ?>_all"
 									class="refitune-group-all"
-									data-group="<?php echo esc_attr( $key ); ?>"
+									data-group="<?php echo esc_attr( $refitune_key ); ?>"
 								/>
 								<strong><?php esc_html_e( 'Disable All', 'refitune' ); ?></strong>
 							</label>
 
 							<div class="refitune-sub-options">
-								<?php foreach ( $feature['sub_options'] as $sub_key => $sub_label ) : ?>
+								<?php foreach ( $refitune_feature['sub_options'] as $refitune_sub_key => $refitune_sub_label ) : ?>
 									<label class="refitune-sub-option-label">
 										<input
 											type="checkbox"
-											name="refitune_settings[<?php echo esc_attr( $sub_key ); ?>]"
+											name="refitune_settings[<?php echo esc_attr( $refitune_sub_key ); ?>]"
 											value="1"
 											class="refitune-group-item"
-											data-group="<?php echo esc_attr( $key ); ?>"
-											<?php checked( ! empty( $refitune_settings[ $sub_key ] ) ); ?>
+											data-group="<?php echo esc_attr( $refitune_key ); ?>"
+											<?php checked( ! empty( $refitune_settings[ $refitune_sub_key ] ) ); ?>
 										/>
-										<?php echo esc_html( $sub_label ); ?>
+										<?php echo esc_html( $refitune_sub_label ); ?>
 									</label>
 								<?php endforeach; ?>
 							</div>
@@ -1095,20 +1173,20 @@ foreach ( $features as $key => $feature ) {
 					<?php else : ?>
 
 						<?php
-						$feature_available = refitune_is_feature_available( $feature );
+						$refitune_feature_available = refitune_is_feature_available( $refitune_feature );
 						?>
-						<label for="refitune_<?php echo esc_attr( $key ); ?>">
+						<label for="refitune_<?php echo esc_attr( $refitune_key ); ?>">
 							<input
 								type="checkbox"
-								id="refitune_<?php echo esc_attr( $key ); ?>"
-								name="refitune_settings[<?php echo esc_attr( $key ); ?>]"
+								id="refitune_<?php echo esc_attr( $refitune_key ); ?>"
+								name="refitune_settings[<?php echo esc_attr( $refitune_key ); ?>]"
 								value="1"
-								<?php checked( $feature_available && ! empty( $refitune_settings[ $key ] ) ); ?>
-								<?php disabled( ! $feature_available ); ?>
+								<?php checked( $refitune_feature_available && ! empty( $refitune_settings[ $refitune_key ] ) ); ?>
+								<?php disabled( ! $refitune_feature_available ); ?>
 							/>
-							<?php echo esc_html( $feature['description'] ); ?>
-							<?php if ( ! $feature_available && ! empty( $feature['unavailable_notice'] ) ) : ?>
-								<span class="refitune-feature-unavailable-notice"><?php echo esc_html( $feature['unavailable_notice'] ); ?></span>
+							<?php echo esc_html( $refitune_feature['description'] ); ?>
+							<?php if ( ! $refitune_feature_available && ! empty( $refitune_feature['unavailable_notice'] ) ) : ?>
+								<span class="refitune-feature-unavailable-notice"><?php echo esc_html( $refitune_feature['unavailable_notice'] ); ?></span>
 							<?php endif; ?>
 						</label>
 

@@ -1,125 +1,130 @@
 === RefiTune - Site refiner toolkit ===
 Contributors: rtomo, rotistudio
 Tags: performance, security, tweaks, optimization, toolkit
-Requires at least: 5.9
+Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.2.1
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://rotistudio.com/contact/
 
-Take control of WordPress with smart performance tweaks, security enhancements, and usability improvements. RefiTune is all in one toolkit.
+Take control of WordPress with smart performance tweaks, security enhancements, and usability improvements. RefiTune is an all-in-one toolkit.
 
 == Description ==
 
 Hungarian: [Magyar nyelvű bővítmény leírás](https://rotistudio.hu/bovitmenyek/refitune-eszkoztar-wordpress-finomhangolashoz/)
 
-**RefiTune - Site refiner toolkit** is your Swiss Army knife for WordPress optimization. Whether you're cleaning up unnecessary code, securing your login page, or customizing the admin experience, this plugin puts the power in your hands.
+**RefiTune - Site refiner toolkit** is a modular Swiss Army knife for WordPress. Clean up unnecessary front-end code, harden login and uploads, tune Heartbeat and updates, or brand wp-login - each module is opt-in.
 
-Each feature can be enabled or disabled individually with just one click — no coding required. A clean, organized dashboard shows you exactly what's active and what's not.
+Enable or disable features individually. A clean dashboard shows what is active. In-plugin Help pages document behaviour, trade-offs, and requirements.
 
-**What's Inside? (33 Modules)**
+**What's Inside? (35 Modules)**
 
 **Performance:**
-* **Header Cleanup** – Strip out unnecessary wp_head bloat for faster loading.
-* **Feed Management** – Take control of your RSS/Atom feeds.
-* **Disable Emoji** – Remove WordPress emoji scripts.
-* **Disable jQuery Migrate** – Drop legacy jquery-migrate for leaner pages.
-* **Disable oEmbed** – Stop automatic embedding of YouTube, Vimeo, Twitter, and other external URLs.
-* **Remove Asset Version Query Strings** – Strip ?ver= from frontend CSS and JS URLs.
-* **Post Revisions Limit** – Keep your database tidy by limiting stored revisions.
-* **Auto-save Interval** – Control how often WordPress auto-saves your work.
-* **Trash Auto-Delete** – Set how long items stay in trash before permanent deletion.
-* **Heartbeat API Control** – Tune or disable Heartbeat in admin, frontend, and post editor.
+* **Header Cleanup** - Strip unnecessary wp_head output for leaner pages.
+* **Feed Management** - Control RSS/Atom feed link tags in the document head.
+* **Disable Emoji** - Remove WordPress emoji scripts and styles.
+* **Disable jQuery Migrate** - Drop legacy jquery-migrate when your stack does not need it.
+* **Disable oEmbed** - Stop automatic embeds from pasted YouTube, Vimeo, Twitter/X, and similar URLs.
+* **Remove Asset Version Query Strings** - Strip `?ver=` from front-end CSS/JS (can break cache busting; prefer CDN purge or hashed filenames).
+* **Post Revisions Limit** - Cap stored revisions per post.
+* **Auto-save Interval** - Change how often the editor auto-saves.
+* **Trash Auto-Delete** - Set trash retention; expired items are removed in batches so large queues stay memory-safe.
+* **Convert Uploads to WebP** - Convert JPEG/PNG to WebP on upload, optional max size resize, then remove the original (GD or Imagick with WebP; uses unique filenames and refuses unsafe overwrites).
+* **Heartbeat API Control** - Tune or disable Heartbeat in admin, front end, and the post editor.
 
 **Security:**
-* **Disable XML-RPC** – Lock down the XML-RPC interface completely.
-* **Disable Trackback/Pingback** – Stop spam by disabling trackbacks and pingbacks.
-* **Disable File Editor** – Hide the built-in code editor for extra security.
-* **Automatic Updates Control** – Global tri-state control for automatic plugin, theme, translation, and core (minor, major, development) updates; reschedule update checks (WordPress default twice daily, daily, or every 3/7/14 days). Respects `AUTOMATIC_UPDATER_DISABLED` and `WP_AUTO_UPDATE_CORE` in wp-config.php when defined.
-* **Login Error Messages** – Make login errors generic to prevent username fishing.
-* **Restrict Admin Access** – Choose which roles can access wp-admin.
-* **REST API Restrictions** – Smart restrictions for sensitive REST API endpoints.
-* **Login Limit** – Block brute-force attacks by limiting failed login attempts.
-* **Verified Upload** – Block disguised uploads such as double extensions, MIME mismatches, and embedded script markers.
+* **Hide Generator Tags** - Remove WordPress (and WooCommerce, when active) version meta tags.
+* **Disable XML-RPC** - Respond to XML-RPC with 404 and remove RSD discovery.
+* **Disable Trackback/Pingback** - Close pings and strip pingback methods/headers.
+* **Disable File Editor** - Set `DISALLOW_FILE_EDIT` so theme/plugin editors stay off.
+* **Automatic Updates Control** - Tri-state plugin, theme, translation, and core updates; reschedule update checks. Respects `AUTOMATIC_UPDATER_DISABLED` and `WP_AUTO_UPDATE_CORE` when defined.
+* **Login Error Messages** - Generic login errors to reduce username enumeration.
+* **Restrict Admin Access** - Choose which roles may open wp-admin UI. Users with `manage_options` always keep access. Front-end `admin-ajax.php` is intentionally not blocked.
+* **REST API Restrictions** - Limit selected core REST routes to users with `manage_options`.
+* **Login Limit** - Rate-limit failed logins by IP and IP+username pair (`REMOTE_ADDR` only). Optional IP whitelist (one address per line). Covers `wp-login.php` and other `wp_signon()` paths (including WooCommerce).
+* **Verified Upload** - Block disguised uploads: double extensions, MIME/magic mismatches, and script markers.
 
 **Visual:**
-* **Hide Admin Bar** – Selectively hide the admin bar for specific roles.
-* **Block Visibility (Mobile)** – Show/hide Gutenberg blocks on mobile or desktop.
-* **Login Page Customization** – Brand your wp-login.php with custom logo and colors.
+* **Hide Admin Bar** - Hide the admin bar for selected roles.
+* **Block Visibility (Mobile)** - Show/hide blocks by device via `wp_is_mobile()`; sends `Vary: User-Agent` (full-page caches must honour it).
+* **Login Page Customization** - Brand wp-login.php with logo and colours.
 
 **Email:**
-* **Email Notifications** – Fine-tune or disable WordPress system emails.
-* **Email sending** – Configure external SMTP or disable all emails completely.
+* **Email Notifications** - Disable or redirect selected WordPress system emails.
+* **Email sending** - SMTP with encrypted password storage, or disable all site emails. In production, disabling TLS/certificate verification is blocked.
 
 **Miscellaneous:**
-* **Disable Comments** – Turn off comments site-wide (with WooCommerce review support).
-* **External Links in New Window** – Auto-open external links in new tabs (with proper rel attributes).
-* **Enable Page Excerpt** – Enable excerpt fields for pages (not just posts).
-* **Clean Upload Filenames** – Sanitize image and document filenames on upload (accents, spaces, special characters).
-* **SVG Upload** – Allow SVG uploads with built-in security filtering.
-* **AVIF Upload** – Support modern AVIF image format uploads.
-* **Role Redirects** – Send users to custom pages after login or logout based on their role.
-* **Maintenance Mode** – Temporarily block visitors while you work on the site.
-* **Dynamic Year Shortcodes** – Display the current year via `[refi-year]` or duration via `[refi-year from="2006"]` shortcodes.
+* **Disable Comments** - Site-wide comments off (optional WooCommerce review keep).
+* **External Links in New Window** - Open external links in a new tab with safe `rel` attributes.
+* **Enable Page Excerpt** - Excerpt support for pages.
+* **Clean Upload Filenames** - Sanitize upload filenames (accents, spaces, special characters).
+* **SVG Upload** - Role-gated SVG uploads with allowlist-based sanitization (XXE-safe parse).
+* **AVIF Upload** - Role-gated AVIF uploads (full core AVIF support needs WordPress 6.5+).
+* **Role Redirects** - Per-role login and logout redirect URLs.
+* **Maintenance Mode** - 503 maintenance page for guests; chosen roles keep access. Admin, AJAX, and cron stay available so staff can work.
+* **Dynamic Year Shortcodes** - `[refi-year]` and `[refi-year from="2006"]`.
 
-Do you have other plugins? Yes, check my plugins website: [rotistudio.com](https://rotistudio.com/)
-Where can we learn more about your work? Check my personal website there: [rottenbacher.hu](https://rottenbacher.hu/)
-Plugin GitHub repository: [github.com/rotisoft/refitune](https://github.com/rotisoft/refitune)
+More plugins: [rotistudio.com](https://rotistudio.com/)
+Author site: [rottenbacher.hu](https://rottenbacher.hu/)
+GitHub: [github.com/rotisoft/refitune](https://github.com/rotisoft/refitune)
 
 == Installation ==
 
-**Getting Started is Easy:**
-
-1. Upload the plugin to `/wp-content/plugins/refitune` (or install directly from WordPress).
-2. Activate it through the 'Plugins' menu.
-3. Head to **Tools > RefiTune - Site refiner toolkit** and start enabling features.
-4. That's it! Each feature has helpful descriptions and a detailed Help page.
+1. Upload to `/wp-content/plugins/refitune` (or install from WordPress.org).
+2. Activate under Plugins.
+3. Open **Tools > RefiTune - Site refiner toolkit** and enable the modules you need.
+4. Use the Help tab for per-feature documentation.
 
 == Translations ==
 
-RefiTune - Site refiner toolkit speaks your language! Currently available in:
-* 🇬🇧 English (default — source strings in code and `refitune.pot`)
-* 🇭🇺 Hungarian (Magyar) — `refitune-hu_HU.po`
+* English (default - source strings in code and `refitune.pot`)
+* Hungarian (Magyar) - `refitune-hu_HU.po` (compile to `.mo` for WordPress to load)
 
-The plugin is fully translation-ready. Want to contribute a translation? Language files go in `/wp-content/plugins/refitune/languages/`. Compile `.po` to `.mo` (e.g. with Poedit, Loco Translate, or `wp i18n make-mo`) for WordPress to load translations.
-
-Text Domain: `refitune`
+Contribute translations under `/wp-content/plugins/refitune/languages/`. Text Domain: `refitune`.
 
 == Frequently Asked Questions ==
 
 = Will this plugin slow down my site? =
 
-Nope! RefiTune is designed to *speed up* your site by removing bloat. Most features actively improve performance.
+No. Most modules remove unused front-end work or add checks only on login/upload. Features are opt-in.
 
 = Is it safe to disable jQuery Migrate? =
 
-Only if you're sure your theme and plugins work with the latest jQuery. When in doubt, leave it off and test first.
+Only if your theme and plugins work with current jQuery. Test first; leave it off when unsure.
 
 = What happens if I disable XML-RPC? =
 
-Mobile apps and some plugins (like older Jetpack features) might stop working. If you're using the WordPress mobile app or remote publishing tools, keep XML-RPC enabled.
+The WordPress mobile app, Jetpack sync, and other remote clients that need XML-RPC may stop working.
 
-= Does the Login Limit work with email addresses? =
+= How does Login Limit identify clients? =
 
-Yep! WordPress lets you log in with either username or email, and our login limiter tracks both.
+It uses `REMOTE_ADDR` only (not spoofable `X-Forwarded-For`). Failed attempts are counted per IP and per IP+username pair. Add static office or trusted egress IPs to the whitelist (one per line). Behind a CDN or shared NAT, many visitors share one address - whitelist only IPs you control.
 
-= Can I hide wp-admin from certain user roles? =
+= Does Login Limit work with email logins and WooCommerce? =
 
-Absolutely. Use "Admin Access Restrictions" to choose which roles can access wp-admin. Administrators always have access (you can't lock yourself out).
+Yes. Email logins are canonicalized to usernames where possible, and lockouts are checked on `authenticate` so `wp_signon()` paths (including WooCommerce) are covered.
+
+= Can I hide wp-admin from certain roles? =
+
+Yes. Restrict Admin Access limits the wp-admin UI by role. Anyone with `manage_options` always retains access. AJAX is not blocked so front-end `admin-ajax.php` callbacks keep working; each handler must still check capabilities.
 
 = What's Maintenance Mode good for? =
 
-Perfect for when you're making updates and don't want visitors seeing broken pages. You choose which roles can still access the site while everyone else sees a clean maintenance message. SEO-friendly too (returns 503 status).
+Short downtime windows. Guests get a 503 page; selected roles still browse. Admin, AJAX, and cron remain available so developers can test plugins that need those endpoints.
 
 = Can wp-config.php override Automatic Updates Control? =
 
-Yes, for background updates. If `AUTOMATIC_UPDATER_DISABLED` is set to `true`, WordPress disables all automatic background updates site-wide; RefiTune cannot enable them until that constant is removed or set to `false`. If `WP_AUTO_UPDATE_CORE` is defined, it overrides RefiTune core minor/major/development settings. Update *check* frequency (how often WordPress looks for new versions) is controlled by RefiTune cron scheduling and is not overridden by those constants. An admin notice appears when conflicting constants are detected.
+Yes. `AUTOMATIC_UPDATER_DISABLED` and `WP_AUTO_UPDATE_CORE` override RefiTune background update settings when defined. Update *check* frequency still follows RefiTune cron scheduling.
 
 = What does "Enable all" mean for plugins and themes? =
 
-It forces automatic updates for every plugin or theme and overrides per-item toggles on the Updates screen. Use with care on production sites. "Disable all" blocks automatic updates for that type. "WordPress default" leaves native behavior unchanged.
+It forces automatic updates for every plugin or theme and overrides per-item toggles on the Updates screen. "Disable all" blocks them; "WordPress default" leaves native behaviour unchanged.
+
+= Is SMTP test mode safe on production? =
+
+No. While `WP_ENVIRONMENT_TYPE` is `production`, RefiTune will not run without encryption/certificate verification, and the test-mode checkbox cannot be enabled. Set the environment type correctly on live sites.
 
 == Screenshots ==
 
@@ -129,40 +134,57 @@ It forces automatic updates for every plugin or theme and overrides per-item tog
 
 == Changelog ==
 
+= 1.3.0 =
+* New: Convert Uploads to WebP (JPEG/PNG), optional resize, original removal when conversion succeeds
+* Security: WebP conversion uses unique filenames and refuses unsafe overwrites; source deleted only after a valid WebP
+* Security: Login Limit uses IP and IP+username pair lockouts (no global per-user lockout); atomic counters; `REMOTE_ADDR` only; IP whitelist (one per line)
+* Security: Restrict Admin Access always allows `manage_options`; documents intentional AJAX skip for front-end callbacks
+* Security: SVG sanitizer limits (size/nodes/depth), safer href/style rules; SMTP fail-closed in production for test mode
+* Security: Multisite network upload MIME settings respected for SVG, AVIF, and WebP conversion
+* Fix: WooCommerce-aware load order for comment and head cleanup modules
+* Fix: Trash auto-delete runs in batches and clears schedule on deactivate
+* Fix: Block Visibility sends `Vary: User-Agent`; asset `?ver=` removal warnings clarified
+* Fix: Uninstall cleanup per site on multisite; removes leftover login-limit transients when data deletion is enabled
+* Docs: Help and settings copy for Login Limit, Admin Access, WebP, AVIF, REST labels; Hungarian `.po` updated
+* Docs: Replaced typographic en/em dashes with ASCII hyphens in admin UI strings, Help text, and language files (`.pot` / `.po`)
+
+= 1.2.2 =
+* Security: stricter REST restrictions, SVG sanitizer hardening, admin capability checks
+* Fix: Maintenance Mode REST 503; update-check cron restore; Heartbeat/login-limit/email/upload fixes
+* Performance: update-check reschedule limited to admin/cron; auto-updates notice scoped
+* Code quality: shared settings helper, explicit hook priorities; minimum WordPress 6.2
+
 = 1.2.1 =
-* Fix: Verified Upload no longer blocks legitimate JPEG and PNG uploads (e.g. JPEG saved with a .png extension); script-marker scanning is skipped for verified binary raster images to avoid false positives
+* Fix: Verified Upload no longer blocks legitimate JPEG/PNG uploads
 
 = 1.2.0 =
-* New: Automatic Updates Control
-* New: Remove Asset Version Query Strings
-* New: Verified Upload
-* New: Clean Upload Filenames
-* New: Disable oEmbed
-* Fix: Plugin Check compatibility
-* Fix: Media Library and SVG sanitization function conflict
+* New: Automatic Updates Control, Remove Asset Version Query Strings, Verified Upload, Clean Upload Filenames, Disable oEmbed
+* Fix: Plugin Check compatibility; Media Library / SVG sanitization conflict
 
 = 1.1.0 =
-* Security: Safer redirect validation, SVG sanitization, REST API restrictions, and SMTP credential handling.
-* Refactor: Modular settings sanitization.
+* Security: Safer redirects, SVG sanitization, REST restrictions, SMTP credentials
+* Refactor: Modular settings sanitization
 
 = 1.0.0 =
-* Initial release — everything is shiny and new!
-* WordPress 7.0 compatibility check
-* PHP 8.5 compatibility check
+* Initial release
+* WordPress 7.0 and PHP 8.5 compatibility check
 
 == Upgrade Notice ==
 
+= 1.3.0 =
+WebP upload conversion plus login, upload, SVG, SMTP, and admin-access hardening. Review Login Limit whitelist and SMTP environment type after update.
+
+= 1.2.2 =
+Recommended security and stability update.
+
 = 1.2.1 =
-* Fixed Verified Upload rejecting safe image uploads
+Fixed Verified Upload rejecting safe image uploads.
 
 = 1.2.0 =
-* Adds few new functions
-* Fixed Media Library conflict
+Adds new modules; fixed Media Library conflict.
 
 = 1.1.0 =
-* Recommended security update: hardened redirects, SVG sanitization, REST API restrictions, and SMTP credential handling.
+Recommended security update.
 
 = 1.0.0 =
-* Initial release — everything is shiny and new!
-* WordPress 7.0 compatibility check
-* PHP 8.5 compatibility check
+Initial release.

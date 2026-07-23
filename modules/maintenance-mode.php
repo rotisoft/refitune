@@ -1,9 +1,9 @@
 <?php
 /**
- * Maintenance Mode (Karbantartási mód)
+ * Maintenance Mode
  *
- * Blokkolja a vendégeket és jogosulatlan felhasználókat az oldal eléréséből.
- * Az init hook (priority 1) használatával még a template betöltése előtt fut.
+ * Blocks guests and unauthorized users from accessing the site.
+ * Runs on the init hook (priority 1), before the template loads.
  *
  * @package RefiTune
  */
@@ -13,67 +13,93 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Maintenance Mode ellenőrzés és blokkolás.
+ * Whether the current user may access the site during maintenance.
+ *
+ * @return bool
+ */
+function refitune_maintenance_mode_user_has_access(): bool {
+	$refitune_settings      = refitune_get_settings();
+	$refitune_allowed_roles = isset( $refitune_settings['maintenance_mode_roles'] )
+		? (array) $refitune_settings['maintenance_mode_roles']
+		: array();
+
+	// No allowed roles configured: block everyone.
+	if ( empty( $refitune_allowed_roles ) || ! is_user_logged_in() ) {
+		return false;
+	}
+
+	$refitune_user = wp_get_current_user();
+
+	foreach ( (array) $refitune_user->roles as $refitune_role ) {
+		if ( in_array( $refitune_role, $refitune_allowed_roles, true ) ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
+ * Maintenance Mode front-end check and blocking.
  */
 function refitune_maintenance_mode_check(): void {
-	// Ne blokkolja az admin területet, AJAX-t, cron-t, és a login oldalt
+	// Do not block the admin area, AJAX, or cron.
 	if ( is_admin() || wp_doing_ajax() || wp_doing_cron() ) {
 		return;
 	}
 
-	// Ne blokkolja a wp-login.php oldalt (bejelentkezés)
+	// Do not block wp-login.php (users must be able to log in).
 	global $pagenow;
 	if ( 'wp-login.php' === $pagenow ) {
 		return;
 	}
 
-	// Beállítások betöltése
-	$settings       = get_option( 'refitune_settings', array() );
-	$allowed_roles  = isset( $settings['maintenance_mode_roles'] )
-		? (array) $settings['maintenance_mode_roles']
-		: array();
-	$custom_message = isset( $settings['maintenance_mode_message'] )
-		? trim( $settings['maintenance_mode_message'] )
+	// REST requests are handled separately on rest_pre_dispatch.
+	if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+		return;
+	}
+
+	if ( refitune_maintenance_mode_user_has_access() ) {
+		return;
+	}
+
+	$refitune_settings       = refitune_get_settings();
+	$refitune_custom_message = isset( $refitune_settings['maintenance_mode_message'] )
+		? trim( $refitune_settings['maintenance_mode_message'] )
 		: '';
 
-	// Ha nincs engedélyezett szerepkör, mindenkit blokkolunk
-	if ( empty( $allowed_roles ) ) {
-		refitune_show_maintenance_page( $custom_message );
-		exit;
-	}
-
-	// Bejelentkezett felhasználó ellenőrzése
-	if ( ! is_user_logged_in() ) {
-		refitune_show_maintenance_page( $custom_message );
-		exit;
-	}
-
-	// Szerepkör ellenőrzés
-	$user            = wp_get_current_user();
-	$user_has_access = false;
-
-	foreach ( (array) $user->roles as $role ) {
-		if ( in_array( $role, $allowed_roles, true ) ) {
-			$user_has_access = true;
-			break;
-		}
-	}
-
-	if ( ! $user_has_access ) {
-		refitune_show_maintenance_page( $custom_message );
-		exit;
-	}
+	refitune_show_maintenance_page( $refitune_custom_message );
+	exit;
 }
 add_action( 'init', 'refitune_maintenance_mode_check', 1 );
 
 /**
- * Admin bar figyelmeztetés megjelenítése, ha maintenance mode aktív.
+ * Block REST API requests during maintenance with a 503 response.
  *
- * @param WP_Admin_Bar $wp_admin_bar WordPress Admin Bar objektum.
+ * @param mixed $result Dispatch result to short-circuit with.
+ * @return mixed
+ */
+function refitune_maintenance_mode_block_rest( $result ) {
+	if ( refitune_maintenance_mode_user_has_access() ) {
+		return $result;
+	}
+
+	return new WP_Error(
+		'maintenance_mode',
+		__( 'This site is temporarily under maintenance. Please check back soon!', 'refitune' ),
+		array( 'status' => 503 )
+	);
+}
+add_filter( 'rest_pre_dispatch', 'refitune_maintenance_mode_block_rest', 10 );
+
+/**
+ * Show an admin bar warning while maintenance mode is active.
+ *
+ * @param WP_Admin_Bar $wp_admin_bar WordPress Admin Bar object.
  */
 function refitune_maintenance_mode_admin_bar_notice( $wp_admin_bar ): void {
-	$settings = get_option( 'refitune_settings', array() );
-	if ( empty( $settings['maintenance_mode_enabled'] ) ) {
+	$refitune_settings = refitune_get_settings();
+	if ( empty( $refitune_settings['maintenance_mode_enabled'] ) ) {
 		return;
 	}
 
@@ -96,8 +122,8 @@ add_action( 'admin_bar_menu', 'refitune_maintenance_mode_admin_bar_notice', 999 
  * @return bool
  */
 function refitune_maintenance_mode_admin_bar_styles_needed(): bool {
-	$settings = get_option( 'refitune_settings', array() );
-	return ! empty( $settings['maintenance_mode_enabled'] );
+	$refitune_settings = refitune_get_settings();
+	return ! empty( $refitune_settings['maintenance_mode_enabled'] );
 }
 
 /**
@@ -108,48 +134,39 @@ function refitune_maintenance_mode_enqueue_admin_bar_styles(): void {
 		return;
 	}
 
-	$css_file = REFITUNE_PATH . 'modules/css/maintenance-admin-bar.css';
+	$refitune_css_file = REFITUNE_PATH . 'modules/css/maintenance-admin-bar.css';
 
 	wp_enqueue_style(
 		'refitune-maintenance-admin-bar',
 		REFITUNE_URL . 'modules/css/maintenance-admin-bar.css',
 		array(),
-		file_exists( $css_file ) ? (string) filemtime( $css_file ) : REFITUNE_VERSION
+		file_exists( $refitune_css_file ) ? (string) filemtime( $refitune_css_file ) : REFITUNE_VERSION
 	);
 }
 add_action( 'admin_enqueue_scripts', 'refitune_maintenance_mode_enqueue_admin_bar_styles', 10 );
 add_action( 'wp_enqueue_scripts', 'refitune_maintenance_mode_enqueue_admin_bar_styles', 10 );
 
 /**
- * URL for the maintenance page stylesheet (standalone template exits before wp_enqueue_scripts).
+ * Render the maintenance page.
  *
- * @return string
+ * @param string $refitune_custom_message Custom message or empty string.
  */
-function refitune_maintenance_mode_get_page_stylesheet_url(): string {
-	$css_file = REFITUNE_PATH . 'modules/css/maintenance-page.css';
-	$version  = file_exists( $css_file ) ? (string) filemtime( $css_file ) : REFITUNE_VERSION;
-
-	return add_query_arg(
-		'ver',
-		$version,
-		REFITUNE_URL . 'modules/css/maintenance-page.css'
-	);
-}
-
-/**
- * Maintenance oldal megjelenítése.
- *
- * @param string $custom_message Egyedi üzenet vagy üres.
- */
-function refitune_show_maintenance_page( string $custom_message ): void {
-	// 503 HTTP status code
+function refitune_show_maintenance_page( string $refitune_custom_message ): void {
 	status_header( 503 );
-	header( 'Retry-After: 3600' ); // 1 óra múlva próbálkozz újra
+	header( 'Retry-After: 3600' ); // Ask clients to retry after one hour.
 
-	// Default üzenet ha nincs custom
-	$message = ! empty( $custom_message )
-		? esc_html( $custom_message )
-		: esc_html__( 'This site is temporarily under maintenance. Please check back soon!', 'refitune' );
+	$refitune_css_file = REFITUNE_PATH . 'modules/css/maintenance-page.css';
+
+	wp_enqueue_style(
+		'refitune-maintenance-page',
+		REFITUNE_URL . 'modules/css/maintenance-page.css',
+		array(),
+		file_exists( $refitune_css_file ) ? (string) filemtime( $refitune_css_file ) : REFITUNE_VERSION
+	);
+
+	$refitune_message = ! empty( $refitune_custom_message )
+		? $refitune_custom_message
+		: __( 'This site is temporarily under maintenance. Please check back soon!', 'refitune' );
 
 	?>
 	<!DOCTYPE html>
@@ -159,12 +176,12 @@ function refitune_show_maintenance_page( string $custom_message ): void {
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="robots" content="noindex, nofollow">
 		<title><?php esc_html_e( 'Maintenance Mode', 'refitune' ); ?> - <?php echo esc_html( get_bloginfo( 'name' ) ); ?></title>
-		<link rel="stylesheet" href="<?php echo esc_url( refitune_maintenance_mode_get_page_stylesheet_url() ); ?>" />
+		<?php wp_print_styles( array( 'refitune-maintenance-page' ) ); ?>
 	</head>
 	<body>
 		<div class="maintenance-container">
 			<h1><?php echo esc_html( get_bloginfo( 'name' ) ); ?></h1>
-			<p><?php echo $message; // Already escaped above. ?></p>
+			<p><?php echo esc_html( $refitune_message ); ?></p>
 		</div>
 	</body>
 	</html>

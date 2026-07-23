@@ -30,10 +30,10 @@ function refitune_upload_security_prefilter( array $file ): array {
 		return $file;
 	}
 
-	$result = refitune_upload_validate_file( $file['tmp_name'], $file['name'] );
+	$refitune_result = refitune_upload_validate_file( $file['tmp_name'], $file['name'] );
 
-	if ( is_wp_error( $result ) ) {
-		$file['error'] = $result->get_error_message();
+	if ( is_wp_error( $refitune_result ) ) {
+		$file['error'] = $refitune_result->get_error_message();
 	}
 
 	return $file;

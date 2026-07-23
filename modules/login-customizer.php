@@ -1,10 +1,10 @@
 <?php
 /**
- * WordPress bejelentkezési oldal (wp-login.php) testreszabása.
+ * WordPress login page (wp-login.php) customization.
  *
- * - Logo testreszabás (Site Icon vagy egyedi URL)
- * - Háttérszín beállítás
- * - Primary szín beállítás
+ * - Logo customization (Site Icon or custom URL)
+ * - Background color setting
+ * - Primary color setting
  *
  * @package RefiTune
  */
@@ -14,20 +14,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // ---------------------------------------------------------------------------
-// Logo URL és szöveg customizálása
+// Customize the logo URL and text
 // ---------------------------------------------------------------------------
 add_filter(
 	'login_headerurl',
 	static function (): string {
 		return home_url( '/' );
-	}
+	},
+	10
 );
 
 add_filter(
 	'login_headertext',
 	static function (): string {
 		return get_bloginfo( 'name' );
-	}
+	},
+	10
 );
 
 /**
@@ -36,101 +38,101 @@ add_filter(
  * @return string CSS rules (no style tags).
  */
 function refitune_login_customizer_get_inline_css(): string {
-	$settings = get_option( 'refitune_settings', array() );
-	$rules    = array();
+	$refitune_settings = refitune_get_settings();
+	$refitune_rules    = array();
 
-	$logo_source = isset( $settings['login_logo_source'] ) ? $settings['login_logo_source'] : 'site_icon';
-	$logo_url    = '';
+	$refitune_logo_source = isset( $refitune_settings['login_logo_source'] ) ? $refitune_settings['login_logo_source'] : 'site_icon';
+	$refitune_logo_url    = '';
 
-	if ( 'custom' === $logo_source && ! empty( $settings['login_logo_custom_url'] ) ) {
-		$logo_url = home_url( $settings['login_logo_custom_url'] );
+	if ( 'custom' === $refitune_logo_source && ! empty( $refitune_settings['login_logo_custom_url'] ) ) {
+		$refitune_logo_url = home_url( $refitune_settings['login_logo_custom_url'] );
 	} else {
-		$site_icon_id = get_option( 'site_icon' );
-		if ( $site_icon_id ) {
-			$logo_url = wp_get_attachment_image_url( $site_icon_id, 'full' );
+		$refitune_site_icon_id = get_option( 'site_icon' );
+		if ( $refitune_site_icon_id ) {
+			$refitune_logo_url = wp_get_attachment_image_url( $refitune_site_icon_id, 'full' );
 		}
 	}
 
-	$logo_width  = isset( $settings['login_logo_width'] ) && '' !== $settings['login_logo_width']
-		? (int) $settings['login_logo_width']
+	$refitune_logo_width  = isset( $refitune_settings['login_logo_width'] ) && '' !== $refitune_settings['login_logo_width']
+		? (int) $refitune_settings['login_logo_width']
 		: 84;
-	$logo_height = isset( $settings['login_logo_height'] ) && '' !== $settings['login_logo_height']
-		? (int) $settings['login_logo_height']
+	$refitune_logo_height = isset( $refitune_settings['login_logo_height'] ) && '' !== $refitune_settings['login_logo_height']
+		? (int) $refitune_settings['login_logo_height']
 		: 84;
 
-	if ( $logo_url ) {
-		$rules[] = sprintf(
+	if ( $refitune_logo_url ) {
+		$refitune_rules[] = sprintf(
 			'#login h1 a, .login h1 a { background-image: url(%s); width: %dpx; height: %dpx; background-size: contain; background-position: center; background-repeat: no-repeat; }',
-			esc_url( $logo_url ),
-			$logo_width,
-			$logo_height
+			esc_url( $refitune_logo_url ),
+			$refitune_logo_width,
+			$refitune_logo_height
 		);
 	}
 
-	$bg_color = isset( $settings['login_bg_color'] ) && '' !== $settings['login_bg_color']
-		? sanitize_hex_color( $settings['login_bg_color'] )
+	$refitune_bg_color = isset( $refitune_settings['login_bg_color'] ) && '' !== $refitune_settings['login_bg_color']
+		? sanitize_hex_color( $refitune_settings['login_bg_color'] )
 		: '';
 
-	if ( $bg_color ) {
-		$rules[] = sprintf( 'body.login { background: %s !important; }', esc_attr( $bg_color ) );
+	if ( $refitune_bg_color ) {
+		$refitune_rules[] = sprintf( 'body.login { background: %s !important; }', esc_attr( $refitune_bg_color ) );
 	}
 
-	$primary_color = isset( $settings['login_primary_color'] ) && '' !== $settings['login_primary_color']
-		? sanitize_hex_color( $settings['login_primary_color'] )
+	$refitune_primary_color = isset( $refitune_settings['login_primary_color'] ) && '' !== $refitune_settings['login_primary_color']
+		? sanitize_hex_color( $refitune_settings['login_primary_color'] )
 		: '';
 
-	if ( $primary_color ) {
-		$color = esc_attr( $primary_color );
-		$rules[] = sprintf(
+	if ( $refitune_primary_color ) {
+		$refitune_color = esc_attr( $refitune_primary_color );
+		$refitune_rules[] = sprintf(
 			'.wp-core-ui .button-primary { background: %1$s !important; border-color: %1$s !important; }',
-			$color
+			$refitune_color
 		);
-		$rules[] = sprintf(
+		$refitune_rules[] = sprintf(
 			'.wp-core-ui .button-primary:hover, .wp-core-ui .button-primary:focus { background: %1$s !important; border-color: %1$s !important; opacity: 0.9; }',
-			$color
+			$refitune_color
 		);
-		$rules[] = sprintf( '.login .language-switcher .button { color: %1$s !important; border-color: %1$s !important; }', $color );
-		$rules[] = sprintf( '.login .button.wp-hide-pw .dashicons { color: %1$s !important; }', $color );
-		$rules[] = sprintf(
+		$refitune_rules[] = sprintf( '.login .language-switcher .button { color: %1$s !important; border-color: %1$s !important; }', $refitune_color );
+		$refitune_rules[] = sprintf( '.login .button.wp-hide-pw .dashicons { color: %1$s !important; }', $refitune_color );
+		$refitune_rules[] = sprintf(
 			'.login #backtoblog a, .login #nav a { color: %1$s !important; }',
-			$color
+			$refitune_color
 		);
-		$rules[] = sprintf(
+		$refitune_rules[] = sprintf(
 			'.login #backtoblog a:hover, .login #nav a:hover, .login h1 a:hover { color: %1$s !important; }',
-			$color
+			$refitune_color
 		);
-		$rules[] = sprintf(
+		$refitune_rules[] = sprintf(
 			'.login #backtoblog a:focus, .login #nav a:focus, .login h1 a:focus { color: %1$s !important; }',
-			$color
+			$refitune_color
 		);
-		$rules[] = sprintf( '.language-switcher label .dashicons { color: %1$s !important; }', $color );
+		$refitune_rules[] = sprintf( '.language-switcher label .dashicons { color: %1$s !important; }', $refitune_color );
 	}
 
-	if ( ! empty( $settings['login_hide_language_switcher'] ) ) {
-		$rules[] = '.language-switcher { display: none !important; }';
+	if ( ! empty( $refitune_settings['login_hide_language_switcher'] ) ) {
+		$refitune_rules[] = '.language-switcher { display: none !important; }';
 	}
 
-	return implode( "\n", $rules );
+	return implode( "\n", $refitune_rules );
 }
 
 /**
  * Enqueue login page styles via login_enqueue_scripts.
  */
 function refitune_login_customizer_enqueue_styles(): void {
-	$css_file = REFITUNE_PATH . 'modules/css/login-customizer.css';
-	$version  = file_exists( $css_file ) ? (string) filemtime( $css_file ) : REFITUNE_VERSION;
+	$refitune_css_file = REFITUNE_PATH . 'modules/css/login-customizer.css';
+	$refitune_version  = file_exists( $refitune_css_file ) ? (string) filemtime( $refitune_css_file ) : REFITUNE_VERSION;
 
 	wp_enqueue_style(
 		'refitune-login-customizer',
 		REFITUNE_URL . 'modules/css/login-customizer.css',
 		array( 'login' ),
-		$version
+		$refitune_version
 	);
 
-	$inline_css = refitune_login_customizer_get_inline_css();
+	$refitune_inline_css = refitune_login_customizer_get_inline_css();
 
-	if ( '' !== $inline_css ) {
-		wp_add_inline_style( 'refitune-login-customizer', $inline_css );
+	if ( '' !== $refitune_inline_css ) {
+		wp_add_inline_style( 'refitune-login-customizer', $refitune_inline_css );
 	}
 }
 add_action( 'login_enqueue_scripts', 'refitune_login_customizer_enqueue_styles', 10 );

@@ -1,11 +1,11 @@
 <?php
 /**
- * Fájlszerkesztő letiltása a WordPress admin felületéről.
+ * Disable the file editor in the WordPress admin.
  *
- * A DISALLOW_FILE_EDIT WordPress konstans hatására a rendszer
- * eltávolítja a Megjelenés > Sablonszerkesztő és a Bővítmények >
- * Szerkesztő menüpontokat, és a közvetlen URL-en sem érhető el az
- * oldal a jogosultsággal rendelkező felhasználók számára sem.
+ * The DISALLOW_FILE_EDIT WordPress constant removes the
+ * Appearance > Theme File Editor and Plugins > Plugin File Editor
+ * menu items, and the pages become inaccessible via direct URL
+ * even for users who would otherwise have the capability.
  *
  * @package RefiTune
  */

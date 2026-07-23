@@ -1,6 +1,6 @@
 <?php
 /**
- * Bejelentkezési tweaks – általánosított hibaüzenet biztonsági okokból.
+ * Login tweaks - generic error message for security reasons.
  *
  * @package RefiTune
  */
@@ -10,24 +10,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Általános hibaüzenet visszaadása a bejelentkezési oldalon.
+ * Return a generic error message on the login page.
  *
- * Megakadályozza, hogy a támadók kiderítséék, a felhasználónév
- * vagy a jelszó volt-e helytelen.
+ * Prevents attackers from learning whether the username or
+ * the password was incorrect.
  *
- * NE írja felül a Login Limit lockout üzeneteket!
+ * Must NOT override the Login Limit lockout messages.
  *
- * @param string $errors Hibaüzenet(ek).
+ * @param string $errors Error message(s).
  * @return string
  */
 function refitune_login_error_message( $errors ) {
-	// Ha a hibaüzenet tartalmazza a lockout szöveget, ne írjuk felül!
-	if ( strpos( $errors, 'login_locked' ) !== false || 
-	     strpos( $errors, 'failed login attempts' ) !== false ||
+	// Keep lockout messages intact so users understand why login is blocked.
+	if ( strpos( $errors, 'failed login attempts' ) !== false ||
 	     strpos( $errors, 'temporarily locked' ) !== false ) {
 		return $errors;
 	}
-	
+
 	return __( 'Incorrect username or password.', 'refitune' );
 }
-add_filter( 'login_errors', 'refitune_login_error_message' );
+add_filter( 'login_errors', 'refitune_login_error_message', 10 );

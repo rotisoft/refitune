@@ -1,9 +1,9 @@
 <?php
 /**
- * Admin sáv elrejtése szerepkör szerint.
+ * Hide the admin bar by role.
  *
- * A kiválasztott szerepkörű bejelentkezett felhasználók számára
- * elrejti a WordPress admin sávot.
+ * Hides the WordPress admin bar for logged-in users with the
+ * selected roles.
  *
  * @package RefiTune
  */
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Admin sáv elrejtése, ha a felhasználó szerepköre a tiltott listán van.
+ * Hide the admin bar when the user's role is on the hidden list.
  *
  * @return void
  */
@@ -22,20 +22,20 @@ function refitune_hide_admin_bar_for_roles(): void {
 		return;
 	}
 
-	$settings   = get_option( 'refitune_settings', array() );
-	$hide_roles = isset( $settings['hide_admin_bar_roles'] ) ? (array) $settings['hide_admin_bar_roles'] : array();
+	$refitune_settings   = refitune_get_settings();
+	$refitune_hide_roles = isset( $refitune_settings['hide_admin_bar_roles'] ) ? (array) $refitune_settings['hide_admin_bar_roles'] : array();
 
-	if ( empty( $hide_roles ) ) {
+	if ( empty( $refitune_hide_roles ) ) {
 		return;
 	}
 
-	$user = wp_get_current_user();
+	$refitune_user = wp_get_current_user();
 
-	foreach ( (array) $user->roles as $role ) {
-		if ( in_array( $role, $hide_roles, true ) ) {
+	foreach ( (array) $refitune_user->roles as $refitune_role ) {
+		if ( in_array( $refitune_role, $refitune_hide_roles, true ) ) {
 			show_admin_bar( false );
 			return;
 		}
 	}
 }
-add_action( 'after_setup_theme', 'refitune_hide_admin_bar_for_roles' );
+add_action( 'after_setup_theme', 'refitune_hide_admin_bar_for_roles', 10 );

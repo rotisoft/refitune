@@ -1,5 +1,5 @@
 /**
- * RefiTune – Block Visibility.
+ * RefiTune - Block Visibility.
  *
  * Adds a "Visibility" panel to every Gutenberg block in the Inspector Controls
  * (mobile / desktop / always visible).

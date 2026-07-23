@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin menü regisztráció, beállítások kezelése, asset betöltés és oldal renderelés.
+ * Admin menu registration, settings handling, asset loading, and page rendering.
  *
  * @package RefiTune
  */
@@ -14,39 +14,41 @@ if ( ! is_admin() ) {
 }
 
 /**
- * Az összes elérhető funkció definícióját visszaadó segédfüggvény.
+ * Helper returning the definition of every available feature.
  *
- * Típusok:
- *  - (nincs) : egyszerű boolean kapcsoló
- *  - sub_options : albeállítások listája (egyenként boolean)
- *  - role_select : WordPress szerepkörök checkbox listája (tömb érték)
- *    - option_key     : az option kulcsa a refitune_settings-ben (array)
- *    - required_roles : mindig bejelölt/zárolt szerepkörök
- *    - enable_key     : opcionális master boolean kapcsoló a feature be/kikapcsolásához
+ * Types:
+ *  - (none) : simple boolean toggle
+ *  - sub_options : list of sub-settings (each boolean)
+ *  - role_select : checkbox list of WordPress roles (array value)
+ *    - option_key     : option key inside refitune_settings (array)
+ *    - required_roles : roles that are always checked/locked
+ *    - enable_key     : optional master boolean toggle for the feature
  *
  * @return array
  */
 function refitune_get_features() {
 	// Header cleanup sub_options dynamic structure.
-	$cleanup_head_sub_options = array(
-		'cleanup_head_generator'      => __( 'Hide WordPress version (Remove Generator tag)', 'refitune' ),
+	$refitune_cleanup_head_sub_options = array(
+		'cleanup_head_rsd'            => __( 'Remove RSD (Really Simple Discovery) link', 'refitune' ),
+		'cleanup_head_wlwmanifest'    => __( 'Remove Windows Live Writer manifest link', 'refitune' ),
+		'cleanup_head_shortlink'      => __( 'Remove Shortlink', 'refitune' ),
+		'cleanup_head_adjacent_posts' => __( 'Remove Previous and Next post rel links', 'refitune' ),
 	);
 
-	// If WooCommerce is active, add WC generator option.
-	if ( class_exists( 'WooCommerce' ) ) {
-		$cleanup_head_sub_options['cleanup_head_wc_generator'] = __( 'Hide WooCommerce version (Remove Generator tag)', 'refitune' );
-	}
+	// Generator tag removal sub_options (WooCommerce option only when active).
+	$refitune_hide_generator_sub_options = array(
+		'cleanup_head_generator' => __( 'Hide WordPress version (Remove Generator tag)', 'refitune' ),
+	);
 
-	$cleanup_head_sub_options['cleanup_head_rsd']            = __( 'Remove RSD (Really Simple Discovery) link', 'refitune' );
-	$cleanup_head_sub_options['cleanup_head_wlwmanifest']    = __( 'Remove Windows Live Writer manifest link', 'refitune' );
-	$cleanup_head_sub_options['cleanup_head_shortlink']      = __( 'Remove Shortlink', 'refitune' );
-	$cleanup_head_sub_options['cleanup_head_adjacent_posts'] = __( 'Remove Previous and Next post rel links', 'refitune' );
+	if ( class_exists( 'WooCommerce' ) ) {
+		$refitune_hide_generator_sub_options['cleanup_head_wc_generator'] = __( 'Hide WooCommerce version (Remove Generator tag)', 'refitune' );
+	}
 
 	return array(
 		'cleanup_head'    => array(
 			'label'       => __( 'Header Cleanup', 'refitune' ),
 			'description' => __( 'Removes unnecessary wp_head elements from the source.', 'refitune' ),
-			'sub_options' => $cleanup_head_sub_options,
+			'sub_options' => $refitune_cleanup_head_sub_options,
 			'category'    => 'performance',
 		),
 	'disable_feeds'   => array(
@@ -76,7 +78,7 @@ function refitune_get_features() {
 	),
 	'remove_asset_versions' => array(
 		'label'       => __( 'Remove Asset Version Query Strings', 'refitune' ),
-		'description' => __( 'Removes the ?ver= query parameter from CSS and JavaScript URLs on frontend pages.', 'refitune' ),
+		'description' => __( 'Removes the ?ver= query parameter from CSS and JavaScript URLs on frontend pages. Warning: can break cache busting after theme/plugin updates unless your CDN or host purges by path.', 'refitune' ),
 		'category'    => 'performance',
 	),
 	'post_revisions'  => array(
@@ -109,6 +111,15 @@ function refitune_get_features() {
 		'type'        => 'heartbeat_control',
 		'category'    => 'performance',
 	),
+	'upload_webp_convert' => array(
+		'label'                 => __( 'Convert Uploads to WebP', 'refitune' ),
+		'description'           => __( 'Automatically converts JPEG and PNG uploads to WebP, optionally resizes large images, and removes the original file.', 'refitune' ),
+		'type'                  => 'upload_webp_convert',
+		'enable_key'            => 'upload_webp_convert',
+		'category'              => 'performance',
+		'requires_webp_support' => true,
+		'unavailable_notice'    => __( 'Requires PHP GD or Imagick with WebP support on the server.', 'refitune' ),
+	),
 	'disable_xmlrpc'  => array(
 		'label'       => __( 'Disable XML-RPC', 'refitune' ),
 		'description' => __( 'Completely disables the XML-RPC remote API interface (404 Not Found response).', 'refitune' ),
@@ -122,6 +133,12 @@ function refitune_get_features() {
 	'disable_file_edit' => array(
 		'label'       => __( 'Disable File Editor', 'refitune' ),
 		'description' => __( 'Disables the built-in plugin and theme editor in admin area (DISALLOW_FILE_EDIT).', 'refitune' ),
+		'category'    => 'security',
+	),
+	'hide_generator_tags' => array(
+		'label'       => __( 'Hide Generator Tags', 'refitune' ),
+		'description' => __( 'Removes generator meta tags that reveal WordPress or WooCommerce version numbers in the HTML source.', 'refitune' ),
+		'sub_options' => $refitune_hide_generator_sub_options,
 		'category'    => 'security',
 	),
 	'auto_updates_control' => array(
@@ -146,13 +163,13 @@ function refitune_get_features() {
 	),
 	'rest_api_restrictions' => array(
 		'label'       => __( 'REST API Restrictions', 'refitune' ),
-		'description' => __( 'Intelligent restriction of certain WordPress REST API endpoints.', 'refitune' ),
+		'description' => __( 'Restrict selected WordPress REST API endpoints to users with the manage_options capability (administrators). Editors and other roles are denied.', 'refitune' ),
 		'sub_options' => array(
-			'rest_disable_users'    => __( 'Restrict Users endpoint (authentication required) - /wp-json/wp/v2/users', 'refitune' ),
-			'rest_restrict_index'   => __( 'Restrict REST index (authentication required) - /wp-json/', 'refitune' ),
-			'rest_disable_media'    => __( 'Restrict Media endpoint (authentication required) - /wp-json/wp/v2/media', 'refitune' ),
-			'rest_disable_comments' => __( 'Restrict Comments endpoint (authentication required) - /wp-json/wp/v2/comments', 'refitune' ),
-			'rest_disable_search'   => __( 'Restrict Search endpoint (authentication required) - /wp-json/wp/v2/search', 'refitune' ),
+			'rest_disable_users'    => __( 'Restrict Users endpoint (administrator access required) - /wp-json/wp/v2/users', 'refitune' ),
+			'rest_restrict_index'   => __( 'Restrict REST index (administrator access required) - /wp-json/', 'refitune' ),
+			'rest_disable_media'    => __( 'Restrict Media endpoint (administrator access required) - /wp-json/wp/v2/media', 'refitune' ),
+			'rest_disable_comments' => __( 'Restrict Comments endpoint (administrator access required) - /wp-json/wp/v2/comments', 'refitune' ),
+			'rest_disable_search'   => __( 'Restrict Search endpoint (administrator access required) - /wp-json/wp/v2/search', 'refitune' ),
 		),
 		'category'    => 'security',
 	),
@@ -178,7 +195,7 @@ function refitune_get_features() {
 	),
 	'block_visibility' => array(
 		'label'               => __( 'Block Visibility (Mobile)', 'refitune' ),
-		'description'         => __( 'Adds a visibility option to every Gutenberg block to control whether it appears on mobile, desktop, or both.', 'refitune' ),
+		'description'         => __( 'Adds a visibility option to every Gutenberg block to control whether it appears on mobile, desktop, or both. Uses User-Agent detection; full-page caches must vary on User-Agent or CSS media queries are safer for layout-only hiding.', 'refitune' ),
 		'category'            => 'visual',
 		'max_wp_version'      => '7.0',
 		'unavailable_notice'  => __( 'A dedicated core feature has been available for this since WordPress 7.0.', 'refitune' ),
@@ -233,7 +250,7 @@ function refitune_get_features() {
 	),
 	'avif_upload'     => array(
 		'label'       => __( 'AVIF Upload', 'refitune' ),
-		'description' => __( 'Allows AVIF image file uploads. Select which roles can upload AVIF.', 'refitune' ),
+		'description' => __( 'Allows AVIF image file uploads. Select which roles can upload AVIF. Full WordPress AVIF support requires 6.5+; on 6.2-6.4 only MIME upload is enabled.', 'refitune' ),
 		'type'        => 'role_select',
 		'option_key'  => 'avif_upload_roles',
 		'enable_key'  => 'avif_upload_enabled',
@@ -265,12 +282,11 @@ function refitune_get_features() {
 }
 
 /**
- * Admin menüpontok regisztrálása a Tools (Eszközök) menü alatt.
+ * Register admin menu items under the Tools menu.
  *
- * A Settings és Help oldalakat közvetlenül a regisztráció után
- * remove_submenu_page()-gel eltávolítjuk a menüből, hogy csak a
- * főoldal linkje jelenjen meg a Tools alatt. Az oldalak URL-en
- * továbbra is elérhetők maradnak.
+ * The Settings and Help pages are removed from the menu right after
+ * registration with remove_submenu_page() so only the main page link
+ * appears under Tools. The pages remain accessible via URL.
  *
  * @return void
  */
@@ -286,7 +302,7 @@ function refitune_register_admin_menu(): void {
 
 	add_submenu_page(
 		'tools.php',
-		__( 'RefiTune – Settings', 'refitune' ),
+		__( 'RefiTune - Settings', 'refitune' ),
 		__( 'RefiTune Settings', 'refitune' ),
 		'manage_options',
 		'refitune-settings',
@@ -295,72 +311,110 @@ function refitune_register_admin_menu(): void {
 
 	add_submenu_page(
 		'tools.php',
-		__( 'RefiTune – Help', 'refitune' ),
+		__( 'RefiTune - Help', 'refitune' ),
 		__( 'RefiTune Help', 'refitune' ),
 		'manage_options',
 		'refitune-help',
 		'refitune_render_help_page'
 	);
 
-	// Csak a főoldal látszik a menüben; a Settings és Help elérhetők URL-en.
+	// Only the main page shows in the menu; Settings and Help remain reachable via URL.
 	remove_submenu_page( 'tools.php', 'refitune-settings' );
 	remove_submenu_page( 'tools.php', 'refitune-help' );
 }
 add_action( 'admin_menu', 'refitune_register_admin_menu', 10 );
 
 /**
- * Előre beállítja a $GLOBALS['title'] változót a rejtett aloldalakhoz.
+ * Keep the RefiTune submenu item highlighted on the hidden subpages.
  *
- * A remove_submenu_page() törli a bejegyzést a $submenu tömbből, ezért
- * a get_admin_page_title() nem találja meg az oldal nevét, és null-t ad
- * vissza. PHP 8.1+-on ez strip_tags(null) deprecation figyelmeztetést okoz
- * az admin-header.php-ban. A current_screen action a get_admin_page_title()
- * hívása előtt fut, és ha $title már nem üres, az a függvény azonnal
- * visszatér a meglévő értékkel (nem írja felül).
+ * Settings and Help are removed from the $submenu array, so WordPress cannot
+ * match them to a menu entry and the RefiTune item loses its "current"
+ * (bold) state. Point the highlight at the main RefiTune entry instead.
+ *
+ * @param string|null $submenu_file The submenu file to highlight.
+ * @return string|null
+ */
+function refitune_admin_menu_highlight( $submenu_file ) {
+	$refitune_page = refitune_get_current_page_slug();
+
+	if ( in_array( $refitune_page, array( 'refitune-settings', 'refitune-help' ), true ) ) {
+		return 'refitune-refinements';
+	}
+
+	return $submenu_file;
+}
+add_filter( 'submenu_file', 'refitune_admin_menu_highlight', 10 );
+
+/**
+ * Keep the Tools menu open on the hidden RefiTune subpages.
+ *
+ * @param string $parent_file The parent file.
+ * @return string
+ */
+function refitune_admin_menu_parent_file( $parent_file ) {
+	$refitune_page = refitune_get_current_page_slug();
+
+	if ( in_array( $refitune_page, array( 'refitune-settings', 'refitune-help' ), true ) ) {
+		return 'tools.php';
+	}
+
+	return $parent_file;
+}
+add_filter( 'parent_file', 'refitune_admin_menu_parent_file', 10 );
+
+/**
+ * Pre-set the $GLOBALS['title'] variable for the hidden subpages.
+ *
+ * remove_submenu_page() deletes the entry from the $submenu array, so
+ * get_admin_page_title() cannot find the page name and returns null.
+ * On PHP 8.1+ this causes a strip_tags(null) deprecation warning in
+ * admin-header.php. The current_screen action runs before
+ * get_admin_page_title() is called, and when $title is already non-empty
+ * the function returns the existing value immediately (does not override).
  *
  * @return void
  */
 function refitune_set_hidden_page_title(): void {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-	$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+	$refitune_page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
 
-	if ( 'refitune-settings' === $page ) {
-		$GLOBALS['title'] = __( 'RefiTune – Settings', 'refitune' );
-	} elseif ( 'refitune-help' === $page ) {
-		$GLOBALS['title'] = __( 'RefiTune – Help', 'refitune' );
+	if ( 'refitune-settings' === $refitune_page ) {
+		$GLOBALS['title'] = __( 'RefiTune - Settings', 'refitune' );
+	} elseif ( 'refitune-help' === $refitune_page ) {
+		$GLOBALS['title'] = __( 'RefiTune - Help', 'refitune' );
 	}
 }
-add_action( 'current_screen', 'refitune_set_hidden_page_title' );
+add_action( 'current_screen', 'refitune_set_hidden_page_title', 10 );
 
 /**
- * "Settings" link hozzáadása a plugin listában a plugin sorához.
+ * Add a "Settings" link to the plugin row on the plugins list screen.
  *
- * @param array $links Meglévő plugin action linkek.
- * @return array Kiegészített linkek.
+ * @param array $links Existing plugin action links.
+ * @return array Extended links.
  */
 function refitune_plugin_action_links( array $links ): array {
-	$settings_link = sprintf(
+	$refitune_settings_link = sprintf(
 		'<a href="%s">%s</a>',
 		esc_url( admin_url( 'tools.php?page=refitune-settings' ) ),
 		esc_html__( 'Settings', 'refitune' )
 	);
 	
-	$help_link = sprintf(
+	$refitune_help_link = sprintf(
 		'<a href="%s">%s</a>',
 		esc_url( admin_url( 'tools.php?page=refitune-help' ) ),
 		esc_html__( 'Help', 'refitune' )
 	);
 	
-	// Settings és Help linkek hozzáadása az elejére (fordított sorrendben, mert unshift).
-	array_unshift( $links, $help_link );
-	array_unshift( $links, $settings_link );
+	// Add Settings and Help links to the front (reverse order because of unshift).
+	array_unshift( $links, $refitune_help_link );
+	array_unshift( $links, $refitune_settings_link );
 	
 	return $links;
 }
 add_filter( 'plugin_action_links_' . plugin_basename( REFITUNE_PATH . 'refitune.php' ), 'refitune_plugin_action_links' );
 
 /**
- * Plugin beállítások regisztrálása a Settings API-val.
+ * Register the plugin settings with the Settings API.
  *
  * @return void
  */
@@ -383,9 +437,14 @@ add_action( 'admin_init', 'refitune_register_settings', 10 );
  * @return void
  */
 function refitune_disable_block_visibility_on_unsupported_wp(): void {
-	$settings = get_option( 'refitune_settings', array() );
+	// Only administrators may trigger this silent settings migration.
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
 
-	if ( empty( $settings['block_visibility'] ) ) {
+	$refitune_settings = get_option( 'refitune_settings', array() );
+
+	if ( empty( $refitune_settings['block_visibility'] ) ) {
 		return;
 	}
 
@@ -393,8 +452,8 @@ function refitune_disable_block_visibility_on_unsupported_wp(): void {
 		return;
 	}
 
-	$settings['block_visibility'] = false;
-	update_option( 'refitune_settings', $settings );
+	$refitune_settings['block_visibility'] = false;
+	update_option( 'refitune_settings', $refitune_settings );
 }
 add_action( 'admin_init', 'refitune_disable_block_visibility_on_unsupported_wp', 20 );
 
@@ -420,52 +479,57 @@ add_action( 'update_option_refitune_settings', 'refitune_restore_update_checks_w
 require_once REFITUNE_PATH . 'admin/settings-sanitizer.php';
 
 /**
- * Admin CSS és JS betöltése kizárólag a plugin oldalain.
+ * Load admin CSS and JS only on the plugin pages.
  *
- * @param string $hook_suffix Az aktuális admin oldal hook suffix-e.
+ * @param string $hook_suffix Current admin page hook suffix.
  * @return void
  */
 function refitune_enqueue_admin_assets( $hook_suffix ) {
-	$plugin_pages = array(
+	$refitune_plugin_pages = array(
 		'tools_page_refitune-refinements',
 		'tools_page_refitune-settings',
 		'tools_page_refitune-help',
 	);
 
-	if ( ! in_array( $hook_suffix, $plugin_pages, true ) ) {
+	if ( ! in_array( $hook_suffix, $refitune_plugin_pages, true ) ) {
 		return;
 	}
 
-	// Color Picker (WordPress core).
+	// Color Picker only on the settings page (login customizer fields).
+	$refitune_style_deps  = array();
+	$refitune_script_deps = array();
+
 	if ( 'tools_page_refitune-settings' === $hook_suffix ) {
 		wp_enqueue_style( 'wp-color-picker' );
+		$refitune_style_deps[]  = 'wp-color-picker';
+		$refitune_script_deps[] = 'wp-color-picker';
 	}
 
-	$css_file = REFITUNE_PATH . 'admin/css/admin-style.css';
+	$refitune_css_file = REFITUNE_PATH . 'admin/css/admin-style.css';
 
 	wp_enqueue_style(
 		'refitune-admin-style',
 		REFITUNE_URL . 'admin/css/admin-style.css',
-		array( 'wp-color-picker' ),
-		file_exists( $css_file ) ? filemtime( $css_file ) : REFITUNE_VERSION
+		$refitune_style_deps,
+		file_exists( $refitune_css_file ) ? filemtime( $refitune_css_file ) : REFITUNE_VERSION
 	);
 
-	$js_file = REFITUNE_PATH . 'admin/js/admin-script.js';
+	$refitune_js_file = REFITUNE_PATH . 'admin/js/admin-script.js';
 
 	wp_enqueue_script(
 		'refitune-admin-script',
 		REFITUNE_URL . 'admin/js/admin-script.js',
-		array( 'wp-color-picker' ),
-		file_exists( $js_file ) ? filemtime( $js_file ) : REFITUNE_VERSION,
+		$refitune_script_deps,
+		file_exists( $refitune_js_file ) ? filemtime( $refitune_js_file ) : REFITUNE_VERSION,
 		true
 	);
 }
 add_action( 'admin_enqueue_scripts', 'refitune_enqueue_admin_assets', 10 );
 
 /**
- * Admin fejléc navigáció linkjeinek definiálása.
+ * Define the admin header navigation links.
  *
- * @return array Slug => label párok.
+ * @return array Slug => label pairs.
  */
 function refitune_get_admin_nav_links() {
 	return array(
@@ -476,12 +540,12 @@ function refitune_get_admin_nav_links() {
 }
 
 /**
- * Aktuális admin oldal slug-jának meghatározása.
+ * Determine the current admin page slug.
  *
- * @return string Az aktuális oldal slug-ja.
+ * @return string The current page slug.
  */
 function refitune_get_current_page_slug() {
-	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Oldal azonosítás, nincs állapotváltozás.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Page identification only, no state change.
 	return isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
 }
 
@@ -491,24 +555,29 @@ function refitune_get_current_page_slug() {
  * @return array
  */
 function refitune_get_plugin_header_data(): array {
-	static $plugin_data = null;
+	static $refitune_plugin_data = null;
 
-	if ( null === $plugin_data ) {
-		$plugin_data = get_plugin_data( REFITUNE_PATH . 'refitune.php', false, false );
+	if ( null === $refitune_plugin_data ) {
+		$refitune_plugin_data = get_plugin_data( REFITUNE_PATH . 'refitune.php', false, false );
 	}
 
-	return $plugin_data;
+	return $refitune_plugin_data;
 }
 
 /**
- * Admin oldal wrapper renderelése egységes fejléccel.
+ * Render the admin page wrapper with a unified header.
  *
- * @param string $page_file A betöltendő oldal fájl neve (pl. 'page-dashboard.php').
+ * @param string $refitune_page_file Page file name to load (e.g. 'page-dashboard.php').
  * @return void
  */
-function refitune_render_admin_wrapper( $page_file ) {
-	$nav_links    = refitune_get_admin_nav_links();
-	$current_slug = refitune_get_current_page_slug();
+function refitune_render_admin_wrapper( $refitune_page_file ) {
+	// Defense in depth: the menu capability already restricts access.
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( esc_html__( 'Sorry, you are not allowed to access this page.', 'refitune' ) );
+	}
+
+	$refitune_nav_links    = refitune_get_admin_nav_links();
+	$refitune_current_slug = refitune_get_current_page_slug();
 	?>
 	<h1 style="display: none !important;"><?php esc_html_e( 'RefiTune - Site refiner toolkit', 'refitune' ); ?></h1>
 	<div class="wrap refitune-admin-wrap">
@@ -519,15 +588,15 @@ function refitune_render_admin_wrapper( $page_file ) {
 
 			<nav class="refitune-admin-nav">
 				<?php
-				foreach ( $nav_links as $slug => $label ) {
-					$url          = admin_url( 'tools.php?page=' . $slug );
-					$active_class = ( $current_slug === $slug ) ? ' refitune-admin-nav-active' : '';
+				foreach ( $refitune_nav_links as $refitune_slug => $refitune_label ) {
+					$refitune_url          = admin_url( 'tools.php?page=' . $refitune_slug );
+					$refitune_active_class = ( $refitune_current_slug === $refitune_slug ) ? ' refitune-admin-nav-active' : '';
 
 					printf(
 						'<a href="%s" class="refitune-admin-nav-link%s">%s</a>',
-						esc_url( $url ),
-						esc_attr( $active_class ),
-						esc_html( $label )
+						esc_url( $refitune_url ),
+						esc_attr( $refitune_active_class ),
+						esc_html( $refitune_label )
 					);
 				}
 				?>
@@ -536,24 +605,24 @@ function refitune_render_admin_wrapper( $page_file ) {
 
 		<div class="refitune-admin-content">
 			<?php
-			$file_path = REFITUNE_PATH . 'admin/' . $page_file;
+			$refitune_file_path = REFITUNE_PATH . 'admin/' . $refitune_page_file;
 
-			if ( file_exists( $file_path ) ) {
-				require $file_path;
+			if ( file_exists( $refitune_file_path ) ) {
+				require $refitune_file_path;
 			}
 			?>
 		</div>
 
 		<div class="refitune-admin-footer">
 			<?php
-			$plugin_data = refitune_get_plugin_header_data();
+			$refitune_plugin_data = refitune_get_plugin_header_data();
 
 			printf(
 				'%s - %s - <a href="%s" target="_blank" rel="noopener">%s</a>',
-				esc_html( $plugin_data['Name'] ),
-				esc_html( $plugin_data['Version'] ),
-				esc_url( $plugin_data['PluginURI'] ),
-				esc_html( $plugin_data['PluginURI'] )
+				esc_html( $refitune_plugin_data['Name'] ),
+				esc_html( $refitune_plugin_data['Version'] ),
+				esc_url( $refitune_plugin_data['PluginURI'] ),
+				esc_html( $refitune_plugin_data['PluginURI'] )
 			);
 			?>
 		</div>
@@ -562,7 +631,7 @@ function refitune_render_admin_wrapper( $page_file ) {
 }
 
 /**
- * Dashboard (fő) oldal renderelése.
+ * Render the dashboard (main) page.
  *
  * @return void
  */
@@ -571,7 +640,7 @@ function refitune_render_dashboard_page() {
 }
 
 /**
- * Settings oldal renderelése.
+ * Render the settings page.
  *
  * @return void
  */
@@ -580,7 +649,7 @@ function refitune_render_settings_page() {
 }
 
 /**
- * Help oldal renderelése.
+ * Render the help page.
  *
  * @return void
  */

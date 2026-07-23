@@ -46,17 +46,17 @@ function refitune_upload_filename_allowed_extensions(): array {
 /**
  * Whether a file extension is eligible for filename sanitization.
  *
- * @param string $extension Lowercase extension without dot.
+ * @param string $refitune_extension Lowercase extension without dot.
  * @return bool
  */
-function refitune_upload_filename_is_allowed_extension( string $extension ): bool {
-	$extension = strtolower( trim( $extension ) );
+function refitune_upload_filename_is_allowed_extension( string $refitune_extension ): bool {
+	$refitune_extension = strtolower( trim( $refitune_extension ) );
 
-	if ( '' === $extension ) {
+	if ( '' === $refitune_extension ) {
 		return false;
 	}
 
-	return in_array( $extension, refitune_upload_filename_allowed_extensions(), true );
+	return in_array( $refitune_extension, refitune_upload_filename_allowed_extensions(), true );
 }
 
 /**
@@ -64,36 +64,36 @@ function refitune_upload_filename_is_allowed_extension( string $extension ): boo
  *
  * Example: "árvíz tűrő +33.jpg" becomes "arviz-turo-33.jpg".
  *
- * @param string $filename Original upload filename.
+ * @param string $refitune_filename Original upload filename.
  * @return string Sanitized filename, or the original when not eligible.
  */
-function refitune_sanitize_upload_filename( string $filename ): string {
-	$filename = wp_basename( $filename );
+function refitune_sanitize_upload_filename( string $refitune_filename ): string {
+	$refitune_filename = wp_basename( $refitune_filename );
 
-	if ( '' === $filename ) {
-		return $filename;
+	if ( '' === $refitune_filename ) {
+		return $refitune_filename;
 	}
 
-	$extension = strtolower( pathinfo( $filename, PATHINFO_EXTENSION ) );
+	$refitune_extension = strtolower( pathinfo( $refitune_filename, PATHINFO_EXTENSION ) );
 
-	if ( ! refitune_upload_filename_is_allowed_extension( $extension ) ) {
-		return $filename;
+	if ( ! refitune_upload_filename_is_allowed_extension( $refitune_extension ) ) {
+		return $refitune_filename;
 	}
 
-	$basename = pathinfo( $filename, PATHINFO_FILENAME );
+	$refitune_basename = pathinfo( $refitune_filename, PATHINFO_FILENAME );
 
 	if ( function_exists( 'remove_accents' ) ) {
-		$basename = remove_accents( $basename );
+		$refitune_basename = remove_accents( $refitune_basename );
 	}
 
-	$basename = strtolower( $basename );
-	$basename = preg_replace( '/[^a-z0-9]+/', '-', $basename );
-	$basename = preg_replace( '/-+/', '-', (string) $basename );
-	$basename = trim( (string) $basename, '-' );
+	$refitune_basename = strtolower( $refitune_basename );
+	$refitune_basename = preg_replace( '/[^a-z0-9]+/', '-', $refitune_basename );
+	$refitune_basename = preg_replace( '/-+/', '-', (string) $refitune_basename );
+	$refitune_basename = trim( (string) $refitune_basename, '-' );
 
-	if ( '' === $basename ) {
-		$basename = 'file';
+	if ( '' === $refitune_basename ) {
+		$refitune_basename = 'file';
 	}
 
-	return $basename . '.' . $extension;
+	return $refitune_basename . '.' . $refitune_extension;
 }

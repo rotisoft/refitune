@@ -1,12 +1,12 @@
 <?php
 /**
- * Trackback és pingback teljes letiltása.
+ * Disable trackbacks and pingbacks completely.
  *
- * - Új bejegyzéseknél alapértelmezetten zárja a pingeket.
- * - Minden meglévő bejegyzésnél lezárja a pingeket futásidőben.
- * - Eltávolítja a pingback metódusokat az XML-RPC-ből.
- * - Eltávolítja az X-Pingback HTTP fejlécet.
- * - Közvetlen trackback kéréseket visszautasítja (403).
+ * - Closes pings by default on new posts.
+ * - Closes pings on every existing post at runtime.
+ * - Removes the pingback methods from XML-RPC.
+ * - Removes the X-Pingback HTTP header.
+ * - Rejects direct trackback requests (403).
  *
  * @package RefiTune
  */
@@ -15,13 +15,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Új bejegyzéseknél alapértelmezetten zárja a pingeket.
-add_filter( 'default_ping_status', '__return_false' );
+// Close pings by default on new posts.
+add_filter( 'default_ping_status', '__return_false', 10 );
 
-// Minden bejegyzésnél (meglévők is) futásidőben zárja a pingeket.
+// Close pings on every post (existing ones too) at runtime.
 add_filter( 'pings_open', '__return_false', 99 );
 
-// Pingback metódusok eltávolítása az XML-RPC metóduslistából.
+// Remove the pingback methods from the XML-RPC method list.
 add_filter(
 	'xmlrpc_methods',
 	static function ( array $methods ): array {
@@ -30,19 +30,21 @@ add_filter(
 			$methods['pingback.extensions.getPingbacks']
 		);
 		return $methods;
-	}
+	},
+	10
 );
 
-// X-Pingback HTTP fejléc eltávolítása.
+// Remove the X-Pingback HTTP header.
 add_filter(
 	'wp_headers',
 	static function ( array $headers ): array {
 		unset( $headers['X-Pingback'] );
 		return $headers;
-	}
+	},
+	10
 );
 
-// Pingback URL eltávolítása a bloginfo_url-ből (pl. wp_head pingback link).
+// Remove the pingback URL from bloginfo_url (e.g. the wp_head pingback link).
 add_filter(
 	'bloginfo_url',
 	static function ( string $output, string $show ): string {
@@ -55,16 +57,17 @@ add_filter(
 	2
 );
 
-// Közvetlen HTTP trackback kérések letiltása (403).
+// Reject direct HTTP trackback requests (403).
 add_action(
 	'wp',
 	static function (): void {
 		if ( is_trackback() ) {
 			wp_die(
-				esc_html__( 'A trackback le van tiltva ezen a webhelyen.', 'refitune' ),
+				esc_html__( 'Trackbacks are disabled on this site.', 'refitune' ),
 				'',
 				array( 'response' => 403 )
 			);
 		}
-	}
+	},
+	10
 );

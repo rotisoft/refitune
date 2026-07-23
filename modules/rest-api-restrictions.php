@@ -2,8 +2,8 @@
 /**
  * REST API restrictions.
  *
- * Restricted endpoints require an authenticated WordPress session.
- * Anonymous REST access to sensitive routes is denied.
+ * Restricted endpoints require an administrator-level session.
+ * Anonymous and non-admin REST access to sensitive routes is denied.
  *
  * @package RefiTune
  */
@@ -15,13 +15,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Whether the current REST request is allowed to access restricted endpoints.
  *
- * @return bool True when the user is logged in.
+ * @return bool True when the user has administrator capabilities.
  */
 function refitune_rest_restricted_endpoint_allowed(): bool {
-	return is_user_logged_in();
+	return current_user_can( 'manage_options' );
 }
 
-$refitune_settings = get_option( 'refitune_settings', array() );
+/**
+ * HTTP status for a denied restricted endpoint request.
+ *
+ * @return int 401 for anonymous requests, 403 for authenticated non-admins.
+ */
+function refitune_rest_restricted_denied_status(): int {
+	return is_user_logged_in() ? 403 : 401;
+}
+
+$refitune_settings = refitune_get_settings();
 
 // ---------------------------------------------------------------------------
 // 1. Users endpoint restriction
@@ -30,12 +39,12 @@ if ( ! empty( $refitune_settings['rest_disable_users'] ) ) {
 	add_filter(
 		'rest_pre_dispatch',
 		static function ( $result, $server, $request ) {
-			$route = $request->get_route();
-			if ( 0 === strpos( $route, '/wp/v2/users' ) && ! refitune_rest_restricted_endpoint_allowed() ) {
+			$refitune_route = $request->get_route();
+			if ( 0 === strpos( $refitune_route, '/wp/v2/users' ) && ! refitune_rest_restricted_endpoint_allowed() ) {
 				return new WP_Error(
 					'rest_forbidden',
-					__( 'The users endpoint requires authentication.', 'refitune' ),
-					array( 'status' => 401 )
+					__( 'The users endpoint requires administrator access.', 'refitune' ),
+					array( 'status' => refitune_rest_restricted_denied_status() )
 				);
 			}
 			return $result;
@@ -55,8 +64,8 @@ if ( ! empty( $refitune_settings['rest_restrict_index'] ) ) {
 			if ( ! refitune_rest_restricted_endpoint_allowed() ) {
 				return new WP_Error(
 					'rest_forbidden',
-					__( 'The REST API index requires authentication.', 'refitune' ),
-					array( 'status' => 401 )
+					__( 'The REST API index requires administrator access.', 'refitune' ),
+					array( 'status' => refitune_rest_restricted_denied_status() )
 				);
 			}
 			return $response;
@@ -71,12 +80,12 @@ if ( ! empty( $refitune_settings['rest_disable_media'] ) ) {
 	add_filter(
 		'rest_pre_dispatch',
 		static function ( $result, $server, $request ) {
-			$route = $request->get_route();
-			if ( 0 === strpos( $route, '/wp/v2/media' ) && ! refitune_rest_restricted_endpoint_allowed() ) {
+			$refitune_route = $request->get_route();
+			if ( 0 === strpos( $refitune_route, '/wp/v2/media' ) && ! refitune_rest_restricted_endpoint_allowed() ) {
 				return new WP_Error(
 					'rest_forbidden',
-					__( 'The media endpoint requires authentication.', 'refitune' ),
-					array( 'status' => 401 )
+					__( 'The media endpoint requires administrator access.', 'refitune' ),
+					array( 'status' => refitune_rest_restricted_denied_status() )
 				);
 			}
 			return $result;
@@ -93,12 +102,12 @@ if ( ! empty( $refitune_settings['rest_disable_comments'] ) ) {
 	add_filter(
 		'rest_pre_dispatch',
 		static function ( $result, $server, $request ) {
-			$route = $request->get_route();
-			if ( 0 === strpos( $route, '/wp/v2/comments' ) && ! refitune_rest_restricted_endpoint_allowed() ) {
+			$refitune_route = $request->get_route();
+			if ( 0 === strpos( $refitune_route, '/wp/v2/comments' ) && ! refitune_rest_restricted_endpoint_allowed() ) {
 				return new WP_Error(
 					'rest_forbidden',
-					__( 'The comments endpoint requires authentication.', 'refitune' ),
-					array( 'status' => 401 )
+					__( 'The comments endpoint requires administrator access.', 'refitune' ),
+					array( 'status' => refitune_rest_restricted_denied_status() )
 				);
 			}
 			return $result;
@@ -115,12 +124,12 @@ if ( ! empty( $refitune_settings['rest_disable_search'] ) ) {
 	add_filter(
 		'rest_pre_dispatch',
 		static function ( $result, $server, $request ) {
-			$route = $request->get_route();
-			if ( 0 === strpos( $route, '/wp/v2/search' ) && ! refitune_rest_restricted_endpoint_allowed() ) {
+			$refitune_route = $request->get_route();
+			if ( 0 === strpos( $refitune_route, '/wp/v2/search' ) && ! refitune_rest_restricted_endpoint_allowed() ) {
 				return new WP_Error(
 					'rest_forbidden',
-					__( 'The search endpoint requires authentication.', 'refitune' ),
-					array( 'status' => 401 )
+					__( 'The search endpoint requires administrator access.', 'refitune' ),
+					array( 'status' => refitune_rest_restricted_denied_status() )
 				);
 			}
 			return $result;

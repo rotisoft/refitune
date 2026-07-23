@@ -19,31 +19,35 @@ require_once REFITUNE_PATH . 'includes/svg-sanitizer.php';
  * @param array $roles Allowed roles.
  * @return bool
  */
-function refitune_user_has_upload_role( array $roles ): bool {
-	if ( empty( $roles ) || ! is_user_logged_in() ) {
+function refitune_user_has_upload_role( array $refitune_roles ): bool {
+	if ( empty( $refitune_roles ) || ! is_user_logged_in() ) {
 		return false;
 	}
-	$user = wp_get_current_user();
-	return (bool) array_intersect( (array) $user->roles, $roles );
+	$refitune_user = wp_get_current_user();
+	return (bool) array_intersect( (array) $refitune_user->roles, $refitune_roles );
 }
 
 /**
  * Whether the current user may upload the given extension.
  *
- * @param string $ext File extension (svg or avif).
+ * @param string $refitune_ext File extension (svg or avif).
  * @return bool
  */
-function refitune_user_can_upload_extension( string $ext ): bool {
-	$settings = get_option( 'refitune_settings', array() );
-
-	if ( 'svg' === $ext ) {
-		$roles = isset( $settings['svg_upload_roles'] ) ? (array) $settings['svg_upload_roles'] : array();
-		return ! empty( $roles ) && refitune_user_has_upload_role( $roles );
+function refitune_user_can_upload_extension( string $refitune_ext ): bool {
+	if ( ! refitune_network_allows_upload_extension( $refitune_ext ) ) {
+		return false;
 	}
 
-	if ( 'avif' === $ext ) {
-		$roles = isset( $settings['avif_upload_roles'] ) ? (array) $settings['avif_upload_roles'] : array();
-		return ! empty( $roles ) && refitune_user_has_upload_role( $roles );
+	$refitune_settings = refitune_get_settings();
+
+	if ( 'svg' === $refitune_ext ) {
+		$refitune_roles = isset( $refitune_settings['svg_upload_roles'] ) ? (array) $refitune_settings['svg_upload_roles'] : array();
+		return ! empty( $refitune_roles ) && refitune_user_has_upload_role( $refitune_roles );
+	}
+
+	if ( 'avif' === $refitune_ext ) {
+		$refitune_roles = isset( $refitune_settings['avif_upload_roles'] ) ? (array) $refitune_settings['avif_upload_roles'] : array();
+		return ! empty( $refitune_roles ) && refitune_user_has_upload_role( $refitune_roles );
 	}
 
 	return false;
@@ -52,31 +56,59 @@ function refitune_user_can_upload_extension( string $ext ): bool {
 /**
  * Sanitize an SVG file in place using the allowlist sanitizer.
  *
- * @param string $path Path to the uploaded temp file.
+ * Parses each temp path at most once per request. Rejects oversized files
+ * before DOM parsing.
+ *
+ * @param string $refitune_path Path to the uploaded temp file.
  * @return bool True when the file is safe (and was rewritten with clean markup).
  */
-function refitune_svg_sanitize_file( string $path ): bool {
-	if ( ! is_readable( $path ) || ! is_writable( $path ) ) {
+function refitune_svg_sanitize_file( string $refitune_path ): bool {
+	static $refitune_sanitized_paths = array();
+
+	if ( ! is_readable( $refitune_path ) ) {
 		return false;
+	}
+
+	$refitune_realpath = realpath( $refitune_path );
+	$refitune_cache_key = false !== $refitune_realpath ? $refitune_realpath : $refitune_path;
+
+	if ( isset( $refitune_sanitized_paths[ $refitune_cache_key ] ) ) {
+		return $refitune_sanitized_paths[ $refitune_cache_key ];
+	}
+
+	$refitune_max_bytes = (int) apply_filters( 'refitune_svg_max_bytes', 512 * 1024 );
+
+	if ( $refitune_max_bytes > 0 ) {
+		$refitune_size = filesize( $refitune_path );
+
+		if ( false === $refitune_size || $refitune_size > $refitune_max_bytes ) {
+			$refitune_sanitized_paths[ $refitune_cache_key ] = false;
+			return false;
+		}
 	}
 
 	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local temp upload file.
-	$content = file_get_contents( $path );
+	$refitune_content = file_get_contents( $refitune_path );
 
-	if ( false === $content || '' === trim( (string) $content ) ) {
+	if ( false === $refitune_content || '' === trim( (string) $refitune_content ) ) {
+		$refitune_sanitized_paths[ $refitune_cache_key ] = false;
 		return false;
 	}
 
-	$clean = refitune_sanitize_svg_markup( $content );
+	$refitune_clean = refitune_sanitize_svg_markup( $refitune_content );
 
-	if ( false === $clean ) {
+	if ( false === $refitune_clean ) {
+		$refitune_sanitized_paths[ $refitune_cache_key ] = false;
 		return false;
 	}
 
 	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_put_contents_file_put_contents -- Local temp upload file.
-	$written = file_put_contents( $path, $clean );
+	$refitune_written = file_put_contents( $refitune_path, $refitune_clean );
+	$refitune_ok      = false !== $refitune_written;
 
-	return false !== $written;
+	$refitune_sanitized_paths[ $refitune_cache_key ] = $refitune_ok;
+
+	return $refitune_ok;
 }
 
 /**
@@ -96,7 +128,8 @@ function refitune_svg_avif_enable_mimes( array $mimes ): array {
 
 	return $mimes;
 }
-add_filter( 'upload_mimes', 'refitune_svg_avif_enable_mimes' );
+// Priority 9: run before multisite check_upload_mimes() so the network policy can filter.
+add_filter( 'upload_mimes', 'refitune_svg_avif_enable_mimes', 9 );
 
 /**
  * Allow SVG/AVIF only when the user is authorized and the file passes checks.
@@ -114,13 +147,13 @@ function refitune_svg_avif_validate_filetype( array $data, string $file, string 
 		return $data;
 	}
 
-	$ext = strtolower( pathinfo( $filename, PATHINFO_EXTENSION ) );
+	$refitune_ext = strtolower( pathinfo( $filename, PATHINFO_EXTENSION ) );
 
-	if ( ! in_array( $ext, array( 'svg', 'avif' ), true ) ) {
+	if ( ! in_array( $refitune_ext, array( 'svg', 'avif' ), true ) ) {
 		return $data;
 	}
 
-	if ( ! refitune_user_can_upload_extension( $ext ) ) {
+	if ( ! refitune_user_can_upload_extension( $refitune_ext ) ) {
 		return array(
 			'ext'             => false,
 			'type'            => false,
@@ -128,10 +161,10 @@ function refitune_svg_avif_validate_filetype( array $data, string $file, string 
 		);
 	}
 
-	$allowed_mimes = null !== $mimes ? $mimes : get_allowed_mime_types();
-	$filetype      = wp_check_filetype( $filename, $allowed_mimes );
+	$refitune_allowed_mimes = null !== $mimes ? $mimes : get_allowed_mime_types();
+	$refitune_filetype      = wp_check_filetype( $filename, $refitune_allowed_mimes );
 
-	if ( empty( $filetype['type'] ) || empty( $filetype['ext'] ) ) {
+	if ( empty( $refitune_filetype['type'] ) || empty( $refitune_filetype['ext'] ) ) {
 		return array(
 			'ext'             => false,
 			'type'            => false,
@@ -139,7 +172,7 @@ function refitune_svg_avif_validate_filetype( array $data, string $file, string 
 		);
 	}
 
-	if ( 'svg' === $ext && ! refitune_svg_sanitize_file( $file ) ) {
+	if ( 'svg' === $refitune_ext && ! refitune_svg_sanitize_file( $file ) ) {
 		return array(
 			'ext'             => false,
 			'type'            => false,
@@ -147,8 +180,8 @@ function refitune_svg_avif_validate_filetype( array $data, string $file, string 
 		);
 	}
 
-	$data['ext']             = $filetype['ext'];
-	$data['type']            = $filetype['type'];
+	$data['ext']             = $refitune_filetype['ext'];
+	$data['type']            = $refitune_filetype['type'];
 	$data['proper_filename'] = $filename;
 
 	return $data;
@@ -166,9 +199,9 @@ function refitune_svg_security_check( array $file ): array {
 		return $file;
 	}
 
-	$ext = strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) );
+	$refitune_ext = strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) );
 
-	if ( 'svg' !== $ext ) {
+	if ( 'svg' !== $refitune_ext ) {
 		return $file;
 	}
 
@@ -183,7 +216,7 @@ function refitune_svg_security_check( array $file ): array {
 
 	return $file;
 }
-add_filter( 'wp_handle_upload_prefilter', 'refitune_svg_security_check' );
+add_filter( 'wp_handle_upload_prefilter', 'refitune_svg_security_check', 10 );
 
 /**
  * Fix SVG preview in the media library (JS response).
@@ -201,7 +234,7 @@ function refitune_svg_fix_display( array $response ): array {
 	}
 	return $response;
 }
-add_filter( 'wp_prepare_attachment_for_js', 'refitune_svg_fix_display' );
+add_filter( 'wp_prepare_attachment_for_js', 'refitune_svg_fix_display', 10 );
 
 /**
  * Fix SVG thumbnail display in the media library.
@@ -213,8 +246,8 @@ add_filter( 'wp_prepare_attachment_for_js', 'refitune_svg_fix_display' );
  */
 function refitune_svg_media_thumbnails( array $response, WP_Post $attachment, $meta ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Required by filter signature.
 	if ( 'image/svg+xml' === $response['mime'] && empty( $response['sizes'] ) ) {
-		$svg_path = get_attached_file( $attachment->ID );
-		if ( $svg_path && file_exists( $svg_path ) ) {
+		$refitune_svg_path = get_attached_file( $attachment->ID );
+		if ( $refitune_svg_path && file_exists( $refitune_svg_path ) ) {
 			$response['sizes'] = array(
 				'full' => array(
 					'url'         => $response['url'],

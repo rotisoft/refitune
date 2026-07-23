@@ -1,6 +1,6 @@
 <?php
 /**
- * oEmbed letiltása – automatikus külső tartalom beágyazás kikapcsolása.
+ * Disable oEmbed - turn off automatic embedding of external content.
  *
  * @package RefiTune
  */

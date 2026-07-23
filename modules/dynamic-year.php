@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return string The year or duration.
  */
 function refitune_year_shortcode( $atts ): string {
-	$atts = shortcode_atts(
+	$refitune_atts = shortcode_atts(
 		array(
 			'from' => '',
 		),
@@ -32,18 +32,18 @@ function refitune_year_shortcode( $atts ): string {
 		'refi-year'
 	);
 
-	$current_year = (int) gmdate( 'Y' );
+	$refitune_current_year = (int) gmdate( 'Y' );
 
 	// If 'from' attribute is provided, calculate duration.
-	if ( ! empty( $atts['from'] ) && is_numeric( $atts['from'] ) ) {
-		$from_year = (int) $atts['from'];
-		$duration  = $current_year - $from_year;
+	if ( ! empty( $refitune_atts['from'] ) && is_numeric( $refitune_atts['from'] ) ) {
+		$refitune_from_year = (int) $refitune_atts['from'];
+		$refitune_duration  = $refitune_current_year - $refitune_from_year;
 
 		// Only return positive durations.
-		return $duration > 0 ? (string) $duration : '0';
+		return $refitune_duration > 0 ? (string) $refitune_duration : '0';
 	}
 
 	// Otherwise, return the current year.
-	return (string) $current_year;
+	return (string) $refitune_current_year;
 }
 add_shortcode( 'refi-year', 'refitune_year_shortcode' );

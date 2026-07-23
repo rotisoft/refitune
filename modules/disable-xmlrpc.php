@@ -1,16 +1,16 @@
 <?php
 /**
- * XML-RPC teljes letiltása.
+ * Disable XML-RPC completely.
  *
- * - Letiltja az XML-RPC API-t (404-es válasz minden kérésre).
- * - Automatikusan eltávolítja az RSD (Really Simple Discovery) linket is,
- *   mivel az az XML-RPC felfedezését szolgálja.
- * - Security-through-obscurity: 404 válasz azt sugallja, hogy az xmlrpc.php
- *   nem is létezik, így az attackerek számára rejtve marad a blokkolás.
+ * - Disables the XML-RPC API (404 response for every request).
+ * - Also removes the RSD (Really Simple Discovery) link automatically,
+ *   since it exists to advertise XML-RPC.
+ * - Security through obscurity: the 404 response suggests that xmlrpc.php
+ *   does not exist, hiding the fact that it is blocked.
  *
- * Fontos: Az XML-RPC egy általános távoli API interfész, amit egyes pluginek
- * (pl. Jetpack) és alkalmazások használnak. Ha Jetpack szinkronizációt vagy
- * mobil alkalmazást használsz, ne aktiváld ezt a funkciót.
+ * Note: XML-RPC is a generic remote API used by some plugins (e.g. Jetpack)
+ * and applications. Do not enable this feature when using Jetpack sync or
+ * the WordPress mobile app.
  *
  * @package RefiTune
  */
@@ -19,13 +19,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Minden XML-RPC kérés 403-as választ kap.
-add_filter( 'xmlrpc_enabled', '__return_false' );
+// Disable the XML-RPC API entirely.
+add_filter( 'xmlrpc_enabled', '__return_false', 10 );
 
-// RSD link automatikus eltávolítása, mivel az XML-RPC discovery-t szolgálja.
+// Remove the RSD link automatically since it serves XML-RPC discovery.
 remove_action( 'wp_head', 'rsd_link' );
 
-// Ha valami mégis eljutna az xmlrpc_call hook-ig, leállítjuk 404-es válasszal.
+// If anything still reaches the xmlrpc_call hook, stop it with a 404 response.
 add_action(
 	'xmlrpc_call',
 	static function (): void {
@@ -34,5 +34,6 @@ add_action(
 			'404 Not Found',
 			array( 'response' => 404 )
 		);
-	}
+	},
+	10
 );
