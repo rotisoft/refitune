@@ -78,7 +78,7 @@ function refitune_get_features() {
 	),
 	'remove_asset_versions' => array(
 		'label'       => __( 'Remove Asset Version Query Strings', 'refitune' ),
-		'description' => __( 'Removes the ?ver= query parameter from CSS and JavaScript URLs on frontend pages. Warning: can break cache busting after theme/plugin updates unless your CDN or host purges by path.', 'refitune' ),
+		'description' => __( 'Removes ?ver= from frontend CSS and JS URLs. Can break cache busting after theme or plugin updates unless your CDN or host purges by path.', 'refitune' ),
 		'category'    => 'performance',
 	),
 	'post_revisions'  => array(
@@ -195,7 +195,7 @@ function refitune_get_features() {
 	),
 	'block_visibility' => array(
 		'label'               => __( 'Block Visibility (Mobile)', 'refitune' ),
-		'description'         => __( 'Adds a visibility option to every Gutenberg block to control whether it appears on mobile, desktop, or both. Uses User-Agent detection; full-page caches must vary on User-Agent or CSS media queries are safer for layout-only hiding.', 'refitune' ),
+		'description'         => __( 'Per-block mobile or desktop visibility in the editor. User-Agent based; full-page cache must vary on User-Agent, or use CSS media queries for layout-only hiding.', 'refitune' ),
 		'category'            => 'visual',
 		'max_wp_version'      => '7.0',
 		'unavailable_notice'  => __( 'A dedicated core feature has been available for this since WordPress 7.0.', 'refitune' ),
@@ -250,7 +250,7 @@ function refitune_get_features() {
 	),
 	'avif_upload'     => array(
 		'label'       => __( 'AVIF Upload', 'refitune' ),
-		'description' => __( 'Allows AVIF image file uploads. Select which roles can upload AVIF. Full WordPress AVIF support requires 6.5+; on 6.2-6.4 only MIME upload is enabled.', 'refitune' ),
+		'description' => __( 'Allows AVIF uploads for selected roles. Full support requires WordPress 6.5+; on 6.2-6.4 only MIME upload is enabled.', 'refitune' ),
 		'type'        => 'role_select',
 		'option_key'  => 'avif_upload_roles',
 		'enable_key'  => 'avif_upload_enabled',

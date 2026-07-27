@@ -4,7 +4,7 @@ Tags: performance, security, tweaks, optimization, toolkit
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://rotistudio.com/contact/
@@ -134,6 +134,9 @@ No. While `WP_ENVIRONMENT_TYPE` is `production`, RefiTune will not run without e
 
 == Changelog ==
 
+= 1.3.1 =
+* Minor language file fixes.
+
 = 1.3.0 =
 * New: Convert Uploads to WebP (JPEG/PNG), optional resize, original removal when conversion succeeds
 * Security: WebP conversion uses unique filenames and refuses unsafe overwrites; source deleted only after a valid WebP
@@ -170,6 +173,9 @@ No. While `WP_ENVIRONMENT_TYPE` is `production`, RefiTune will not run without e
 * WordPress 7.0 and PHP 8.5 compatibility check
 
 == Upgrade Notice ==
+
+= 1.3.1 =
+Hungarian translation fixes for Help and settings module descriptions; shorter English module summaries on the settings screen.
 
 = 1.3.0 =
 WebP upload conversion plus login, upload, SVG, SMTP, and admin-access hardening. Review Login Limit whitelist and SMTP environment type after update.

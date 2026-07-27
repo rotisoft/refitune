@@ -3,7 +3,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: RefiTune - Site refiner toolkit 1.3.0\n"
+"Project-Id-Version: RefiTune - Site refiner toolkit 1.3.1\n"
 "Report-Msgid-Bugs-To: https://rotistudio.com\n"
 "POT-Creation-Date: 2026-07-14 15:42+0200\n"
 "PO-Revision-Date: 2026-07-14 15:42+0200\n"
@@ -117,8 +117,8 @@ msgstr ""
 
 #: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php:81
 msgid ""
-"Removes the ?ver= query parameter from CSS and JavaScript URLs on frontend "
-"pages."
+"Removes ?ver= from frontend CSS and JS URLs. Can break cache busting after theme or "
+"plugin updates unless your CDN or host purges by path."
 msgstr ""
 
 #: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php:85
@@ -307,10 +307,10 @@ msgstr ""
 msgid "Block Visibility (Mobile)"
 msgstr ""
 
-#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php:189
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php:198
 msgid ""
-"Adds a visibility option to every Gutenberg block to control whether it "
-"appears on mobile, desktop, or both."
+"Per-block mobile or desktop visibility in the editor. User-Agent based; full-page "
+"cache must vary on User-Agent, or use CSS media queries for layout-only hiding."
 msgstr ""
 
 #: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php:192
@@ -403,8 +403,10 @@ msgstr ""
 msgid "AVIF Upload"
 msgstr ""
 
-#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php:244
-msgid "Allows AVIF image file uploads. Select which roles can upload AVIF."
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php:253
+msgid ""
+"Allows AVIF uploads for selected roles. Full support requires WordPress 6.5+; on 6.2-6.4 "
+"only MIME upload is enabled."
 msgstr ""
 
 #: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php:251
@@ -643,24 +645,18 @@ msgstr ""
 #: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:56
 msgid ""
 "WordPress appends a <code>?ver=</code> query parameter to CSS and JavaScript"
-" URLs so browsers fetch fresh files after updates. This module removes that "
-"parameter on frontend pages for cleaner URLs and better compatibility with "
-"CDNs and reverse proxies that cache assets by path.<br><br><strong>How it "
-"works:</strong><ul><li>Filters <code>style_loader_src</code> and "
-"<code>script_loader_src</code> on the frontend only</li><li>Strips the "
-"<code>ver</code> argument from same-site asset URLs</li><li>Leaves wp-admin "
-"and third-party (external host) assets "
-"unchanged</li></ul><strong>Important:</strong> after a theme or plugin "
-"update, visitors may briefly receive cached old CSS or JavaScript until "
-"browser or CDN cache expires. If stale assets become a problem, pair this "
-"feature with server-level cache invalidation or another versioning "
-"strategy.<br><br><strong>Note:</strong> only the <code>ver</code> query "
-"argument is removed from URLs handled by WordPress enqueue; other query "
-"parameters are preserved. Some CSS or JavaScript files may still show "
-"<code>?ver=</code> in the page source if they are not loaded through the "
-"standard enqueue system, if another plugin or theme outputs the URL directly"
-" with a version parameter, or if the version string is required for that "
-"asset to work correctly."
+" URLs so browsers and CDNs can fetch fresh files after updates. This module "
+"removes that parameter on frontend pages.<br><br><strong>How it works:</stro"
+"ng><ul><li>Filters <code>style_loader_src</code> and <code>script_loader_src"
+"</code> on the frontend only</li><li>Strips the <code>ver</code> argument fr"
+"om same-site asset URLs</li><li>Leaves wp-admin and third-party (external ho"
+"st) assets unchanged</li></ul><strong>Important:</strong> removing <code>?ve"
+"r=</code> breaks WordPress cache-busting. After a theme or plugin update, br"
+"owsers, reverse proxies, or CDNs may keep serving old CSS/JS until their cac"
+"he expires or you purge by path. Prefer content-hashed filenames or a CDN pu"
+"rge workflow instead of this module when long cache TTLs are in use.<br><br>"
+"<strong>Note:</strong> only the <code>ver</code> query argument is removed f"
+"rom URLs handled by WordPress enqueue; other query parameters are preserved."
 msgstr ""
 
 #: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:62
@@ -688,12 +684,15 @@ msgstr ""
 
 #: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:74
 msgid ""
-"WordPress keeps deleted posts, pages, and media files in the trash for 30 "
-"days by default before permanently deleting them. You can change this period"
-" to automatically clean up your database more frequently or keep items "
-"longer for recovery purposes. The value is specified in days. Setting a "
-"lower value (e.g., 7 days) reduces database size but gives you less time to "
-"recover accidentally deleted items."
+"WordPress keeps deleted posts, pages, and media files in the trash for 30 da"
+"ys by default before permanently deleting them. You can change this period t"
+"o automatically clean up your database more frequently or keep items longer "
+"for recovery purposes. The value is specified in days. Setting a lower value"
+" (e.g., 7 days) reduces database size but gives you less time to recover acc"
+"identally deleted items.<br><br><strong>Performance:</strong> cleanup runs i"
+"n batches (default 100 items per cron pass) and reschedules itself when more"
+" expired trash remains, so large queues do not exhaust memory in a single ru"
+"n."
 msgstr ""
 
 #: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:80
@@ -753,19 +752,19 @@ msgid ""
 " require XML-RPC!</strong>"
 msgstr ""
 
-#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:94
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:100
 msgid ""
-"The trackback and pingback mechanism is an automatic notification system "
-"between WordPress blogs, activated when you link to another WordPress site "
-"in a post. Today it's primarily a source of spam and security risk. This "
-"feature: closes pings on all existing and new posts (at runtime, without "
-"database modification), removes pingback XML-RPC methods (so XML-RPC remains"
-" active but pingback features don't), removes the <code>X-Pingback</code> "
-"HTTP header and pingback URL (<code>&lt;link rel=\"pingback\"&gt;</code>) "
-"from the source, and rejects direct HTTP trackback requests with a 403."
+"The trackback and pingback mechanism is an automatic notification system bet"
+"ween WordPress blogs, activated when you link to another WordPress site in a"
+" post. Today it's primarily a source of spam and security risk. This featu"
+"re: closes pings on all existing and new posts (at runtime, without database"
+" modification), removes pingback XML-RPC methods (so XML-RPC remains active "
+"but pingback features don't), removes the <code>X-Pingback</code> HTTP hea"
+"der and pingback URL (<code>&lt;link rel=\"pingback\"&gt;</code>) from the s"
+"ource, and rejects direct HTTP trackback requests with a 403."
 msgstr ""
 
-#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:100
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:106
 msgid ""
 "Disables WordPress's built-in plugin and theme editor functionality in the "
 "admin area. After activation, the <em>Plugins &gt; Editor</em> and "
@@ -776,23 +775,22 @@ msgid ""
 "server files in case of compromised administrator accounts."
 msgstr ""
 
-#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:106
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:112
 msgid ""
 "WordPress and WooCommerce add <code>&lt;meta name=\"generator\"&gt;</code> "
 "tags to the HTML source that reveal the installed software version. "
 "Attackers can use this information to target known vulnerabilities. This "
-"feature removes those tags from the page "
-"output.<br><br><strong>Options:</strong><ul><li><strong>WordPress:</strong> "
-"removes the default <code>wp_generator</code> output from "
-"<code>wp_head</code></li><li><strong>WooCommerce:</strong> available only "
-"when WooCommerce is active; disables the WooCommerce generator tag via the "
-"<code>woocommerce_generator_tag</code> "
+"feature removes those tags from the page output.<br><br><strong>Options:</"
+"strong><ul><li><strong>WordPress:</strong> removes the default "
+"<code>wp_generator</code> output from <code>wp_head</code></li><li><strong>"
+"WooCommerce:</strong> available only when WooCommerce is active; disables "
+"the WooCommerce generator tag via the <code>woocommerce_generator_tag</code> "
 "filter</li></ul><strong>Note:</strong> hiding version numbers is a useful "
 "hardening step, but it does not replace keeping WordPress, themes, and "
 "plugins up to date."
 msgstr ""
 
-#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:112
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:118
 msgid ""
 "Controls automatic background updates and how often WordPress checks for new"
 " versions.<br><br><strong>Update types (WordPress default / Enable / "
@@ -921,18 +919,23 @@ msgid ""
 "feature is not active."
 msgstr ""
 
-#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:156
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:162
 msgid ""
-"Adds a \"Visibility\" panel to every Gutenberg block in the block editor "
-"(Inspector Controls). You can set whether the block is always visible, "
-"appears only on mobile, or only on desktop. The mobile/desktop decision "
-"happens server-side using WordPress core's <code>wp_is_mobile()</code> "
-"function, so the block's HTML code is completely omitted from the source on "
-"the wrong device - not just hidden with CSS. This ensures better performance"
-" and cleaner HTML output."
+"Adds a \"Visibility\" panel to every Gutenberg block in the block editor (In"
+"spector Controls). You can set whether the block is always visible, appears "
+"only on mobile, or only on desktop. The mobile/desktop decision happens serv"
+"er-side using WordPress core's <code>wp_is_mobile()</code> function, so th"
+"e block's HTML is omitted on the wrong device - not only hidden with CSS.<"
+"br><br><strong>Cache warning:</strong> <code>wp_is_mobile()</code> is User-A"
+"gent based, not viewport based. Full-page caches that do not vary on User-Ag"
+"ent can serve the wrong variant (for example a desktop-cached page to a phon"
+"e). RefiTune sends a <code>Vary: User-Agent</code> header while this module "
+"is active; your CDN or page cache must honour it. For layout-only hiding, CS"
+"S media queries are usually safer.<br><br><strong>Note:</strong> do not use "
+"this feature as an access-control or secrecy boundary."
 msgstr ""
 
-#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:162
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:168
 msgid ""
 "Customize the WordPress login page (wp-login.php) logo, background color, "
 "primary color, and language switcher visibility. <strong>Logo "
@@ -1043,15 +1046,17 @@ msgid ""
 "all other users, SVG remains prohibited."
 msgstr ""
 
-#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:214
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:220
 msgid ""
-"Allows AVIF image files to be uploaded to the media library for selected "
-"WordPress roles. AVIF is a modern, highly efficient image format that is not"
-" supported by default in WordPress versions prior to WP 6.1. The plugin "
-"ensures proper MIME type handling on older WP versions as well."
+"Allows AVIF image files to be uploaded to the media library for selected Wor"
+"dPress roles.<br><br><strong>WordPress support:</strong> native AVIF handlin"
+"g (metadata, editor, generated sizes) arrived in WordPress 6.5. On WordPress"
+" 6.2-6.4 this module mainly enables the MIME type for upload; full image pro"
+"cessing depends on your PHP GD/Imagick build and may be incomplete. Prefer W"
+"ordPress 6.5+ for production AVIF workflows."
 msgstr ""
 
-#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:220
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:226
 msgid ""
 "Set custom redirect URLs per role after login and logout. In the settings, "
 "two fields are available for each WordPress role (administrator, editor, "
@@ -1706,3 +1711,5 @@ msgid ""
 "This SVG file cannot be uploaded for security reasons. It may contain "
 "dangerous code."
 msgstr ""
+
+
