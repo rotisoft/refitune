@@ -2,9 +2,9 @@
 Contributors: rtomo, rotistudio
 Tags: performance, security, tweaks, optimization, toolkit
 Requires at least: 6.2
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.3.1
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://rotistudio.com/contact/
@@ -19,7 +19,7 @@ Hungarian: [Magyar nyelvű bővítmény leírás](https://rotistudio.hu/bovitmen
 
 Enable or disable features individually. A clean dashboard shows what is active. In-plugin Help pages document behaviour, trade-offs, and requirements.
 
-**What's Inside? (35 Modules)**
+**What's Inside? (37 Modules)**
 
 **Performance:**
 * **Header Cleanup** - Strip unnecessary wp_head output for leaner pages.
@@ -27,19 +27,20 @@ Enable or disable features individually. A clean dashboard shows what is active.
 * **Disable Emoji** - Remove WordPress emoji scripts and styles.
 * **Disable jQuery Migrate** - Drop legacy jquery-migrate when your stack does not need it.
 * **Disable oEmbed** - Stop automatic embeds from pasted YouTube, Vimeo, Twitter/X, and similar URLs.
-* **Remove Asset Version Query Strings** - Strip `?ver=` from front-end CSS/JS (can break cache busting; prefer CDN purge or hashed filenames).
-* **Post Revisions Limit** - Cap stored revisions per post.
-* **Auto-save Interval** - Change how often the editor auto-saves.
-* **Trash Auto-Delete** - Set trash retention; expired items are removed in batches so large queues stay memory-safe.
+* **Remove Asset Version Query Strings** - Strip `?ver=` from front-end CSS/JS (can break cache busting; prefer CDN purge or hashed filenames). Locked when `WP_CACHE` is true in `wp-config.php`.
+* **Post Revisions Limit** - Cap stored revisions per post. Locked when `WP_POST_REVISIONS` is defined in `wp-config.php`.
+* **Auto-save Interval** - Change how often the editor auto-saves. Locked when `AUTOSAVE_INTERVAL` is defined in `wp-config.php`.
+* **Trash Auto-Delete** - Set trash retention; expired items are removed in batches so large queues stay memory-safe. Locked when `EMPTY_TRASH_DAYS` is defined in `wp-config.php`.
 * **Convert Uploads to WebP** - Convert JPEG/PNG to WebP on upload, optional max size resize, then remove the original (GD or Imagick with WebP; uses unique filenames and refuses unsafe overwrites).
 * **Heartbeat API Control** - Tune or disable Heartbeat in admin, front end, and the post editor.
+* **Resource Preload** - Add early `link rel="preload"` hints for internal site assets by location (everywhere, front page, blog, or post ID), with `as`, `type`, `crossorigin`, and `fetchpriority`. Optional one-click import of active WordPress Font Library fonts (AJAX on demand).
 
 **Security:**
 * **Hide Generator Tags** - Remove WordPress (and WooCommerce, when active) version meta tags.
 * **Disable XML-RPC** - Respond to XML-RPC with 404 and remove RSD discovery.
 * **Disable Trackback/Pingback** - Close pings and strip pingback methods/headers.
-* **Disable File Editor** - Set `DISALLOW_FILE_EDIT` so theme/plugin editors stay off.
-* **Automatic Updates Control** - Tri-state plugin, theme, translation, and core updates; reschedule update checks. Respects `AUTOMATIC_UPDATER_DISABLED` and `WP_AUTO_UPDATE_CORE` when defined.
+* **Disable File Editor** - Set `DISALLOW_FILE_EDIT` so theme/plugin editors stay off. Locked in the UI when the constant is already defined in `wp-config.php`.
+* **Automatic Updates Control** - Tri-state plugin, theme, translation, and core updates; reschedule update checks. Respects `AUTOMATIC_UPDATER_DISABLED` (full lock) and `WP_AUTO_UPDATE_CORE` (core-only; plugins/themes/translations and update checks stay configurable).
 * **Login Error Messages** - Generic login errors to reduce username enumeration.
 * **Restrict Admin Access** - Choose which roles may open wp-admin UI. Users with `manage_options` always keep access. Front-end `admin-ajax.php` is intentionally not blocked.
 * **REST API Restrictions** - Limit selected core REST routes to users with `manage_options`.
@@ -48,7 +49,8 @@ Enable or disable features individually. A clean dashboard shows what is active.
 
 **Visual:**
 * **Hide Admin Bar** - Hide the admin bar for selected roles.
-* **Block Visibility (Mobile)** - Show/hide blocks by device via `wp_is_mobile()`; sends `Vary: User-Agent` (full-page caches must honour it).
+* **Block Visibility (Mobile)** - Per-block always / mobile-only / desktop-only via `wp_is_mobile()`; omits HTML server-side; sends `Vary: User-Agent` (full-page caches must honour it). Also available in the core Hide block modal.
+* **Block Visibility (Roles)** - Per-block visibility for guests, logged-in users, or selected roles; omits HTML server-side. Shares the Visibility panel and Hide block modal with the mobile module.
 * **Login Page Customization** - Brand wp-login.php with logo and colours.
 
 **Email:**
@@ -74,7 +76,7 @@ GitHub: [github.com/rotisoft/refitune](https://github.com/rotisoft/refitune)
 
 1. Upload to `/wp-content/plugins/refitune` (or install from WordPress.org).
 2. Activate under Plugins.
-3. Open **Tools > RefiTune - Site refiner toolkit** and enable the modules you need.
+3. Open **Tools > RefiTune Toolkit** and enable the modules you need.
 4. Use the Help tab for per-feature documentation.
 
 == Translations ==
@@ -116,7 +118,7 @@ Short downtime windows. Guests get a 503 page; selected roles still browse. Admi
 
 = Can wp-config.php override Automatic Updates Control? =
 
-Yes. `AUTOMATIC_UPDATER_DISABLED` and `WP_AUTO_UPDATE_CORE` override RefiTune background update settings when defined. Update *check* frequency still follows RefiTune cron scheduling.
+Yes. `AUTOMATIC_UPDATER_DISABLED` locks the entire feature (all update types and check frequency). `WP_AUTO_UPDATE_CORE` only locks core auto-updates (`true`, `false`, or `'minor'`) and shows the matching enable/disable state in the UI; plugin, theme, and translation controls and "Check for updates" stay editable. Setting core auto-updates to `false` is treated as a high-risk configuration and shown with a clear danger notice.
 
 = What does "Enable all" mean for plugins and themes? =
 
@@ -133,6 +135,15 @@ No. While `WP_ENVIRONMENT_TYPE` is `production`, RefiTune will not run without e
 3. Help - Detailed documentation for each feature
 
 == Changelog ==
+
+= 1.4.0 =
+* New: Resource Preload - internal-URL `link rel="preload"` hints by location, with as/type/crossorigin/fetchpriority
+* New: Resource Preload - import active fonts from Font Library
+* New: Block Visibility (Roles) - show blocks to guests, logged-in users, or selected roles; shared Visibility panel and Hide block modal
+* Enhancement: Block Visibility (Mobile) available on all supported WordPress versions; controls also appear in the core Hide block modal
+* Enhancement: wp-config awareness for Post Revisions, Autosave, Trash, Automatic Updates, Disable File Editor, Automatic Updates Control and Remove Asset Versions
+* Enhancement: Core auto-update selectors include short plain-language descriptions (minor / major / development)
+* Fix: Palette PNG-8 (indexed) uploads convert to WebP correctly instead of producing an empty image
 
 = 1.3.1 =
 * Minor language file fixes.
@@ -173,6 +184,9 @@ No. While `WP_ENVIRONMENT_TYPE` is `production`, RefiTune will not run without e
 * WordPress 7.0 and PHP 8.5 compatibility check
 
 == Upgrade Notice ==
+
+= 1.4.0 =
+Adds Resource Preload (with Font Library import) and role-based Block Visibility; improves wp-config locks for revisions, updates, file editor, and asset versions; fixes empty WebP from palette PNG-8 uploads.
 
 = 1.3.1 =
 Hungarian translation fixes for Help and settings module descriptions; shorter English module summaries on the settings screen.

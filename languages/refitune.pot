@@ -3,7 +3,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: RefiTune - Site refiner toolkit 1.3.1\n"
+"Project-Id-Version: RefiTune - Site refiner toolkit 1.4.0\n"
 "Report-Msgid-Bugs-To: https://rotistudio.com\n"
 "POT-Creation-Date: 2026-07-14 15:42+0200\n"
 "PO-Revision-Date: 2026-07-14 15:42+0200\n"
@@ -121,7 +121,11 @@ msgid ""
 "plugin updates unless your CDN or host purges by path."
 msgstr ""
 
-#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php:85
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php:82
+msgid "Not recommended when using a cache plugin."
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php:87
 #: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:61
 msgid "Post Revisions Limit"
 msgstr ""
@@ -151,6 +155,33 @@ msgstr ""
 msgid ""
 "Number of days before items in trash are permanently deleted. Recommended: "
 "7-30 days. Default: 30 days"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-settings.php
+msgid ""
+"This value is defined in wp-config.php, so it cannot be changed here."
+msgstr ""
+
+msgid ""
+"Core automatic updates are disabled, which is very dangerous. Remove the "
+"define( 'WP_AUTO_UPDATE_CORE', false ); line from wp-config.php to fix this."
+msgstr ""
+
+msgid ""
+"WP_CACHE is set to true in wp-config.php, so removing asset version query "
+"strings cannot be enabled."
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-dashboard.php
+msgid "Unlimited (wp-config)"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-dashboard.php
+msgid "Disabled (wp-config)"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-dashboard.php
+msgid "Max %d (wp-config)"
 msgstr ""
 
 #: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php:109
@@ -311,6 +342,17 @@ msgstr ""
 msgid ""
 "Per-block mobile or desktop visibility in the editor. User-Agent based; full-page "
 "cache must vary on User-Agent, or use CSS media queries for layout-only hiding."
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php:203
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:167
+msgid "Block Visibility (Roles)"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php:204
+msgid ""
+"Per-block visibility by login state or WordPress role. The block HTML is omitted "
+"server-side for visitors who do not match."
 msgstr ""
 
 #: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php:192
@@ -919,20 +961,24 @@ msgid ""
 "feature is not active."
 msgstr ""
 
-#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:162
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php
 msgid ""
-"Adds a \"Visibility\" panel to every Gutenberg block in the block editor (In"
-"spector Controls). You can set whether the block is always visible, appears "
-"only on mobile, or only on desktop. The mobile/desktop decision happens serv"
-"er-side using WordPress core's <code>wp_is_mobile()</code> function, so th"
-"e block's HTML is omitted on the wrong device - not only hidden with CSS.<"
-"br><br><strong>Cache warning:</strong> <code>wp_is_mobile()</code> is User-A"
-"gent based, not viewport based. Full-page caches that do not vary on User-Ag"
-"ent can serve the wrong variant (for example a desktop-cached page to a phon"
-"e). RefiTune sends a <code>Vary: User-Agent</code> header while this module "
-"is active; your CDN or page cache must honour it. For layout-only hiding, CS"
-"S media queries are usually safer.<br><br><strong>Note:</strong> do not use "
-"this feature as an access-control or secrecy boundary."
+"Adds device controls to the shared <strong>Visibility</strong> panel on every "
+"Gutenberg block (Inspector Controls), and to the core Hide block modal "
+"(Ctrl/Cmd+Shift+H). Options: always visible, mobile only, or desktop only."
+"<br><br><strong>How it works:</strong> the mobile/desktop decision runs "
+"server-side with WordPress core's <code>wp_is_mobile()</code>. On the wrong "
+"device the block HTML is omitted entirely - it is not merely hidden with CSS."
+"<br><br><strong>Shared panel:</strong> when Block Visibility (Roles) is also "
+"enabled, device and role controls appear together in the same Visibility "
+"panel / Hide modal.<br><br><strong>Cache warning:</strong> "
+"<code>wp_is_mobile()</code> is User-Agent based, not viewport based. "
+"Full-page caches that do not vary on User-Agent can serve the wrong variant "
+"(for example a desktop-cached page to a phone). RefiTune sends a "
+"<code>Vary: User-Agent</code> header while this module is active; your CDN "
+"or page cache must honour it. For layout-only hiding, CSS media queries are "
+"usually safer.<br><br><strong>Note:</strong> do not use this feature as an "
+"access-control or secrecy boundary."
 msgstr ""
 
 #: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php:168
@@ -1363,12 +1409,21 @@ msgstr ""
 msgid "Core minor updates:"
 msgstr ""
 
+msgid "Only installs fixes for your current version - the safest choice."
+msgstr ""
+
 #: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-settings.php:600
 msgid "Core major updates:"
 msgstr ""
 
+msgid "Updates to a new major version automatically and may bring compatibility risk."
+msgstr ""
+
 #: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-settings.php:611
 msgid "Core development updates:"
+msgstr ""
+
+msgid "Do not use on a live site - only for beta, RC, or nightly testing."
 msgstr ""
 
 #: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-settings.php:624
@@ -1710,6 +1765,200 @@ msgstr ""
 msgid ""
 "This SVG file cannot be uploaded for security reasons. It may contain "
 "dangerous code."
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\js\block-visibility.js
+msgid "Always visible"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\js\block-visibility.js
+msgid "Desktop only"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\js\block-visibility.js
+msgid "Display by device"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\js\block-visibility.js
+msgid "Mobile only"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\js\block-visibility.js
+msgid "The block HTML is omitted entirely on devices where it should not appear."
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\js\block-visibility.js
+msgid "Visibility"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\js\block-visibility.js
+msgid ""
+"Selected blocks have different visibility settings. Choosing an option applies it to "
+"all selected blocks."
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\js\block-visibility.js
+msgid "Guests only"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\js\block-visibility.js
+msgid "Logged-in users"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\js\block-visibility.js
+msgid "Selected roles"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\js\block-visibility.js
+msgid "Display by role"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\js\block-visibility.js
+msgid "Visible to roles"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\js\block-visibility.js
+msgid ""
+"The block HTML is omitted entirely for visitors who do not match the selected login "
+"or role condition."
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php
+msgid ""
+"Adds role-based controls to the shared <strong>Visibility</strong> panel on every "
+"Gutenberg block, and to the core Hide block modal (Ctrl/Cmd+Shift+H). You can show "
+"a block to everyone, to guests only, to any logged-in user, or only to selected "
+"WordPress roles.<br><br><strong>How it works:</strong> matching happens server-side, "
+"so non-matching visitors do not receive the block HTML at all.<br><br>"
+"<strong>Shared panel:</strong> when Block Visibility (Mobile) is also enabled, "
+"device and role controls appear together in the same Visibility panel / Hide modal."
+"<br><br><strong>Cache warning:</strong> full-page caches that serve the same HTML "
+"to guests and logged-in users can show the wrong variant. Separate cache for "
+"logged-in traffic (or bypass cache when logged in).<br><br><strong>Note:</strong> "
+"do not use this feature as an access-control or secrecy boundary. It omits markup "
+"on the front end; it does not encrypt content or protect private data."
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php
+msgid "Resource Preload"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php
+msgid ""
+"Add link rel=\"preload\" hints to the document head for critical assets. Set "
+"crossorigin for font and fetch preloads."
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\includes\resource-preload-options.php
+msgid "Everywhere"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\includes\resource-preload-options.php
+msgid "Front page"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\includes\resource-preload-options.php
+msgid "Blog page"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\includes\resource-preload-options.php
+msgid "By post ID"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\includes\resource-preload-options.php
+msgid "Preload location"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\includes\resource-preload-options.php
+msgid "Post ID"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\includes\resource-preload-options.php
+msgid "type (optional)"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\includes\resource-preload-options.php
+msgid "crossorigin (default)"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\includes\resource-preload-options.php
+msgid "fetchpriority (default)"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\includes\resource-preload-options.php
+msgid "Remove"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-settings.php
+msgid ""
+"Each row outputs one link rel=\"preload\" tag when the location matches. Only internal "
+"site URLs (starting with your home or site URL) are allowed - one URL per row. Font and "
+"fetch preloads usually need crossorigin=anonymous."
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php
+msgid "Invalid URL, please check it."
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php
+msgid ""
+"This URL does not start with your site URL. It must begin with your site URL."
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-settings.php
+msgid "Add preload"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-settings.php
+msgid "Add Font-Library fonts"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php
+msgid "No active Font Library fonts were found."
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php
+msgid "All active Font Library fonts are already in the list."
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php
+msgid "Could not load Font Library fonts."
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\admin-core.php
+msgid "Insufficient permissions."
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-dashboard.php
+msgid "%d preload(s)"
+msgstr ""
+
+#: C:\Users\tamas\Studio\plugin23456\wp-content\plugins\refitune\admin\page-help.php
+msgid ""
+"Adds early <code>&lt;link rel=\"preload\"&gt;</code> hints to the document "
+"<code>&lt;head&gt;</code> so the browser can fetch critical CSS, fonts, scripts, or "
+"images sooner. Output is wrapped in HTML comments (<code>&lt;!-- RefiTune-Preload --&gt;"
+"</code>) for easier source inspection.<br><br><strong>Rows:</strong> each entry has a "
+"URL, a location (everywhere, front page via <code>is_front_page()</code>, blog page via "
+"<code>is_home()</code>, or a specific post ID), and attributes from the HTML / MDN "
+"preload model: <code>as</code>, optional <code>type</code> (MIME), "
+"<code>crossorigin</code>, and <code>fetchpriority</code>. Use <strong>Add preload</"
+"strong> for a blank row, or remove a row with the trash icon.<br><br><strong>Add Font-"
+"Library fonts:</strong> on click, reads active fonts from the WordPress Font Library "
+"(files under the fonts directory that are enabled in Global Styles) and appends them to "
+"the list. "
+"Defaults per imported row: location everywhere, <code>as=font</code>, <code>type</code> "
+"from the file extension (<code>font/woff2</code> or <code>font/woff</code>), "
+"<code>crossorigin=anonymous</code>, <code>fetchpriority=auto</code>. URLs already in "
+"the list are skipped; empty rows are filled first.<br><br><strong>URLs:</strong> only "
+"same-site URLs are accepted - the value must start with your site URL "
+"(<code>home_url</code> or <code>site_url</code>). One URL per row. Invalid URLs show an "
+"inline error after blur and disable Save until fixed.<br><br><strong>Font and fetch:</"
+"strong> MDN requires a matching <code>crossorigin</code> mode for font and fetch "
+"preloads (typically <code>anonymous</code>), otherwise the preload may not be reused."
+"<br><br><strong>Note:</strong> Preload does not replace a proper cache or CDN strategy. "
+"Only preload assets the page will use soon; over-preloading wastes bandwidth."
 msgstr ""
 
 

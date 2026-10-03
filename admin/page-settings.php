@@ -509,9 +509,11 @@ foreach ( $refitune_features as $refitune_key => $refitune_feature ) {
 
 			<?php elseif ( 'number_input' === $refitune_type ) : ?>
 				<?php
-				$refitune_ni_key         = $refitune_feature['option_key'];
-				$refitune_ni_val         = isset( $refitune_settings[ $refitune_ni_key ] ) ? $refitune_settings[ $refitune_ni_key ] : '';
-				$refitune_ni_min         = isset( $refitune_feature['min'] ) ? (int) $refitune_feature['min'] : 0;
+				$refitune_ni_key    = $refitune_feature['option_key'];
+				$refitune_ni_stored = isset( $refitune_settings[ $refitune_ni_key ] ) ? $refitune_settings[ $refitune_ni_key ] : '';
+				$refitune_ni_locked = refitune_number_input_is_locked_by_wp_config( $refitune_feature );
+				$refitune_ni_val    = refitune_get_number_input_field_value( $refitune_feature, $refitune_ni_stored );
+				$refitune_ni_min    = isset( $refitune_feature['min'] ) ? (int) $refitune_feature['min'] : 0;
 				// Set placeholder based on field type.
 				if ( 'autosave_interval' === $refitune_ni_key ) {
 					$refitune_ni_placeholder = '120';
@@ -522,19 +524,32 @@ foreach ( $refitune_features as $refitune_key => $refitune_feature ) {
 				}
 				?>
 				<div class="refitune-number-input-row">
-					<input
-						type="number"
-						id="refitune_<?php echo esc_attr( $refitune_key ); ?>"
-						name="refitune_settings[<?php echo esc_attr( $refitune_ni_key ); ?>]"
-						value="<?php echo esc_attr( $refitune_ni_val ); ?>"
-						min="<?php echo esc_attr( $refitune_ni_min ); ?>"
-						placeholder="<?php echo esc_attr( $refitune_ni_placeholder ); ?>"
-						class="small-text"
-					/>
-				<p class="description"><?php echo esc_html( $refitune_feature['description'] ); ?></p>
-			</div>
+					<div class="refitune-number-input-fields">
+						<input
+							type="number"
+							id="refitune_<?php echo esc_attr( $refitune_key ); ?>"
+							name="refitune_settings[<?php echo esc_attr( $refitune_ni_key ); ?>]"
+							value="<?php echo esc_attr( $refitune_ni_val ); ?>"
+							min="<?php echo esc_attr( (string) $refitune_ni_min ); ?>"
+							placeholder="<?php echo esc_attr( $refitune_ni_placeholder ); ?>"
+							class="small-text"
+							<?php disabled( $refitune_ni_locked ); ?>
+						/>
+						<p class="refitune-number-input-text"><?php echo esc_html( $refitune_feature['description'] ); ?></p>
+					</div>
+					<?php if ( $refitune_ni_locked ) : ?>
+						<p class="refitune-settings-warning">
+							<?php echo esc_html( refitune_wp_config_locked_message() ); ?>
+						</p>
+					<?php endif; ?>
+				</div>
 
 		<?php elseif ( 'auto_updates_control' === $refitune_type ) : ?>
+			<?php
+			$refitune_au_full_locked = refitune_auto_updates_is_fully_locked_by_wp_config();
+			$refitune_au_core_locked = refitune_auto_updates_core_is_locked_by_wp_config();
+			$refitune_au_core_danger = refitune_auto_updates_core_disabled_in_wp_config();
+			?>
 
 			<label class="refitune-collapsible-trigger">
 				<input
@@ -544,9 +559,18 @@ foreach ( $refitune_features as $refitune_key => $refitune_feature ) {
 					name="refitune_settings[auto_updates_control]"
 					value="1"
 					<?php checked( ! empty( $refitune_settings['auto_updates_control'] ) ); ?>
+					<?php disabled( $refitune_au_full_locked ); ?>
 				/>
 				<strong><?php echo esc_html( $refitune_feature['description'] ); ?></strong>
 			</label>
+
+			<?php if ( $refitune_au_full_locked ) : ?>
+				<p class="refitune-settings-warning"><?php echo esc_html( refitune_wp_config_locked_message() ); ?></p>
+			<?php elseif ( $refitune_au_core_danger ) : ?>
+				<p class="refitune-settings-danger"><?php echo esc_html( refitune_auto_updates_core_disabled_danger_message() ); ?></p>
+			<?php elseif ( $refitune_au_core_locked ) : ?>
+				<p class="refitune-settings-warning"><?php echo esc_html( refitune_wp_config_locked_message() ); ?></p>
+			<?php endif; ?>
 
 			<div class="refitune-collapsible-content">
 				<div class="refitune-auto-updates-wrapper">
@@ -563,7 +587,7 @@ foreach ( $refitune_features as $refitune_key => $refitune_feature ) {
 						<label for="refitune_plugins_auto" style="display: inline-block; width: 200px; font-weight: 600;">
 							<?php esc_html_e( 'Plugins:', 'refitune' ); ?>
 						</label>
-						<select id="refitune_plugins_auto" name="refitune_settings[refitune_plugins_auto]" class="regular-text">
+						<select id="refitune_plugins_auto" name="refitune_settings[refitune_plugins_auto]" class="regular-text" <?php disabled( $refitune_au_full_locked ); ?>>
 							<option value="default" <?php selected( $refitune_plugins_auto, 'default' ); ?>><?php esc_html_e( 'WordPress default', 'refitune' ); ?></option>
 							<option value="enable" <?php selected( $refitune_plugins_auto, 'enable' ); ?>><?php esc_html_e( 'Enable all', 'refitune' ); ?></option>
 							<option value="disable" <?php selected( $refitune_plugins_auto, 'disable' ); ?>><?php esc_html_e( 'Disable all', 'refitune' ); ?></option>
@@ -574,7 +598,7 @@ foreach ( $refitune_features as $refitune_key => $refitune_feature ) {
 						<label for="refitune_auto_update_themes" style="display: inline-block; width: 200px; font-weight: 600;">
 							<?php esc_html_e( 'Themes:', 'refitune' ); ?>
 						</label>
-						<select id="refitune_auto_update_themes" name="refitune_settings[auto_update_themes]" class="regular-text">
+						<select id="refitune_auto_update_themes" name="refitune_settings[auto_update_themes]" class="regular-text" <?php disabled( $refitune_au_full_locked ); ?>>
 							<option value="default" <?php selected( ( $refitune_settings['auto_update_themes'] ?? 'default' ), 'default' ); ?>><?php esc_html_e( 'WordPress default', 'refitune' ); ?></option>
 							<option value="enable" <?php selected( ( $refitune_settings['auto_update_themes'] ?? 'default' ), 'enable' ); ?>><?php esc_html_e( 'Enable all', 'refitune' ); ?></option>
 							<option value="disable" <?php selected( ( $refitune_settings['auto_update_themes'] ?? 'default' ), 'disable' ); ?>><?php esc_html_e( 'Disable all', 'refitune' ); ?></option>
@@ -585,7 +609,7 @@ foreach ( $refitune_features as $refitune_key => $refitune_feature ) {
 						<label for="refitune_auto_update_translations" style="display: inline-block; width: 200px; font-weight: 600;">
 							<?php esc_html_e( 'Translations:', 'refitune' ); ?>
 						</label>
-						<select id="refitune_auto_update_translations" name="refitune_settings[auto_update_translations]" class="regular-text">
+						<select id="refitune_auto_update_translations" name="refitune_settings[auto_update_translations]" class="regular-text" <?php disabled( $refitune_au_full_locked ); ?>>
 							<option value="default" <?php selected( ( $refitune_settings['auto_update_translations'] ?? 'default' ), 'default' ); ?>><?php esc_html_e( 'WordPress default', 'refitune' ); ?></option>
 							<option value="enable" <?php selected( ( $refitune_settings['auto_update_translations'] ?? 'default' ), 'enable' ); ?>><?php esc_html_e( 'Enable', 'refitune' ); ?></option>
 							<option value="disable" <?php selected( ( $refitune_settings['auto_update_translations'] ?? 'default' ), 'disable' ); ?>><?php esc_html_e( 'Disable', 'refitune' ); ?></option>
@@ -594,37 +618,61 @@ foreach ( $refitune_features as $refitune_key => $refitune_feature ) {
 
 					<hr style="margin: 20px 0;" />
 
-					<div style="margin-bottom: 15px;">
-						<label for="refitune_auto_update_core_minor" style="display: inline-block; width: 200px; font-weight: 600;">
+					<?php
+					$refitune_core_minor_val = refitune_get_auto_update_core_field_value(
+						'auto_update_core_minor',
+						$refitune_settings['auto_update_core_minor'] ?? 'default'
+					);
+					$refitune_core_major_val = refitune_get_auto_update_core_field_value(
+						'auto_update_core_major',
+						$refitune_settings['auto_update_core_major'] ?? 'default'
+					);
+					$refitune_core_dev_val = refitune_get_auto_update_core_field_value(
+						'auto_update_core_dev',
+						$refitune_settings['auto_update_core_dev'] ?? 'default'
+					);
+					?>
+
+					<div class="refitune-auto-update-core-row">
+						<label for="refitune_auto_update_core_minor" class="refitune-auto-update-core-label">
 							<?php esc_html_e( 'Core minor updates:', 'refitune' ); ?>
 						</label>
-						<select id="refitune_auto_update_core_minor" name="refitune_settings[auto_update_core_minor]" class="regular-text">
-							<option value="default" <?php selected( ( $refitune_settings['auto_update_core_minor'] ?? 'default' ), 'default' ); ?>><?php esc_html_e( 'WordPress default', 'refitune' ); ?></option>
-							<option value="enable" <?php selected( ( $refitune_settings['auto_update_core_minor'] ?? 'default' ), 'enable' ); ?>><?php esc_html_e( 'Enable', 'refitune' ); ?></option>
-							<option value="disable" <?php selected( ( $refitune_settings['auto_update_core_minor'] ?? 'default' ), 'disable' ); ?>><?php esc_html_e( 'Disable', 'refitune' ); ?></option>
+						<select id="refitune_auto_update_core_minor" name="refitune_settings[auto_update_core_minor]" class="regular-text" <?php disabled( $refitune_au_core_locked ); ?>>
+							<option value="default" <?php selected( $refitune_core_minor_val, 'default' ); ?>><?php esc_html_e( 'WordPress default', 'refitune' ); ?></option>
+							<option value="enable" <?php selected( $refitune_core_minor_val, 'enable' ); ?>><?php esc_html_e( 'Enable', 'refitune' ); ?></option>
+							<option value="disable" <?php selected( $refitune_core_minor_val, 'disable' ); ?>><?php esc_html_e( 'Disable', 'refitune' ); ?></option>
 						</select>
+						<p class="refitune-auto-update-core-desc">
+							<?php esc_html_e( 'Only installs fixes for your current version - the safest choice.', 'refitune' ); ?>
+						</p>
 					</div>
 
-					<div style="margin-bottom: 15px;">
-						<label for="refitune_auto_update_core_major" style="display: inline-block; width: 200px; font-weight: 600;">
+					<div class="refitune-auto-update-core-row">
+						<label for="refitune_auto_update_core_major" class="refitune-auto-update-core-label">
 							<?php esc_html_e( 'Core major updates:', 'refitune' ); ?>
 						</label>
-						<select id="refitune_auto_update_core_major" name="refitune_settings[auto_update_core_major]" class="regular-text">
-							<option value="default" <?php selected( ( $refitune_settings['auto_update_core_major'] ?? 'default' ), 'default' ); ?>><?php esc_html_e( 'WordPress default', 'refitune' ); ?></option>
-							<option value="enable" <?php selected( ( $refitune_settings['auto_update_core_major'] ?? 'default' ), 'enable' ); ?>><?php esc_html_e( 'Enable', 'refitune' ); ?></option>
-							<option value="disable" <?php selected( ( $refitune_settings['auto_update_core_major'] ?? 'default' ), 'disable' ); ?>><?php esc_html_e( 'Disable', 'refitune' ); ?></option>
+						<select id="refitune_auto_update_core_major" name="refitune_settings[auto_update_core_major]" class="regular-text" <?php disabled( $refitune_au_core_locked ); ?>>
+							<option value="default" <?php selected( $refitune_core_major_val, 'default' ); ?>><?php esc_html_e( 'WordPress default', 'refitune' ); ?></option>
+							<option value="enable" <?php selected( $refitune_core_major_val, 'enable' ); ?>><?php esc_html_e( 'Enable', 'refitune' ); ?></option>
+							<option value="disable" <?php selected( $refitune_core_major_val, 'disable' ); ?>><?php esc_html_e( 'Disable', 'refitune' ); ?></option>
 						</select>
+						<p class="refitune-auto-update-core-desc">
+							<?php esc_html_e( 'Updates to a new major version automatically and may bring compatibility risk.', 'refitune' ); ?>
+						</p>
 					</div>
 
-					<div style="margin-bottom: 15px;">
-						<label for="refitune_auto_update_core_dev" style="display: inline-block; width: 200px; font-weight: 600;">
+					<div class="refitune-auto-update-core-row">
+						<label for="refitune_auto_update_core_dev" class="refitune-auto-update-core-label">
 							<?php esc_html_e( 'Core development updates:', 'refitune' ); ?>
 						</label>
-						<select id="refitune_auto_update_core_dev" name="refitune_settings[auto_update_core_dev]" class="regular-text">
-							<option value="default" <?php selected( ( $refitune_settings['auto_update_core_dev'] ?? 'default' ), 'default' ); ?>><?php esc_html_e( 'WordPress default', 'refitune' ); ?></option>
-							<option value="enable" <?php selected( ( $refitune_settings['auto_update_core_dev'] ?? 'default' ), 'enable' ); ?>><?php esc_html_e( 'Enable', 'refitune' ); ?></option>
-							<option value="disable" <?php selected( ( $refitune_settings['auto_update_core_dev'] ?? 'default' ), 'disable' ); ?>><?php esc_html_e( 'Disable', 'refitune' ); ?></option>
+						<select id="refitune_auto_update_core_dev" name="refitune_settings[auto_update_core_dev]" class="regular-text" <?php disabled( $refitune_au_core_locked ); ?>>
+							<option value="default" <?php selected( $refitune_core_dev_val, 'default' ); ?>><?php esc_html_e( 'WordPress default', 'refitune' ); ?></option>
+							<option value="enable" <?php selected( $refitune_core_dev_val, 'enable' ); ?>><?php esc_html_e( 'Enable', 'refitune' ); ?></option>
+							<option value="disable" <?php selected( $refitune_core_dev_val, 'disable' ); ?>><?php esc_html_e( 'Disable', 'refitune' ); ?></option>
 						</select>
+						<p class="refitune-auto-update-core-desc">
+							<?php esc_html_e( 'Do not use on a live site - only for beta, RC, or nightly testing.', 'refitune' ); ?>
+						</p>
 					</div>
 
 					<hr style="margin: 20px 0;" />
@@ -633,7 +681,7 @@ foreach ( $refitune_features as $refitune_key => $refitune_feature ) {
 						<label for="refitune_update_check_interval" style="display: inline-block; width: 200px; font-weight: 600;">
 							<?php esc_html_e( 'Check for updates:', 'refitune' ); ?>
 						</label>
-						<select id="refitune_update_check_interval" name="refitune_settings[update_check_interval]" class="regular-text">
+						<select id="refitune_update_check_interval" name="refitune_settings[update_check_interval]" class="regular-text" <?php disabled( $refitune_au_full_locked ); ?>>
 							<option value="default" <?php selected( ( $refitune_settings['update_check_interval'] ?? 'default' ), 'default' ); ?>><?php esc_html_e( 'WordPress default (twice daily)', 'refitune' ); ?></option>
 							<option value="daily" <?php selected( ( $refitune_settings['update_check_interval'] ?? 'default' ), 'daily' ); ?>><?php esc_html_e( 'Once daily', 'refitune' ); ?></option>
 							<option value="3_days" <?php selected( ( $refitune_settings['update_check_interval'] ?? 'default' ), '3_days' ); ?>><?php esc_html_e( 'Every 3 days', 'refitune' ); ?></option>
@@ -704,6 +752,80 @@ foreach ( $refitune_features as $refitune_key => $refitune_feature ) {
 						</select>
 					</div>
 
+				</div>
+			</div>
+
+		<?php elseif ( 'resource_preload' === $refitune_type ) : ?>
+
+			<?php
+			require_once REFITUNE_PATH . 'includes/resource-preload-options.php';
+			$refitune_preload_items = isset( $refitune_settings['resource_preload_items'] ) && is_array( $refitune_settings['resource_preload_items'] )
+				? $refitune_settings['resource_preload_items']
+				: array();
+			if ( empty( $refitune_preload_items ) ) {
+				$refitune_preload_items = array(
+					array(
+						'url'           => '',
+						'location'      => 'everywhere',
+						'post_id'       => 0,
+						'as'            => 'style',
+						'type'          => '',
+						'crossorigin'   => '',
+						'fetchpriority' => '',
+					),
+				);
+			}
+			?>
+
+			<label class="refitune-collapsible-trigger">
+				<input
+					type="checkbox"
+					id="refitune_resource_preload_enabled"
+					class="refitune-collapsible-checkbox"
+					name="refitune_settings[resource_preload_enabled]"
+					value="1"
+					<?php checked( ! empty( $refitune_settings['resource_preload_enabled'] ) ); ?>
+				/>
+				<strong><?php echo esc_html( $refitune_feature['description'] ); ?></strong>
+			</label>
+
+			<div class="refitune-collapsible-content">
+				<div class="refitune-preload-wrapper" data-refitune-preload>
+					<p class="description">
+						<?php esc_html_e( 'Each row outputs one link rel="preload" tag when the location matches. Only internal site URLs (starting with your home or site URL) are allowed - one URL per row. Font and fetch preloads usually need crossorigin=anonymous.', 'refitune' ); ?>
+					</p>
+
+					<div class="refitune-preload-rows" data-refitune-preload-rows>
+						<?php foreach ( $refitune_preload_items as $refitune_preload_i => $refitune_preload_item ) : ?>
+							<?php refitune_render_resource_preload_row( (int) $refitune_preload_i, (array) $refitune_preload_item ); ?>
+						<?php endforeach; ?>
+					</div>
+
+					<p class="refitune-preload-actions">
+						<button type="button" class="button" data-refitune-preload-add>
+							<?php esc_html_e( 'Add preload', 'refitune' ); ?>
+						</button>
+						<button type="button" class="button" data-refitune-preload-import-fonts>
+							<?php esc_html_e( 'Add Font-Library fonts', 'refitune' ); ?>
+						</button>
+					</p>
+
+					<template data-refitune-preload-template>
+						<?php
+						refitune_render_resource_preload_row(
+							'__INDEX__',
+							array(
+								'url'           => '',
+								'location'      => 'everywhere',
+								'post_id'       => 0,
+								'as'            => 'style',
+								'type'          => '',
+								'crossorigin'   => '',
+								'fetchpriority' => '',
+							)
+						);
+						?>
+					</template>
 				</div>
 			</div>
 
@@ -1174,6 +1296,19 @@ foreach ( $refitune_features as $refitune_key => $refitune_feature ) {
 
 						<?php
 						$refitune_feature_available = refitune_is_feature_available( $refitune_feature );
+						$refitune_cb_locked         = false;
+						$refitune_cb_lock_warning   = '';
+						$refitune_cb_checked        = $refitune_feature_available && ! empty( $refitune_settings[ $refitune_key ] );
+
+						if ( 'disable_file_edit' === $refitune_key && refitune_disable_file_edit_is_locked_by_wp_config() ) {
+							$refitune_cb_locked       = true;
+							$refitune_cb_lock_warning = refitune_wp_config_locked_message();
+							$refitune_cb_checked      = refitune_wp_config_define_is_truthy( 'DISALLOW_FILE_EDIT' );
+						} elseif ( 'remove_asset_versions' === $refitune_key && refitune_remove_asset_versions_is_locked_by_wp_config() ) {
+							$refitune_cb_locked       = true;
+							$refitune_cb_lock_warning = refitune_remove_asset_versions_wp_cache_warning();
+							$refitune_cb_checked      = false;
+						}
 						?>
 						<label for="refitune_<?php echo esc_attr( $refitune_key ); ?>">
 							<input
@@ -1181,14 +1316,19 @@ foreach ( $refitune_features as $refitune_key => $refitune_feature ) {
 								id="refitune_<?php echo esc_attr( $refitune_key ); ?>"
 								name="refitune_settings[<?php echo esc_attr( $refitune_key ); ?>]"
 								value="1"
-								<?php checked( $refitune_feature_available && ! empty( $refitune_settings[ $refitune_key ] ) ); ?>
-								<?php disabled( ! $refitune_feature_available ); ?>
+								<?php checked( $refitune_cb_checked ); ?>
+								<?php disabled( ! $refitune_feature_available || $refitune_cb_locked ); ?>
 							/>
 							<?php echo esc_html( $refitune_feature['description'] ); ?>
 							<?php if ( ! $refitune_feature_available && ! empty( $refitune_feature['unavailable_notice'] ) ) : ?>
 								<span class="refitune-feature-unavailable-notice"><?php echo esc_html( $refitune_feature['unavailable_notice'] ); ?></span>
 							<?php endif; ?>
 						</label>
+						<?php if ( $refitune_cb_locked && '' !== $refitune_cb_lock_warning ) : ?>
+							<p class="refitune-settings-warning"><?php echo esc_html( $refitune_cb_lock_warning ); ?></p>
+						<?php elseif ( ! empty( $refitune_feature['settings_warning'] ) ) : ?>
+							<p class="refitune-settings-warning"><?php echo esc_html( $refitune_feature['settings_warning'] ); ?></p>
+						<?php endif; ?>
 
 					<?php endif; ?>
 

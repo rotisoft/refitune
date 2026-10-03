@@ -116,6 +116,191 @@ function refitune_webp_path_to_url( string $refitune_file_path, array $refitune_
 }
 
 /**
+ * Whether a PNG file uses an indexed color palette (PNG-8).
+ *
+ * Palette PNGs often produce empty WebP output unless expanded to truecolor first.
+ *
+ * @param string $refitune_file_path Absolute path to a PNG file.
+ * @return bool True when the image is palette-based; false when truecolor or unknown.
+ */
+function refitune_webp_png_is_palette( string $refitune_file_path ): bool {
+	if ( ! is_readable( $refitune_file_path ) ) {
+		return false;
+	}
+
+	if ( extension_loaded( 'gd' ) && function_exists( 'imagecreatefrompng' ) && function_exists( 'imageistruecolor' ) ) {
+		// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- GD may emit warnings on corrupt files.
+		$refitune_image = @imagecreatefrompng( $refitune_file_path );
+
+		if ( false !== $refitune_image ) {
+			$refitune_is_palette = ! imageistruecolor( $refitune_image );
+			imagedestroy( $refitune_image );
+
+			return $refitune_is_palette;
+		}
+	}
+
+	if ( extension_loaded( 'imagick' ) && class_exists( 'Imagick' ) ) {
+		try {
+			$refitune_image = new Imagick( $refitune_file_path );
+			$refitune_type  = $refitune_image->getImageType();
+			$refitune_image->clear();
+			$refitune_image->destroy();
+
+			return in_array(
+				$refitune_type,
+				array(
+					Imagick::IMGTYPE_PALETTE,
+					Imagick::IMGTYPE_PALETTEMATTE,
+				),
+				true
+			);
+		} catch ( Exception $refitune_exception ) {
+			unset( $refitune_exception );
+			return false;
+		}
+	}
+
+	return false;
+}
+
+/**
+ * Initialize and return the WordPress filesystem API instance.
+ *
+ * Used for upload-directory file moves during WebP conversion.
+ *
+ * @return WP_Filesystem_Base|null
+ */
+function refitune_webp_get_filesystem() {
+	global $wp_filesystem;
+
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+
+	if ( $wp_filesystem instanceof WP_Filesystem_Base ) {
+		return $wp_filesystem;
+	}
+
+	if ( ! WP_Filesystem() ) {
+		return null;
+	}
+
+	return $wp_filesystem instanceof WP_Filesystem_Base ? $wp_filesystem : null;
+}
+
+/**
+ * Expand an indexed-color (palette) PNG to truecolor PNG-24/PNG-32 in place.
+ *
+ * @param string $refitune_file_path Absolute path to a PNG file.
+ * @return bool True when already truecolor or expansion succeeded.
+ */
+function refitune_webp_expand_palette_png( string $refitune_file_path ): bool {
+	$refitune_fs = refitune_webp_get_filesystem();
+
+	if ( null === $refitune_fs
+		|| ! $refitune_fs->exists( $refitune_file_path )
+		|| ! $refitune_fs->is_readable( $refitune_file_path )
+		|| ! $refitune_fs->is_writable( $refitune_file_path )
+	) {
+		return false;
+	}
+
+	if ( ! refitune_webp_png_is_palette( $refitune_file_path ) ) {
+		return true;
+	}
+
+	$refitune_dir = dirname( $refitune_file_path );
+
+	if ( '' === $refitune_dir || ! is_dir( $refitune_dir ) ) {
+		return false;
+	}
+
+	$refitune_tmp_name = wp_unique_filename(
+		$refitune_dir,
+		pathinfo( $refitune_file_path, PATHINFO_FILENAME ) . '-truecolor.png'
+	);
+	$refitune_tmp_path = trailingslashit( $refitune_dir ) . $refitune_tmp_name;
+
+	if ( extension_loaded( 'gd' ) && function_exists( 'imagecreatefrompng' ) && function_exists( 'imagepalettetotruecolor' ) && function_exists( 'imagepng' ) ) {
+		// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- GD may emit warnings on corrupt files.
+		$refitune_image = @imagecreatefrompng( $refitune_file_path );
+
+		if ( false !== $refitune_image ) {
+			if ( ! imageistruecolor( $refitune_image ) && ! imagepalettetotruecolor( $refitune_image ) ) {
+				imagedestroy( $refitune_image );
+				return false;
+			}
+
+			imagealphablending( $refitune_image, false );
+			imagesavealpha( $refitune_image, true );
+
+			// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- GD write failures return false.
+			$refitune_written = @imagepng( $refitune_image, $refitune_tmp_path, 6 );
+			imagedestroy( $refitune_image );
+
+			if ( ! $refitune_written || ! is_readable( $refitune_tmp_path ) ) {
+				if ( file_exists( $refitune_tmp_path ) ) {
+					wp_delete_file( $refitune_tmp_path );
+				}
+				return false;
+			}
+
+			return refitune_webp_replace_file( $refitune_tmp_path, $refitune_file_path );
+		}
+	}
+
+	if ( extension_loaded( 'imagick' ) && class_exists( 'Imagick' ) ) {
+		try {
+			$refitune_image = new Imagick( $refitune_file_path );
+			$refitune_image->setImageType( Imagick::IMGTYPE_TRUECOLORALPHA );
+			$refitune_image->setImageFormat( 'png' );
+			$refitune_written = $refitune_image->writeImage( $refitune_tmp_path );
+			$refitune_image->clear();
+			$refitune_image->destroy();
+
+			if ( ! $refitune_written || ! is_readable( $refitune_tmp_path ) ) {
+				if ( file_exists( $refitune_tmp_path ) ) {
+					wp_delete_file( $refitune_tmp_path );
+				}
+				return false;
+			}
+
+			return refitune_webp_replace_file( $refitune_tmp_path, $refitune_file_path );
+		} catch ( Exception $refitune_exception ) {
+			unset( $refitune_exception );
+			if ( file_exists( $refitune_tmp_path ) ) {
+				wp_delete_file( $refitune_tmp_path );
+			}
+			return false;
+		}
+	}
+
+	return false;
+}
+
+/**
+ * Replace a destination file with a temporary file, then remove the temp path.
+ *
+ * @param string $refitune_tmp_path  Absolute path to the temporary truecolor PNG.
+ * @param string $refitune_dest_path Absolute path to replace.
+ * @return bool
+ */
+function refitune_webp_replace_file( string $refitune_tmp_path, string $refitune_dest_path ): bool {
+	$refitune_fs = refitune_webp_get_filesystem();
+
+	if ( null === $refitune_fs || ! $refitune_fs->is_readable( $refitune_tmp_path ) ) {
+		return false;
+	}
+
+	// WP_Filesystem::move() overwrites when the third argument is true.
+	if ( ! $refitune_fs->move( $refitune_tmp_path, $refitune_dest_path, true ) ) {
+		wp_delete_file( $refitune_tmp_path );
+		return false;
+	}
+
+	return $refitune_fs->is_readable( $refitune_dest_path );
+}
+
+/**
  * Convert a JPEG or PNG file to WebP, optionally resizing first.
  *
  * Does not delete the source file. The caller must delete the source only after
@@ -135,6 +320,11 @@ function refitune_convert_file_to_webp( string $refitune_file_path, int $refitun
 	$refitune_mime     = isset( $refitune_filetype['type'] ) ? (string) $refitune_filetype['type'] : '';
 
 	if ( ! refitune_webp_is_convertible_mime( $refitune_mime ) ) {
+		return false;
+	}
+
+	// Palette PNG (PNG-8) must become truecolor before WebP save, or output can be empty.
+	if ( 'image/png' === strtolower( $refitune_mime ) && ! refitune_webp_expand_palette_png( $refitune_file_path ) ) {
 		return false;
 	}
 
@@ -202,6 +392,14 @@ function refitune_convert_file_to_webp( string $refitune_file_path, int $refitun
 	}
 
 	if ( empty( $refitune_saved['mime-type'] ) || 'image/webp' !== $refitune_saved['mime-type'] ) {
+		wp_delete_file( $refitune_webp_path );
+		return false;
+	}
+
+	// Reject empty or truncated WebP output (e.g. failed palette conversion).
+	$refitune_webp_size = filesize( $refitune_webp_path );
+
+	if ( false === $refitune_webp_size || $refitune_webp_size < 12 ) {
 		wp_delete_file( $refitune_webp_path );
 		return false;
 	}

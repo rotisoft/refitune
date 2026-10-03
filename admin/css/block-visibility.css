@@ -1,0 +1,46 @@
+/**
+ * Block visibility editor UI (inspector panel + core Hide block modal).
+ */
+
+.refitune-block-visibility-modal {
+	margin: 16px 0 8px;
+	padding-top: 12px;
+	border-top: 1px solid #ddd;
+}
+
+.refitune-block-visibility-modal__title {
+	margin: 0 0 8px;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.refitune-block-visibility-roles {
+	margin-top: 12px;
+}
+
+.refitune-block-visibility-roles__label {
+	margin: 0 0 8px;
+	font-size: 11px;
+	font-weight: 500;
+	text-transform: uppercase;
+}
+
+.refitune-block-visibility-roles__mixed {
+	margin: 0 0 8px;
+	color: #646970;
+	font-size: 12px;
+}
+
+.refitune-block-visibility-roles .components-checkbox-control {
+	margin-bottom: 6px;
+}
+
+.refitune-block-visibility-modal .refitune-block-visibility-roles,
+.components-panel__body .refitune-block-visibility-roles {
+	margin-bottom: 4px;
+}
+
+.components-panel__body .components-base-control + .components-base-control,
+.refitune-block-visibility-modal .components-base-control + .components-base-control {
+	margin-top: 16px;
+}

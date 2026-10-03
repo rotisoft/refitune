@@ -59,9 +59,13 @@ foreach ( $refitune_features as $refitune_key => $refitune_feature ) {
 			++$refitune_active_count;
 		}
 	} elseif ( 'number_input' === $refitune_type ) {
-		$refitune_ni_val = isset( $refitune_settings[ $refitune_feature['option_key'] ] ) ? $refitune_settings[ $refitune_feature['option_key'] ] : '';
-		if ( '' !== $refitune_ni_val ) {
+		if ( refitune_number_input_is_locked_by_wp_config( $refitune_feature ) ) {
 			++$refitune_active_count;
+		} else {
+			$refitune_ni_val = isset( $refitune_settings[ $refitune_feature['option_key'] ] ) ? $refitune_settings[ $refitune_feature['option_key'] ] : '';
+			if ( '' !== $refitune_ni_val ) {
+				++$refitune_active_count;
+			}
 		}
 	} elseif ( 'email_controls' === $refitune_type ) {
 		$refitune_email_bool_keys = array( 'email_disable_update', 'email_disable_new_user', 'email_disable_password_reset', 'email_disable_comments', 'email_disable_privacy', 'email_disable_critical' );
@@ -84,12 +88,21 @@ foreach ( $refitune_features as $refitune_key => $refitune_feature ) {
 			}
 		}
 	} elseif ( 'auto_updates_control' === $refitune_type ) {
-		if ( refitune_auto_updates_is_configured( $refitune_settings ) ) {
+		if ( ! refitune_auto_updates_is_fully_locked_by_wp_config() && refitune_auto_updates_is_configured( $refitune_settings ) ) {
 			++$refitune_active_count;
 		}
 	} elseif ( 'login_limit' === $refitune_type ) {
 		if ( ! empty( $refitune_settings['login_limit_enabled'] ) ) {
 			++$refitune_active_count;
+		}
+	} elseif ( 'resource_preload' === $refitune_type ) {
+		if ( ! empty( $refitune_settings['resource_preload_enabled'] ) ) {
+			$refitune_preload_items = isset( $refitune_settings['resource_preload_items'] ) && is_array( $refitune_settings['resource_preload_items'] )
+				? $refitune_settings['resource_preload_items']
+				: array();
+			if ( ! empty( $refitune_preload_items ) ) {
+				++$refitune_active_count;
+			}
 		}
 	} elseif ( 'maintenance_mode' === $refitune_type ) {
 		if ( ! empty( $refitune_settings['maintenance_mode_enabled'] ) ) {
@@ -102,6 +115,12 @@ foreach ( $refitune_features as $refitune_key => $refitune_feature ) {
 				break;
 			}
 		}
+	} elseif ( 'disable_file_edit' === $refitune_key && refitune_disable_file_edit_is_locked_by_wp_config() ) {
+		if ( refitune_wp_config_define_is_truthy( 'DISALLOW_FILE_EDIT' ) ) {
+			++$refitune_active_count;
+		}
+	} elseif ( 'remove_asset_versions' === $refitune_key && refitune_remove_asset_versions_is_locked_by_wp_config() ) {
+		// Locked off by WP_CACHE - not counted as active.
 	} elseif ( ! empty( $refitune_settings[ $refitune_key ] ) && refitune_is_feature_available( $refitune_feature ) ) {
 		++$refitune_active_count;
 	}
@@ -173,17 +192,31 @@ foreach ( $refitune_features as $refitune_key => $refitune_feature ) {
 				: esc_html__( 'Active', 'refitune' );
 			}
 		} elseif ( 'number_input' === $refitune_type ) {
-			$refitune_ni_val = isset( $refitune_settings[ $refitune_feature['option_key'] ] ) ? $refitune_settings[ $refitune_feature['option_key'] ] : '';
-			$refitune_active = '' !== $refitune_ni_val;
+			$refitune_ni_stored = isset( $refitune_settings[ $refitune_feature['option_key'] ] ) ? $refitune_settings[ $refitune_feature['option_key'] ] : '';
+			$refitune_ni_locked = refitune_number_input_is_locked_by_wp_config( $refitune_feature );
+			$refitune_ni_val    = refitune_get_number_input_field_value( $refitune_feature, $refitune_ni_stored );
+			$refitune_active    = $refitune_ni_locked || '' !== $refitune_ni_val;
 			if ( $refitune_active ) {
-			$refitune_badge_class = 'refitune-badge-active';
-			$refitune_badge_text  = 0 === $refitune_ni_val
-				? esc_html__( 'Disabled', 'refitune' )
-				: sprintf(
-					/* translators: %d: maximum number of revisions */
-					esc_html__( 'Max %d', 'refitune' ),
-					(int) $refitune_ni_val
-				);
+				$refitune_badge_class = 'refitune-badge-active';
+				if ( $refitune_ni_locked && '' === $refitune_ni_val ) {
+					$refitune_badge_text = esc_html__( 'Unlimited (wp-config)', 'refitune' );
+				} elseif ( '' !== $refitune_ni_val && 0 === (int) $refitune_ni_val ) {
+					$refitune_badge_text = $refitune_ni_locked
+						? esc_html__( 'Disabled (wp-config)', 'refitune' )
+						: esc_html__( 'Disabled', 'refitune' );
+				} elseif ( $refitune_ni_locked ) {
+					$refitune_badge_text = sprintf(
+						/* translators: %d: numeric setting value from wp-config (revisions, seconds, or days) */
+						esc_html__( 'Max %d (wp-config)', 'refitune' ),
+						(int) $refitune_ni_val
+					);
+				} else {
+					$refitune_badge_text = sprintf(
+						/* translators: %d: maximum number of revisions */
+						esc_html__( 'Max %d', 'refitune' ),
+						(int) $refitune_ni_val
+					);
+				}
 			}
 		} elseif ( 'email_controls' === $refitune_type ) {
 			$refitune_email_bool_keys  = array( 'email_disable_update', 'email_disable_new_user', 'email_disable_password_reset', 'email_disable_comments', 'email_disable_privacy', 'email_disable_critical' );
@@ -228,7 +261,7 @@ foreach ( $refitune_features as $refitune_key => $refitune_feature ) {
 			}
 		}
 	} elseif ( 'auto_updates_control' === $refitune_type ) {
-		$refitune_active = refitune_auto_updates_is_configured( $refitune_settings );
+		$refitune_active = ! refitune_auto_updates_is_fully_locked_by_wp_config() && refitune_auto_updates_is_configured( $refitune_settings );
 		if ( $refitune_active ) {
 			$refitune_badge_class = 'refitune-badge-active';
 			$refitune_badge_text  = esc_html__( 'Configured', 'refitune' );
@@ -250,6 +283,19 @@ foreach ( $refitune_features as $refitune_key => $refitune_feature ) {
 			$refitune_max_attempts,
 			$refitune_lockout
 		);
+		}
+	} elseif ( 'resource_preload' === $refitune_type ) {
+		$refitune_preload_items = isset( $refitune_settings['resource_preload_items'] ) && is_array( $refitune_settings['resource_preload_items'] )
+			? $refitune_settings['resource_preload_items']
+			: array();
+		$refitune_active        = ! empty( $refitune_settings['resource_preload_enabled'] ) && ! empty( $refitune_preload_items );
+		if ( $refitune_active ) {
+			$refitune_badge_class = 'refitune-badge-active';
+			$refitune_badge_text  = sprintf(
+				/* translators: %d: number of preload rows */
+				esc_html__( '%d preload(s)', 'refitune' ),
+				count( $refitune_preload_items )
+			);
 		}
 	} elseif ( 'maintenance_mode' === $refitune_type ) {
 		$refitune_active = ! empty( $refitune_settings['maintenance_mode_enabled'] );
@@ -281,11 +327,17 @@ foreach ( $refitune_features as $refitune_key => $refitune_feature ) {
 			);
 			}
 		} else {
-			$refitune_active = $refitune_feature_available && ! empty( $refitune_settings[ $refitune_key ] );
-		if ( $refitune_active ) {
-			$refitune_badge_class = 'refitune-badge-active';
-			$refitune_badge_text  = esc_html__( 'Active', 'refitune' );
-		}
+			if ( 'disable_file_edit' === $refitune_key && refitune_disable_file_edit_is_locked_by_wp_config() ) {
+				$refitune_active = refitune_wp_config_define_is_truthy( 'DISALLOW_FILE_EDIT' );
+			} elseif ( 'remove_asset_versions' === $refitune_key && refitune_remove_asset_versions_is_locked_by_wp_config() ) {
+				$refitune_active = false;
+			} else {
+				$refitune_active = $refitune_feature_available && ! empty( $refitune_settings[ $refitune_key ] );
+			}
+			if ( $refitune_active ) {
+				$refitune_badge_class = 'refitune-badge-active';
+				$refitune_badge_text  = esc_html__( 'Active', 'refitune' );
+			}
 		}
 
 		// Determine the feature card class.

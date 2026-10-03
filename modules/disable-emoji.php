@@ -48,13 +48,20 @@ function refitune_disable_emoji_tinymce( $plugins ) {
  * @return array
  */
 function refitune_disable_emoji_dns_prefetch( $urls, $relation_type ) {
-	if ( 'dns-prefetch' === $relation_type ) {
-		$refitune_emoji_url = 'https://s.w.org/images/core/emoji/';
-		foreach ( $urls as $refitune_key => $refitune_url ) {
-			if ( false !== strpos( $refitune_url, $refitune_emoji_url ) ) {
-				unset( $urls[ $refitune_key ] );
-			}
+	if ( 'dns-prefetch' !== $relation_type ) {
+		return $urls;
+	}
+
+	foreach ( $urls as $refitune_key => $refitune_url ) {
+		if ( ! is_string( $refitune_url ) ) {
+			continue;
+		}
+
+		// Remove WordPress emoji DNS prefetch by path fragment (no remote URL literal).
+		if ( false !== strpos( $refitune_url, '/images/core/emoji/' ) ) {
+			unset( $urls[ $refitune_key ] );
 		}
 	}
+
 	return $urls;
 }

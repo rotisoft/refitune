@@ -77,38 +77,49 @@ function refitune_get_features() {
 		'category'    => 'performance',
 	),
 	'remove_asset_versions' => array(
-		'label'       => __( 'Remove Asset Version Query Strings', 'refitune' ),
-		'description' => __( 'Removes ?ver= from frontend CSS and JS URLs. Can break cache busting after theme or plugin updates unless your CDN or host purges by path.', 'refitune' ),
-		'category'    => 'performance',
+		'label'            => __( 'Remove Asset Version Query Strings', 'refitune' ),
+		'description'      => __( 'Removes ?ver= from frontend CSS and JS URLs. Can break cache busting after theme or plugin updates unless your CDN or host purges by path.', 'refitune' ),
+		'settings_warning' => __( 'Not recommended when using a cache plugin.', 'refitune' ),
+		'category'         => 'performance',
 	),
 	'post_revisions'  => array(
-		'label'       => __( 'Post Revisions Limit', 'refitune' ),
-		'description' => __( 'How many post revisions WordPress should store per post (Recommended: 5-10)', 'refitune' ),
-		'type'        => 'number_input',
-		'option_key'  => 'post_revisions_limit',
-		'min'         => 0,
-		'category'    => 'performance',
+		'label'              => __( 'Post Revisions Limit', 'refitune' ),
+		'description'        => __( 'How many post revisions WordPress should store per post (Recommended: 5-10)', 'refitune' ),
+		'type'               => 'number_input',
+		'option_key'         => 'post_revisions_limit',
+		'wp_config_constant' => 'WP_POST_REVISIONS',
+		'min'                => 0,
+		'category'           => 'performance',
 	),
 	'autosave_interval' => array(
-		'label'       => __( 'Auto-save Interval', 'refitune' ),
-		'description' => __( 'Here you can specify how many seconds to save the post. Recommended: 120 or 300 (2 minutes or 5 minutes)', 'refitune' ),
-		'type'        => 'number_input',
-		'option_key'  => 'autosave_interval',
-		'min'         => 10,
-		'category'    => 'performance',
+		'label'              => __( 'Auto-save Interval', 'refitune' ),
+		'description'        => __( 'Here you can specify how many seconds to save the post. Recommended: 120 or 300 (2 minutes or 5 minutes)', 'refitune' ),
+		'type'               => 'number_input',
+		'option_key'         => 'autosave_interval',
+		'wp_config_constant' => 'AUTOSAVE_INTERVAL',
+		'min'                => 10,
+		'category'           => 'performance',
 	),
 	'trash_auto_delete' => array(
-		'label'       => __( 'Trash Auto-Delete', 'refitune' ),
-		'description' => __( 'Number of days before items in trash are permanently deleted. Recommended: 7-30 days. Default: 30 days', 'refitune' ),
-		'type'        => 'number_input',
-		'option_key'  => 'trash_auto_delete_days',
-		'min'         => 1,
-		'category'    => 'performance',
+		'label'              => __( 'Trash Auto-Delete', 'refitune' ),
+		'description'        => __( 'Number of days before items in trash are permanently deleted. Recommended: 7-30 days. Default: 30 days', 'refitune' ),
+		'type'               => 'number_input',
+		'option_key'         => 'trash_auto_delete_days',
+		'wp_config_constant' => 'EMPTY_TRASH_DAYS',
+		'min'                => 1,
+		'category'           => 'performance',
 	),
 	'heartbeat_control' => array(
 		'label'       => __( 'Heartbeat API Control', 'refitune' ),
 		'description' => __( 'Control WordPress Heartbeat API frequency or disable it in admin, frontend, and post editor contexts independently.', 'refitune' ),
 		'type'        => 'heartbeat_control',
+		'category'    => 'performance',
+	),
+	'resource_preload' => array(
+		'label'       => __( 'Resource Preload', 'refitune' ),
+		'description' => __( 'Add link rel="preload" hints to the document head for critical assets. Set crossorigin for font and fetch preloads.', 'refitune' ),
+		'type'        => 'resource_preload',
+		'enable_key'  => 'resource_preload_enabled',
 		'category'    => 'performance',
 	),
 	'upload_webp_convert' => array(
@@ -194,11 +205,14 @@ function refitune_get_features() {
 		'category'    => 'visual',
 	),
 	'block_visibility' => array(
-		'label'               => __( 'Block Visibility (Mobile)', 'refitune' ),
-		'description'         => __( 'Per-block mobile or desktop visibility in the editor. User-Agent based; full-page cache must vary on User-Agent, or use CSS media queries for layout-only hiding.', 'refitune' ),
-		'category'            => 'visual',
-		'max_wp_version'      => '7.0',
-		'unavailable_notice'  => __( 'A dedicated core feature has been available for this since WordPress 7.0.', 'refitune' ),
+		'label'       => __( 'Block Visibility (Mobile)', 'refitune' ),
+		'description' => __( 'Per-block mobile or desktop visibility in the editor. User-Agent based; full-page cache must vary on User-Agent, or use CSS media queries for layout-only hiding.', 'refitune' ),
+		'category'    => 'visual',
+	),
+	'block_visibility_roles' => array(
+		'label'       => __( 'Block Visibility (Roles)', 'refitune' ),
+		'description' => __( 'Per-block visibility by login state or WordPress role. The block HTML is omitted server-side for visitors who do not match.', 'refitune' ),
+		'category'    => 'visual',
 	),
 	'login_customizer' => array(
 		'label'       => __( 'Login Page Customization', 'refitune' ),
@@ -432,32 +446,6 @@ function refitune_register_settings() {
 add_action( 'admin_init', 'refitune_register_settings', 10 );
 
 /**
- * Disable block visibility when WordPress core provides the feature natively.
- *
- * @return void
- */
-function refitune_disable_block_visibility_on_unsupported_wp(): void {
-	// Only administrators may trigger this silent settings migration.
-	if ( ! current_user_can( 'manage_options' ) ) {
-		return;
-	}
-
-	$refitune_settings = get_option( 'refitune_settings', array() );
-
-	if ( empty( $refitune_settings['block_visibility'] ) ) {
-		return;
-	}
-
-	if ( version_compare( get_bloginfo( 'version' ), '7.0', '<' ) ) {
-		return;
-	}
-
-	$refitune_settings['block_visibility'] = false;
-	update_option( 'refitune_settings', $refitune_settings );
-}
-add_action( 'admin_init', 'refitune_disable_block_visibility_on_unsupported_wp', 20 );
-
-/**
  * Restore default update check cron when automatic updates control is turned off.
  *
  * @param mixed $old_value Previous option value.
@@ -523,8 +511,53 @@ function refitune_enqueue_admin_assets( $hook_suffix ) {
 		file_exists( $refitune_js_file ) ? filemtime( $refitune_js_file ) : REFITUNE_VERSION,
 		true
 	);
+
+	wp_localize_script(
+		'refitune-admin-script',
+		'refitunePreload',
+		array(
+			'homeUrl'           => untrailingslashit( home_url( '/' ) ),
+			'siteUrl'           => untrailingslashit( site_url( '/' ) ),
+			'ajaxUrl'           => admin_url( 'admin-ajax.php' ),
+			'fontLibraryNonce'  => wp_create_nonce( 'refitune_font_library_preload' ),
+			'invalidUrl'        => __( 'Invalid URL, please check it.', 'refitune' ),
+			'externalUrl'       => __( 'This URL does not start with your site URL. It must begin with your site URL.', 'refitune' ),
+			'noActiveFonts'     => __( 'No active Font Library fonts were found.', 'refitune' ),
+			'fontsAlreadyAdded' => __( 'All active Font Library fonts are already in the list.', 'refitune' ),
+			'fontLibraryError'  => __( 'Could not load Font Library fonts.', 'refitune' ),
+		)
+	);
 }
 add_action( 'admin_enqueue_scripts', 'refitune_enqueue_admin_assets', 10 );
+
+/**
+ * AJAX: return active Font Library fonts as Resource Preload row data.
+ *
+ * Loaded only on demand when the admin clicks "Add Font-Library fonts".
+ *
+ * @return void
+ */
+function refitune_ajax_get_font_library_preload_items(): void {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_send_json_error(
+			array(
+				'message' => __( 'Insufficient permissions.', 'refitune' ),
+			),
+			403
+		);
+	}
+
+	check_ajax_referer( 'refitune_font_library_preload', 'nonce' );
+
+	require_once REFITUNE_PATH . 'includes/resource-preload-options.php';
+
+	wp_send_json_success(
+		array(
+			'items' => refitune_get_active_font_library_preload_items(),
+		)
+	);
+}
+add_action( 'wp_ajax_refitune_get_font_library_preload_items', 'refitune_ajax_get_font_library_preload_items', 10 );
 
 /**
  * Define the admin header navigation links.

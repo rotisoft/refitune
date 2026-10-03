@@ -3,7 +3,7 @@
  * Plugin Name: RefiTune - Site refiner toolkit
  * Plugin URI: https://rotistudio.com/plugins/refitune-site-refiner-toolkit-for-wordpress
  * Description: Take control of WordPress with smart performance tweaks, security enhancements, and usability improvements. RefiTune is an all-in-one toolkit.
- * Version: 1.3.1
+ * Version: 1.4.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: RotiStudio - Tamas Rottenbacher
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'REFITUNE_VERSION', '1.3.1' );
+define( 'REFITUNE_VERSION', '1.4.0' );
 define( 'REFITUNE_PATH', plugin_dir_path( __FILE__ ) );
 define( 'REFITUNE_URL', plugin_dir_url( __FILE__ ) );
 
@@ -60,6 +60,9 @@ function refitune_load_bundled_textdomain(): void {
 
 // Load encryption helpers.
 require_once REFITUNE_PATH . 'includes/encryption.php';
+
+// Detect wp-config.php constants that lock related settings fields.
+require_once REFITUNE_PATH . 'includes/wp-config-constants.php';
 
 /**
  * Whether a RefiTune feature is available on the current WordPress version.
@@ -183,7 +186,10 @@ if ( ! empty( $refitune_settings['disable_oembed'] ) ) {
 }
 
 // --- Remove CSS/JS ver query strings ---
-if ( ! empty( $refitune_settings['remove_asset_versions'] ) ) {
+if (
+	! empty( $refitune_settings['remove_asset_versions'] )
+	&& ! refitune_remove_asset_versions_is_locked_by_wp_config()
+) {
 	require_once REFITUNE_PATH . 'modules/remove-asset-versions.php';
 }
 
@@ -210,7 +216,10 @@ if ( ! empty( $refitune_settings['disable_trackbacks'] ) ) {
 }
 
 // --- Disable file editor ---
-if ( ! empty( $refitune_settings['disable_file_edit'] ) ) {
+if (
+	! empty( $refitune_settings['disable_file_edit'] )
+	&& ! refitune_disable_file_edit_is_locked_by_wp_config()
+) {
 	require_once REFITUNE_PATH . 'modules/disable-file-edit.php';
 }
 
@@ -234,9 +243,14 @@ if ( ( $refitune_svg_enabled && ! empty( $refitune_svg_roles ) ) || ( $refitune_
 	require_once REFITUNE_PATH . 'modules/svg-avif-upload.php';
 }
 
-// --- Block visibility ---
-if ( ! empty( $refitune_settings['block_visibility'] ) && version_compare( get_bloginfo( 'version' ), '7.0', '<' ) ) {
+// --- Block visibility (device) ---
+if ( ! empty( $refitune_settings['block_visibility'] ) ) {
 	require_once REFITUNE_PATH . 'modules/block-visibility.php';
+}
+
+// --- Block visibility (roles) ---
+if ( ! empty( $refitune_settings['block_visibility_roles'] ) ) {
+	require_once REFITUNE_PATH . 'modules/block-visibility-roles.php';
 }
 
 // --- External links in new window ---
@@ -250,23 +264,40 @@ if ( ! empty( $refitune_settings['page_excerpt'] ) ) {
 }
 
 // --- Post revisions limit ---
-if ( isset( $refitune_settings['post_revisions_limit'] ) && '' !== $refitune_settings['post_revisions_limit'] ) {
+if (
+	! refitune_wp_config_defines_constant( 'WP_POST_REVISIONS' )
+	&& isset( $refitune_settings['post_revisions_limit'] )
+	&& '' !== $refitune_settings['post_revisions_limit']
+) {
 	require_once REFITUNE_PATH . 'modules/post-revisions.php';
 }
 
 // --- Auto-save interval ---
-if ( isset( $refitune_settings['autosave_interval'] ) && '' !== $refitune_settings['autosave_interval'] ) {
+if (
+	! refitune_wp_config_defines_constant( 'AUTOSAVE_INTERVAL' )
+	&& isset( $refitune_settings['autosave_interval'] )
+	&& '' !== $refitune_settings['autosave_interval']
+) {
 	require_once REFITUNE_PATH . 'modules/autosave-interval.php';
 }
 
 // --- Trash Auto-Delete ---
-if ( isset( $refitune_settings['trash_auto_delete_days'] ) && '' !== $refitune_settings['trash_auto_delete_days'] ) {
+if (
+	! refitune_wp_config_defines_constant( 'EMPTY_TRASH_DAYS' )
+	&& isset( $refitune_settings['trash_auto_delete_days'] )
+	&& '' !== $refitune_settings['trash_auto_delete_days']
+) {
 	require_once REFITUNE_PATH . 'modules/trash-auto-delete.php';
 }
 
 // --- Heartbeat Control ---
 if ( ! empty( $refitune_settings['heartbeat_control'] ) ) {
 	require_once REFITUNE_PATH . 'modules/heartbeat-control.php';
+}
+
+// --- Resource Preload ---
+if ( ! empty( $refitune_settings['resource_preload_enabled'] ) ) {
+	require_once REFITUNE_PATH . 'modules/resource-preload.php';
 }
 
 // --- Email SMTP / disable all ---
@@ -363,7 +394,12 @@ if ( ! empty( $refitune_settings['upload_webp_convert'] ) ) {
 }
 
 // --- Automatic updates control ---
-if ( ! empty( $refitune_settings['auto_updates_control'] ) ) {
+// WP_AUTO_UPDATE_CORE only locks core fields; plugins/themes/translations and
+// update-check scheduling still run. Full lock is AUTOMATIC_UPDATER_DISABLED.
+if (
+	! empty( $refitune_settings['auto_updates_control'] )
+	&& ! refitune_auto_updates_is_fully_locked_by_wp_config()
+) {
 	require_once REFITUNE_PATH . 'modules/auto-updates.php';
 	refitune_auto_updates_module_init();
 }

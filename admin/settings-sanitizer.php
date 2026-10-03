@@ -325,20 +325,50 @@ function refitune_sanitize_auto_update_tristate( $refitune_value ): string {
  * @return array
  */
 function refitune_sanitize_auto_updates_control( array $refitune_input ): array {
-	$refitune_tristate_fields = array(
-		'refitune_plugins_auto',
-		'auto_update_themes',
-		'auto_update_translations',
-		'auto_update_core_minor',
-		'auto_update_core_major',
-		'auto_update_core_dev',
-	);
+	$refitune_previous         = refitune_get_settings();
+	$refitune_full_locked      = refitune_auto_updates_is_fully_locked_by_wp_config();
+	$refitune_core_locked      = refitune_auto_updates_core_is_locked_by_wp_config();
+	$refitune_allowed_intervals = array( 'default', 'daily', '3_days', '7_days', '14_days' );
+
+	// Entire feature locked (AUTOMATIC_UPDATER_DISABLED): keep all stored values.
+	if ( $refitune_full_locked ) {
+		$refitune_fields = array(
+			'refitune_plugins_auto',
+			'auto_update_themes',
+			'auto_update_translations',
+			'auto_update_core_minor',
+			'auto_update_core_major',
+			'auto_update_core_dev',
+		);
+
+		$refitune_sanitized = array(
+			'auto_updates_control' => ! empty( $refitune_previous['auto_updates_control'] ),
+		);
+
+		foreach ( $refitune_fields as $refitune_field ) {
+			$refitune_sanitized[ $refitune_field ] = isset( $refitune_previous[ $refitune_field ] )
+				? refitune_sanitize_auto_update_tristate( $refitune_previous[ $refitune_field ] )
+				: 'default';
+		}
+
+		$refitune_sanitized['update_check_interval'] = isset( $refitune_previous['update_check_interval'] )
+			? (string) $refitune_previous['update_check_interval']
+			: 'default';
+
+		return $refitune_sanitized;
+	}
 
 	$refitune_sanitized = array(
 		'auto_updates_control' => ! empty( $refitune_input['auto_updates_control'] ),
 	);
 
-	foreach ( $refitune_tristate_fields as $refitune_field ) {
+	$refitune_type_fields = array(
+		'refitune_plugins_auto',
+		'auto_update_themes',
+		'auto_update_translations',
+	);
+
+	foreach ( $refitune_type_fields as $refitune_field ) {
 		$refitune_raw = $refitune_input[ $refitune_field ] ?? 'default';
 
 		$refitune_legacy_plugins_key = refitune_legacy_plugins_auto_option_key();
@@ -350,10 +380,32 @@ function refitune_sanitize_auto_updates_control( array $refitune_input ): array 
 		$refitune_sanitized[ $refitune_field ] = refitune_sanitize_auto_update_tristate( $refitune_raw );
 	}
 
-	$refitune_allowed_intervals = array( 'default', 'daily', '3_days', '7_days', '14_days' );
-	$refitune_interval          = isset( $refitune_input['update_check_interval'] ) ? (string) $refitune_input['update_check_interval'] : 'default';
+	$refitune_core_fields = array(
+		'auto_update_core_minor',
+		'auto_update_core_major',
+		'auto_update_core_dev',
+	);
 
-	$refitune_sanitized['update_check_interval'] = in_array( $refitune_interval, $refitune_allowed_intervals, true ) ? $refitune_interval : 'default';
+	foreach ( $refitune_core_fields as $refitune_field ) {
+		if ( $refitune_core_locked ) {
+			$refitune_sanitized[ $refitune_field ] = isset( $refitune_previous[ $refitune_field ] )
+				? refitune_sanitize_auto_update_tristate( $refitune_previous[ $refitune_field ] )
+				: 'default';
+			continue;
+		}
+
+		$refitune_sanitized[ $refitune_field ] = refitune_sanitize_auto_update_tristate(
+			$refitune_input[ $refitune_field ] ?? 'default'
+		);
+	}
+
+	$refitune_interval = isset( $refitune_input['update_check_interval'] )
+		? (string) $refitune_input['update_check_interval']
+		: 'default';
+
+	$refitune_sanitized['update_check_interval'] = in_array( $refitune_interval, $refitune_allowed_intervals, true )
+		? $refitune_interval
+		: 'default';
 
 	return $refitune_sanitized;
 }
@@ -415,6 +467,107 @@ function refitune_sanitize_heartbeat_control( array $refitune_input ): array {
 		'heartbeat_frontend' => $refitune_value( $refitune_input['heartbeat_frontend'] ?? '' ),
 		'heartbeat_editor'   => $refitune_value( $refitune_input['heartbeat_editor'] ?? '' ),
 	);
+}
+
+/**
+ * Sanitize the Resource Preload feature.
+ *
+ * @param array $refitune_input Raw input.
+ * @return array
+ */
+function refitune_sanitize_resource_preload( array $refitune_input ): array {
+	require_once REFITUNE_PATH . 'includes/resource-preload-options.php';
+
+	$refitune_result = array(
+		'resource_preload_enabled' => ! empty( $refitune_input['resource_preload_enabled'] ),
+		'resource_preload_items'   => array(),
+	);
+
+	if ( empty( $refitune_input['resource_preload_items'] ) || ! is_array( $refitune_input['resource_preload_items'] ) ) {
+		return $refitune_result;
+	}
+
+	$refitune_allowed_as            = refitune_resource_preload_allowed_as();
+	$refitune_allowed_types         = refitune_resource_preload_allowed_types();
+	$refitune_allowed_crossorigin   = refitune_resource_preload_allowed_crossorigin();
+	$refitune_allowed_fetchpriority = refitune_resource_preload_allowed_fetchpriority();
+	$refitune_allowed_locations     = refitune_resource_preload_allowed_locations();
+	$refitune_had_invalid_url       = false;
+
+	foreach ( $refitune_input['resource_preload_items'] as $refitune_row ) {
+		if ( ! is_array( $refitune_row ) ) {
+			continue;
+		}
+
+		$refitune_raw_url = isset( $refitune_row['url'] ) ? trim( (string) $refitune_row['url'] ) : '';
+
+		if ( '' === $refitune_raw_url ) {
+			continue;
+		}
+
+		$refitune_url = refitune_resource_preload_sanitize_internal_url( $refitune_raw_url );
+
+		if ( '' === $refitune_url ) {
+			$refitune_had_invalid_url = true;
+			continue;
+		}
+
+		$refitune_location = isset( $refitune_row['location'] ) ? sanitize_key( (string) $refitune_row['location'] ) : 'everywhere';
+		if ( ! in_array( $refitune_location, $refitune_allowed_locations, true ) ) {
+			$refitune_location = 'everywhere';
+		}
+
+		$refitune_as = isset( $refitune_row['as'] ) ? sanitize_key( (string) $refitune_row['as'] ) : '';
+		if ( ! in_array( $refitune_as, $refitune_allowed_as, true ) ) {
+			continue;
+		}
+
+		$refitune_type = isset( $refitune_row['type'] ) ? sanitize_text_field( (string) $refitune_row['type'] ) : '';
+		if ( '' !== $refitune_type && ! in_array( $refitune_type, $refitune_allowed_types, true ) ) {
+			$refitune_type = '';
+		}
+
+		$refitune_crossorigin = isset( $refitune_row['crossorigin'] ) ? sanitize_key( (string) $refitune_row['crossorigin'] ) : '';
+		if ( '' !== $refitune_crossorigin && ! in_array( $refitune_crossorigin, $refitune_allowed_crossorigin, true ) ) {
+			$refitune_crossorigin = '';
+		}
+
+		$refitune_fetchpriority = isset( $refitune_row['fetchpriority'] ) ? sanitize_key( (string) $refitune_row['fetchpriority'] ) : '';
+		if ( '' !== $refitune_fetchpriority && ! in_array( $refitune_fetchpriority, $refitune_allowed_fetchpriority, true ) ) {
+			$refitune_fetchpriority = '';
+		}
+
+		$refitune_post_id = 0;
+		if ( 'post_id' === $refitune_location ) {
+			$refitune_post_id = isset( $refitune_row['post_id'] ) ? absint( $refitune_row['post_id'] ) : 0;
+			if ( $refitune_post_id < 1 ) {
+				continue;
+			}
+		}
+
+		$refitune_result['resource_preload_items'][] = array(
+			'url'           => $refitune_url,
+			'location'      => $refitune_location,
+			'post_id'       => $refitune_post_id,
+			'as'            => $refitune_as,
+			'type'          => $refitune_type,
+			'crossorigin'   => $refitune_crossorigin,
+			'fetchpriority' => $refitune_fetchpriority,
+		);
+	}
+
+	if ( $refitune_had_invalid_url ) {
+		// Client-side validation should block save; keep previous items if bypassed.
+		$refitune_old_settings = get_option( 'refitune_settings', array() );
+		$refitune_result['resource_preload_items'] = (
+			isset( $refitune_old_settings['resource_preload_items'] ) &&
+			is_array( $refitune_old_settings['resource_preload_items'] )
+		)
+			? $refitune_old_settings['resource_preload_items']
+			: array();
+	}
+
+	return $refitune_result;
 }
 
 /**
@@ -541,7 +694,15 @@ function refitune_sanitize_settings( $refitune_input ): array {
 
 			case 'number_input':
 				$refitune_option_key = $refitune_feature['option_key'];
-				$refitune_raw        = isset( $refitune_input[ $refitune_option_key ] ) ? trim( (string) $refitune_input[ $refitune_option_key ] ) : '';
+				// Disabled fields are omitted from POST; keep the stored value when locked by wp-config.
+				if ( refitune_number_input_is_locked_by_wp_config( $refitune_feature ) ) {
+					$refitune_previous = refitune_get_settings();
+					$refitune_sanitized[ $refitune_option_key ] = isset( $refitune_previous[ $refitune_option_key ] )
+						? $refitune_previous[ $refitune_option_key ]
+						: '';
+					break;
+				}
+				$refitune_raw = isset( $refitune_input[ $refitune_option_key ] ) ? trim( (string) $refitune_input[ $refitune_option_key ] ) : '';
 				$refitune_sanitized[ $refitune_option_key ] = ( '' !== $refitune_raw && is_numeric( $refitune_raw ) && (int) $refitune_raw >= 0 ) ? (int) $refitune_raw : '';
 				break;
 
@@ -569,6 +730,10 @@ function refitune_sanitize_settings( $refitune_input ): array {
 				$refitune_sanitized += refitune_sanitize_heartbeat_control( $refitune_input );
 				break;
 
+			case 'resource_preload':
+				$refitune_sanitized += refitune_sanitize_resource_preload( $refitune_input );
+				break;
+
 			case 'upload_webp_convert':
 				$refitune_sanitized += refitune_sanitize_upload_webp_convert( $refitune_input );
 				break;
@@ -578,12 +743,16 @@ function refitune_sanitize_settings( $refitune_input ): array {
 					foreach ( array_keys( $refitune_feature['sub_options'] ) as $refitune_sub_key ) {
 						$refitune_sanitized[ $refitune_sub_key ] = ! empty( $refitune_input[ $refitune_sub_key ] );
 					}
+				} elseif ( 'disable_file_edit' === $refitune_key && refitune_disable_file_edit_is_locked_by_wp_config() ) {
+					// Constant already controls the editor; keep stored preference for when the define is removed.
+					$refitune_previous                       = refitune_get_settings();
+					$refitune_sanitized[ $refitune_key ] = ! empty( $refitune_previous[ $refitune_key ] );
+				} elseif ( 'remove_asset_versions' === $refitune_key && refitune_remove_asset_versions_is_locked_by_wp_config() ) {
+					$refitune_sanitized[ $refitune_key ] = false;
+				} elseif ( ! refitune_is_feature_available( $refitune_feature ) ) {
+					$refitune_sanitized[ $refitune_key ] = false;
 				} else {
-					if ( ! refitune_is_feature_available( $refitune_feature ) ) {
-						$refitune_sanitized[ $refitune_key ] = false;
-					} else {
-						$refitune_sanitized[ $refitune_key ] = ! empty( $refitune_input[ $refitune_key ] );
-					}
+					$refitune_sanitized[ $refitune_key ] = ! empty( $refitune_input[ $refitune_key ] );
 				}
 				break;
 		}

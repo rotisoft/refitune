@@ -166,15 +166,18 @@ function refitune_auto_updates_module_init(): void {
 		add_action( 'admin_notices', 'refitune_auto_updates_config_notice', 10 );
 	}
 
-	$refitune_core_filters = array(
-		'auto_update_core_minor' => 'allow_minor_auto_core_updates',
-		'auto_update_core_major' => 'allow_major_auto_core_updates',
-		'auto_update_core_dev'   => 'allow_dev_auto_core_updates',
-	);
+	// Core filters are skipped when WP_AUTO_UPDATE_CORE (or core filters) are set in wp-config.
+	if ( ! refitune_auto_updates_core_is_locked_by_wp_config() ) {
+		$refitune_core_filters = array(
+			'auto_update_core_minor' => 'allow_minor_auto_core_updates',
+			'auto_update_core_major' => 'allow_major_auto_core_updates',
+			'auto_update_core_dev'   => 'allow_dev_auto_core_updates',
+		);
 
-	foreach ( $refitune_core_filters as $refitune_setting_key => $refitune_filter_name ) {
-		$refitune_mode = isset( $refitune_settings[ $refitune_setting_key ] ) ? (string) $refitune_settings[ $refitune_setting_key ] : 'default';
-		refitune_auto_updates_apply_tristate_filter( $refitune_filter_name, $refitune_mode );
+		foreach ( $refitune_core_filters as $refitune_setting_key => $refitune_filter_name ) {
+			$refitune_mode = isset( $refitune_settings[ $refitune_setting_key ] ) ? (string) $refitune_settings[ $refitune_setting_key ] : 'default';
+			refitune_auto_updates_apply_tristate_filter( $refitune_filter_name, $refitune_mode );
+		}
 	}
 
 	$refitune_type_filters = array(

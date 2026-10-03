@@ -142,6 +142,20 @@ html {
 	color: var(--refitune-nagyon-vilagos);
 }
 
+.refitune-button:disabled,
+.refitune-button[disabled] {
+	background-color: #dcdcde;
+	color: #50575e;
+	cursor: no-drop;
+	opacity: 1;
+}
+
+.refitune-button:disabled:hover,
+.refitune-button[disabled]:hover {
+	background-color: #dcdcde;
+	color: #50575e;
+}
+
 /* Dashboard: összefoglaló. */
 .refitune-dashboard-summary {
 	font-size: 14px;
@@ -309,6 +323,59 @@ html {
 	font-style: italic;
 }
 
+.refitune-settings-warning {
+	margin: 8px 0 0;
+	padding: 6px 10px;
+	background: #fff3cd;
+	color: #664d03;
+	font-size: 13px;
+	line-height: 1.45;
+}
+
+.refitune-settings-danger {
+	margin: 8px 0 0;
+	padding: 6px 10px;
+	background: #fcf0f1;
+	color: #8a2424;
+	font-size: 13px;
+	line-height: 1.45;
+	border-left: 3px solid #d63638;
+}
+
+/* Settings: auto_updates core rows. */
+.refitune-auto-update-core-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px 12px;
+	margin-bottom: 15px;
+}
+
+.refitune-auto-update-core-label {
+	display: inline-block;
+	width: 200px;
+	font-weight: 600;
+	flex: 0 0 auto;
+}
+
+.refitune-auto-update-core-row select {
+	flex: 0 0 auto;
+}
+
+.refitune-auto-update-core-row select:disabled {
+	opacity: 0.7;
+	cursor: not-allowed;
+	background: #f0f0f1;
+}
+
+.refitune-auto-update-core-desc {
+	margin: 0;
+	color: #1d2327;
+	font-size: 13px;
+	line-height: 1.45;
+	flex: 1 1 220px;
+}
+
 .refitune-feature-card .refitune-feature-unavailable-notice {
 	display: block;
 	margin: 8px 0 0;
@@ -327,14 +394,34 @@ label input[type="checkbox"][disabled] {
 	gap: 6px;
 }
 
-.refitune-number-input-row input[type="number"] {
-	width: 80px;
+.refitune-number-input-fields {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px 12px;
 }
 
-.refitune-number-input-row .description {
+.refitune-number-input-fields input[type="number"] {
+	width: 80px;
+	flex: 0 0 auto;
+}
+
+.refitune-number-input-fields input[type="number"]:disabled {
+	opacity: 0.7;
+	cursor: not-allowed;
+	background: #f0f0f1;
+}
+
+.refitune-number-input-fields .refitune-number-input-text {
 	margin: 0;
-	color: var(--refitune-muted);
-	font-size: 12px;
+	color: #1d2327;
+	font-size: 13px;
+	flex: 1 1 220px;
+	line-height: 1.45;
+}
+
+.refitune-number-input-row > .refitune-settings-warning {
+	margin-top: 2px;
 }
 
 /* Settings: login_customizer. */
@@ -515,6 +602,138 @@ label input[type="checkbox"][disabled] {
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
+}
+
+/* Settings: resource_preload. */
+.refitune-preload-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.refitune-preload-wrapper .description {
+	margin: 0;
+	color: var(--refitune-muted);
+	font-size: 12px;
+}
+
+.refitune-preload-rows {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.refitune-preload-actions [data-refitune-preload-import-fonts] {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+/* Fixed box so rotation does not resize the button; only the glyph rotates. */
+.refitune-preload-import-spin {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	font-size: 20px;
+	line-height: 1;
+	overflow: hidden;
+	flex: 0 0 20px;
+}
+
+.refitune-preload-import-spin::before {
+	display: block;
+	width: 20px;
+	height: 20px;
+	line-height: 1;
+	text-align: center;
+	animation: refitune-rotation 2s linear infinite;
+}
+
+@keyframes refitune-rotation {
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.refitune-preload-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin: 0;
+}
+
+.refitune-preload-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	padding: 10px;
+	background: #fafafa;
+	border: 1px solid #e0e0e6;
+	border-radius: 4px;
+}
+
+.refitune-preload-row .refitune-preload-url {
+	min-width: 220px;
+	width: 100%;
+}
+
+.refitune-preload-url-wrap {
+	flex: 1 1 220px;
+	min-width: 220px;
+}
+
+.refitune-preload-url-wrap .refitune-preload-url.is-invalid {
+	border-color: #d63638;
+	box-shadow: 0 0 0 1px #d63638;
+}
+
+.refitune-preload-url-error {
+	margin: 4px 0 0;
+	color: #d63638;
+	font-size: 12px;
+}
+
+.refitune-preload-url-error.is-hidden {
+	display: none;
+}
+
+.refitune-preload-row select {
+	max-width: 180px;
+}
+
+.refitune-preload-row .refitune-preload-post-id {
+	width: 90px;
+}
+
+.refitune-preload-row .refitune-preload-post-id.is-hidden {
+	display: none;
+}
+
+.refitune-preload-row .refitune-preload-remove {
+	margin-left: auto;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: #b32d2e;
+	cursor: pointer;
+	line-height: 1;
+}
+
+.refitune-preload-row .refitune-preload-remove .dashicons {
+	width: 20px;
+	height: 20px;
+	font-size: 20px;
+}
+
+.refitune-preload-row .refitune-preload-remove:hover,
+.refitune-preload-row .refitune-preload-remove:focus {
+	color: #8a2424;
 }
 
 .refitune-email-label {

@@ -16,27 +16,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once REFITUNE_PATH . 'modules/block-visibility-shared.php';
+
 /**
- * Enqueue the JS needed for the block editor.
+ * Enqueue shared editor assets for device visibility.
  *
  * @return void
  */
 function refitune_block_visibility_editor_assets(): void {
-	$refitune_js_file = REFITUNE_PATH . 'admin/js/block-visibility.js';
-
-	wp_enqueue_script(
-		'refitune-block-visibility',
-		REFITUNE_URL . 'admin/js/block-visibility.js',
-		array( 'wp-hooks', 'wp-compose', 'wp-block-editor', 'wp-components', 'wp-element', 'wp-i18n' ),
-		file_exists( $refitune_js_file ) ? filemtime( $refitune_js_file ) : REFITUNE_VERSION,
-		true
-	);
-
-	wp_set_script_translations(
-		'refitune-block-visibility',
-		'refitune',
-		REFITUNE_PATH . 'languages'
-	);
+	refitune_enqueue_block_visibility_editor();
 }
 add_action( 'enqueue_block_editor_assets', 'refitune_block_visibility_editor_assets', 10 );
 
