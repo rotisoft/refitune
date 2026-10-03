@@ -162,7 +162,7 @@ Detailed documentation and usage instructions.
 3. Navigate to:
 
 ```text
-Tools → RefiTune - Site Refiner Toolkit
+Tools → RefiTune - RefiTune Toolkit
 ```
 
 4. Enable the modules you want to use.
@@ -218,7 +218,7 @@ No. While `WP_ENVIRONMENT_TYPE` is `production`, RefiTune will not run without e
 
 ## Changelog
 
-See `readme.txt` in the plugin (Stable tag 1.3.0) for full details.
+See `readme.txt` in the plugin for full details.
 
 ## Links
 
