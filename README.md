@@ -64,7 +64,7 @@ RefiTune follows the WordPress philosophy of flexibility and transparency. Featu
 
 No hidden optimizations. No mysterious settings. Just clear controls for the features you choose to use.
 
-## Features (35 modules)
+## Features (37 modules)
 
 ### Performance
 
@@ -79,6 +79,8 @@ No hidden optimizations. No mysterious settings. Just clear controls for the fea
 - Trash Auto-Delete - Set trash retention; expired items are removed in batches so large queues stay memory-safe.
 - Convert Uploads to WebP - Convert JPEG/PNG to WebP on upload, optional max size resize, then remove the original (GD or Imagick with WebP support).
 - Heartbeat API Control - Tune or disable Heartbeat in admin, front end, and the post editor.
+- Resource Preload** - Add early `link rel="preload"` hints for internal site assets by location (everywhere, front page, blog, or post ID), with `as`, `type`, `crossorigin`, and `fetchpriority`. Optional one-click import of active fonts from Font Library (AJAX on demand).
+
 
 ### Security
 
@@ -96,7 +98,8 @@ No hidden optimizations. No mysterious settings. Just clear controls for the fea
 ### Visual
 
 - Hide Admin Bar - Hide the admin bar for selected roles.
-- Block Visibility (Mobile) - Show/hide blocks by device via `wp_is_mobile()`; sends `Vary: User-Agent` (full-page caches must honour it). Native support exists in WordPress 7.0+.
+- Block Visibility (Mobile)** - Per-block always / mobile-only / desktop-only via `wp_is_mobile()`; omits HTML server-side; sends `Vary: User-Agent` (full-page caches must honour it). Also available in the core Hide block modal.
+- Block Visibility (Roles)** - Per-block visibility for guests, logged-in users, or selected roles; omits HTML server-side. Shares the Visibility panel and Hide block modal with the mobile module.
 - Login Page Customization - Brand wp-login.php with logo and colours.
 
 ### Email
