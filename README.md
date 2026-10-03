@@ -138,7 +138,7 @@ Detailed documentation and usage instructions.
 | Requirement | Version |
 |-------------|---------|
 | WordPress | 6.2+ |
-| Tested up to (WP) | 7.0 |
+| Tested up to (WP) | 7.1 |
 | PHP | 7.4+ |
 | Tested up to (PHP) | 8.5 |
 
